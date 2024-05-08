@@ -97,6 +97,7 @@
 
 8. [**Agents**](#Agents)
 
+![Components](img/companes.png)
 
 ### Schema
 ### Models
@@ -112,3 +113,14 @@
 ### Agents
 ## References
 
+if to learn click this link button 👇
+
+1. [Reference link](https://github.com/sudarshan-koirala/youtube-stuffs/blob/main/langchain/LangChain_Components.ipynb)
+
+2. [Reference link](https://github.com/PradipNichite/Youtube-Tutorials/blob/main/Youtube_Course_Sentence_Transformers.ipynb)
+
+3. [Reference link](https://www.youtube.com/watch?v=jbFHpJhkga8&list=PLz-qytj7eIWVd1a5SsQ1dzOjVDHdgC1Ck)
+
+4. [Reference link](https://www.youtube.com/watch?v=nAmC7SoVLd8list=PLeo1K3hjS3uu0N_0W6giDXzZIcB07Ng_F)
+
+5. [Reference link](https://www.youtube.com/watch?v=mBJqGAHoam4)
