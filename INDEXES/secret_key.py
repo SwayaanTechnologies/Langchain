@@ -1,0 +1,1 @@
+hugging_facehub_key = "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"
