@@ -60,21 +60,16 @@
 
 ---
 
-### Why do we need Langchain
+### Why do we need Langchain?
+LangChain allows developers to create data-aware and agentic applications that can interact with their environment and leverage the power of large language models. Here are some use cases and examples of applications built with LangChain:
 
-* LangChain involves preprocessing the text corpus by dividing it into manageable chunks or summaries, embedding them in a vector space, and subsequently searching for similar chunks when a question is posed
+* **Autonomous agents:** LangChain can be used to create autonomous agents that can write code, run tests, and deploy applications using natural language commands. This is particularly useful for automating repetitive tasks and improving productivity.
 
-* LangChain simplifies the composition of these components by offering an abstraction.
+* **Agent simulations:** LangChain can be used to simulate the behavior and interactions of multiple agents in a sandbox environment. This can be used to test the long-term memory and social skills of language models or explore how they react to different events or scenarios.
 
-    - **Efficient Integration:** Integrating LLMs into applications can be complex  and time-consuming. LangChain streamlines this process by providing a framework  specifically tailored for working with LLMs, reducing development time and effort.
+* **Personal assistants:** LangChain can be used to create personal assistants that can access and manipulate user data, remember user preferences and history, and perform various tasks such as booking flights, ordering food, or sending emails. This can greatly enhance the user experience and make interactions with technology more natural and intuitive.
 
-    - **Scalability:** As LLMs become increasingly large and sophisticated, managing    their integration and scalability becomes more challenging. LangChain offers   solutions to effectively handle the scalability of LLM-powered applications,  ensuring they can handle growing volumes of data and users.
-
-    - **Customization:** Different applications have unique requirements and use    cases. LangChain enables developers to customize and fine-tune LLMs to suit their  specific needs, whether it's optimizing for performance, adapting to     domain-specific vocabularies, or incorporating specialized features.
-
-    - **Open-Source Community:** By being open-source, LangChain encourages     collaboration and innovation within the developer community. Contributors can   enhance the framework, fix bugs, add features, and share best practices,  fostering a vibrant ecosystem around LLM development.
-
-    - **Standardization:** LangChain promotes standardization in LLM development    practices, making it easier for developers to understand and work with different   models. This standardization enhances interoperability between different  LLM-based applications and facilitates knowledge sharing among developers.
+* **Question answering:** LangChain can be used to create question-answering applications that can extract relevant information from text, images, audio, or video files, and provide concise and accurate answers to user queries. This can be particularly useful in fields like customer service, where quick and accurate responses are crucial.
 
 ---
 
@@ -169,10 +164,10 @@ This function, `get_completion`, takes a prompt and an optional model name as in
 
 ### Prompts
 
-**Defining Prompt**
+A language model prompt is a user-provided set of instructions or input designed to guide the model's response. This aids the model in understanding the context and producing relevant output, whether it involves answering questions, completing sentences, or participating in a conversation
+
 
 ```python
-
 customer_email = """
 Arrr, I be fuming that me blender lid \
 flew off and splattered me kitchen walls \
@@ -241,6 +236,14 @@ This part integrates with the Hugging Face pipeline for text generation. It defi
 
 * LangChain primarily supports indexes and retrieval mechanisms centered around vector databases. These databases store documents as vectors, which enables efficient searching and retrieval based on similarities between vectors.
 
+ - **Document Loading:** This is the first step where the raw data (documents) are loaded into the system. The documents could be in various formats such as text files, PDFs, HTML, etc.
+ 
+ - **Document Splitting:** Once the documents are loaded, they are split into smaller chunks or segments. This is done to make the data more manageable and to improve the efficiency of the subsequent steps.
+
+ - **Vectors and Embeddings:** Each chunk of data is then transformed into a vector representation, also known as an embedding. These embeddings capture the semantic meaning of the data and are used for efficient retrieval of relevant information. LangChain primarily supports indexes and retrieval mechanisms centered around vector databases.
+
+ - **Retrieval:** This is the final step where a user’s query is taken and the system uses the index to identify and return the most relevant documents. The retrieval is based on the similarity between the query vector and the document vectors.
+ 
 ---
 
 #### Document Loading
@@ -759,16 +762,27 @@ This line prints the number of documents loaded from the PDF file.
 
 ### Memory
 
+Memory which is still in beta phase is an essential component in a conversation. This allows us to infer information in past conversations. Users have various options, including preserving the complete history of all conversations, summarizing the ongoing conversation, or retaining the most recent n exchanges.
+
+![image](img/memory.png)
 
 ----
 
 ### Chains
 
+Chains form the backbone of LangChain's workflows, seamlessly integrating Language Model Models (LLMs) with other components to build applications through the execution of a series of functions.
+
+The fundamental chain is the LLMChain, which straightforwardly invokes a model and a prompt template. For example, consider saving a prompt as "ExamplePrompt" and intending to run it with Flan-T5. By importing LLMChain from langchain.chains, you can define a chain_example like so: LLMChain(llm=flan-t5, prompt=ExamplePrompt). Executing the chain for a given input is as simple as calling chain_example.run("input").
+
+For scenarios where the output of one function needs to serve as the input for the next, SimpleSequentialChain comes into play. Each function within this chain can employ diverse prompts, tools, parameters, or even different models, catering to specific requirements.
+
+Memory
 
 ---
 
 ### Agents
 
+Agents, at their core, leverage a language model to make decisions about a sequence of actions to be taken. Unlike chains where a predefined sequence of actions is hard coded directly in the code, agents use a llm as a reasoning engine to determine the actions to be taken and their order.
 
 ---
 
