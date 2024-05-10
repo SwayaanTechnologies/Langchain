@@ -109,6 +109,84 @@ LangChain allows developers to create data-aware and agentic applications that c
 
 * By defining a clear and consistent schema, LangChain ensures that data is organized and standardized, facilitating efficient data retrieval and manipulation. This is crucial for the performance and reliability of applications built with LangChain. It also ensures compatibility and interoperability between different components, making it easier for developers to build and manage their applications.
 
+```python
+import promptlayer
+import os
+os.environ["PROMPTLAYER_API_KEY"] = "<your-api-key>"
+```
+
+This section imports the promptlayer library and sets the environment variable PROMPTLAYER_API_KEY to your API key. This API key is required for using the PromptLayer service, which provides an interface for interacting with language models.
+
+```python
+#from langchain.schema import (HumanMessage,SystemMessage,AIMessage)
+#from langchain_community.chat_models.huggingface import ChatHuggingFace
+from langchain.chat_models import PromptLayerChatOpenAI
+from langchain.schema import (SystemMessage,HumanMessage,AIMessage)
+```
+
+These lines are commented out but suggest importing various components from the LangChain library, such as message schemas and chat models. However, it seems they are not used in the subsequent code.
+
+```python
+messages = [
+    SystemMessage(content="You're a helpful assistant"),
+    HumanMessage(
+        content="What happens when an unstoppable force meets an immovable object?"
+    ),
+]
+```
+
+Here, a list of messages is created, consisting of a system message and a human message. The system message appears to set the context, while the human message poses a question.
+
+```python
+chat = PromptLayerChatOpenAI(pl_tags=["langchain"])
+```
+
+An instance of PromptLayerChatOpenAI is created, specifying the tags "langchain". This class likely facilitates interactions with the PromptLayer service using OpenAI's API.
+
+```python
+chat([
+ SystemMessage(content="You are a helpful assistant that translates English to French."),
+ HumanMessage(content="Translate this sentence from English to French. I love programming.")
+])
+```
+
+This block of code initiates a chat interaction by providing a list of messages to the chat instance. The system message sets the context, and the human message poses a translation task from English to French.
+
+```python
+chat = PromptLayerChatOpenAI(temperature=0.1)
+```
+
+A new instance of `PromptLayerChatOpenAI` is created, this time setting the temperature parameter to 0.1. Temperature is a parameter that controls the randomness of the language model's responses during generation.
+
+```python
+# multiple sets of messages using .generate.
+batch_messages = [
+    [
+        SystemMessage(content="You are a helpful assistant that translates English to French."),
+        HumanMessage(content="I love programming.")
+    ],
+    [
+        SystemMessage(content="You are a helpful assistant that translates English to French."),
+        HumanMessage(content="I love artificial intelligence.")
+    ],
+]
+```
+
+A list of multiple sets of messages is created, each containing a system message and a human message. These sets of messages are intended to be used in a batch for generating responses.
+
+```python
+result = chat.generate(batch_messages)
+print(result)
+```
+
+The `generate` method of the chat instance is called with the batch messages as input. This method likely generates responses for each set of messages in the batch and returns the results. The results are then printed.
+
+```python
+chat([HumanMessage(content="Translate this sentence from English to tamil. I love programming.")])
+```
+
+Another human message is sent to the chat instance, this time requesting translation from English to Tamil.
+
 ### Models
 
 models, such as GPT-4, are trained on vast amounts of text data and can generate human-like text based on the input they are given. They are the core of LangChain applications, enabling capabilities like natural language understanding and generation.
@@ -766,6 +844,82 @@ Memory which is still in beta phase is an essential component in a conversation.
 
 ![image](img/memory.png)
 
+```python
+from langchain.memory import ChatMessageHistory
+```
+
+Here, we import the ChatMessageHistory class from LangChain's memory module. This class allows us to maintain a history of user and AI messages during a conversation.
+
+```python
+history = ChatMessageHistory()
+```
+
+We create an instance of `ChatMessageHistory` named `history` to store the chat message history.
+
+```python
+history.add_user_message("hi!")
+
+history.add_ai_message("whats up?")
+```
+
+We add a user message "hi!" to the chat history using the `add_user_message` method.
+
+Similarly, we add an AI message "whats up?" to the chat history using the `add_ai_message` method.
+
+```python
+history.messages
+
+history.add_user_message("Fine, what about you?")
+history.messages
+```
+
+We access the messages stored in the chat history. This will display both the user and AI messages added earlier.
+
+Another user message "Fine, what about you?" is added to the chat history.
+from langchain.chat_models import ChatHuggingFace
+
+We access the updated chat history to view all the messages, including the latest user message.
+
+```python
+from langchain.chat_models import ChatHuggingFace
+```
+
+Here, we import the ChatHuggingFace class from LangChain's chat_models module. This class allows us to interact with Hugging Face models for conversational AI tasks.
+
+```python
+llm = ChatHuggingFace(
+    repo_id="HuggingFaceH4/zephyr-7b-beta",
+    task="text-generation",
+    model_kwargs={
+        "max_new_tokens": 512,
+        "top_k": 30,
+        "temperature": 0.1,
+        "repetition_penalty": 1.03,
+    },
+)
+```
+
+We initialize an instance of the `ChatHuggingFace` class named `llm`. This instance is configured to use a specific model (`HuggingFaceH4/zephyr-7b-beta`) for text generation, with certain model parameters like `max_new_tokens`, `top_k`, `temperature`, and `repetition_penalty`.
+
+```python
+chat = ChatHuggingFace()
+ai_response = chat(history.messages)
+ai_response
+```
+
+We create another instance of `ChatHuggingFace` named `chat`. This instance will be used for generating AI responses based on the chat history.
+
+We generate an AI response using the `chat` instance and pass the chat history (`history.messages`) as input. The AI model processes the history and generates a response.
+
+```python
+history.add_ai_message(ai_response.content)
+history.messages
+```
+
+The AI response generated is added to the chat history using the `add_ai_message` method.
+
+Finally, we access the updated chat history to view all the messages, including the latest AI response that was added.
+
 ----
 
 ### Chains
@@ -776,13 +930,101 @@ The fundamental chain is the LLMChain, which straightforwardly invokes a model a
 
 For scenarios where the output of one function needs to serve as the input for the next, SimpleSequentialChain comes into play. Each function within this chain can employ diverse prompts, tools, parameters, or even different models, catering to specific requirements.
 
-Memory
+```python
+from langchain import HuggingFaceHub
+from langchain import PromptTemplate, LLMChain
+```
+Here, we import necessary modules from LangChain. We import `HuggingFaceHub` to utilize a pre-trained language model from the Hugging Face model hub, `PromptTemplate` to create a template for generating prompts, and `LLMChain` to create a chain for executing language model tasks.
+
+```python
+llm_hf = HuggingFaceHub(repo_id="google/flan-t5-xl", model_kwargs={"temperature":0, "max_length":64})
+```
+
+We initialize a language model from the Hugging Face model hub. In this case, we're using the T5 model (`google/flan-t5-xl`). We also provide some model-specific arguments like `temperature` and `max_length`.
+
+```python
+template = """Question: {question}
+
+Answer: Let's think step by step."""
+prompt = PromptTemplate(template=template, input_variables=["question"])
+```
+We define a prompt template using the `PromptTemplate` class. The template contains a placeholder {`question`} for the input question. This template will be used to generate prompts for the language model.
+
+```python
+llm_chain = LLMChain(prompt=prompt, llm=llm_hf)
+```
+
+We create an `LLMChain` instance by providing the prompt template and the initialized language model (`llm_hf`). This chain will use the template to generate prompts for the language model.
+
+```python
+question = "Who won the FIFA World Cup in the year 1994? "
+```
+
+We define a question that we want to ask the language model.
+
+```python
+print(llm_chain.run(question))  
+```
+
+We run the defined question through the LLMChain by calling the run method and passing the question as input. This will generate a prompt using the template, execute it using the language model, and return the generated response.
 
 ---
 
 ### Agents
 
 Agents, at their core, leverage a language model to make decisions about a sequence of actions to be taken. Unlike chains where a predefined sequence of actions is hard coded directly in the code, agents use a llm as a reasoning engine to determine the actions to be taken and their order.
+
+```python
+# !pip install google-search-results
+from langchain import HuggingFaceHub
+from langchain.agents import initialize_agent, Tool
+from langchain.agents import AgentType
+```
+
+Here, we import necessary modules from LangChain. We also install a Python package called google-search-results, which seems to be required but is commented out.
+
+```python
+llm_hf = HuggingFaceHub(repo_id="google/flan-t5-xl", model_kwargs={"temperature":0, "max_length":64})
+llm =  PromptLayer(temperature=0)
+search = HuggingFaceHub()
+```
+
+These lines initialize different language models using HuggingFaceHub and PromptLayer. The `llm_hf` model is initialized with the Google Flan T5 XL model, while the `llm` model is initialized with the PromptLayer model.
+
+```python
+tools = [
+    Tool(
+        name="Intermediate Answer",
+        func=search.run,
+        description="useful for when you need to ask with search"
+    )
+]
+```
+
+A list of tools is defined, with each tool containing a name, function, and description. In this case, the tool is named "Intermediate Answer" and uses the `search.run` function.
+
+```python
+self_ask_with_search = initialize_agent(tools, llm, agent=AgentType.SELF_ASK_WITH_SEARCH, verbose=True)
+```
+
+An agent named `self_ask_with_search` is initialized using the `initialize_agent` function. The agent uses the specified tools, language model (`llm`), and agent type (`AgentType.SELF_ASK_WITH_SEARCH`).
+
+```python
+self_ask_with_search.run("What is the hometown of the reigning men's French Open?")
+```
+
+We run the agent with a specific question as input. The agent will likely use its internal logic to provide an answer based on the question and the available tools.
+
+```python
+#if you want the intermediate answers, pass return_intermediate_steps=True.
+self_ask_with_search = initialize_agent(tools, llm, agent=AgentType.SELF_ASK_WITH_SEARCH, return_intermediate_steps=True, verbose=True)
+response = self_ask_with_search("What is the hometown of the reigning men's French Open?")
+
+import json
+print(json.dumps(response["intermediate_steps"], indent=2))
+```
+
+Here, we reinitialize the agent with an additional parameter `return_intermediate_steps=True`, which indicates that we want to capture intermediate steps during the agent's processing. Then, we run the agent again with the same question and print out the intermediate steps in a JSON format.
 
 ---
 
