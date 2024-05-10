@@ -611,7 +611,7 @@ docs = c_splitter.split_documents(pages)
 
 #### Vectors and Embeddings
 
-**`Embeddings`**
+**Embeddings**
 
 ```python
 # !pip install sentence-transformers
@@ -642,12 +642,11 @@ print (f"Here's a sample: {text_embedding[:5]}...")
 
 We print the length of the embeddings generated for the text and show a sample of the embeddings. The length indicates the dimensionality of the embeddings, and the sample provides a glimpse of the first few values of the embeddings.
 
-
-**`Vectorstore`**
+**Vectorstore**
 
 VectorStore is a component of LangChain that facilitates efficient storage and retrieval of document embeddings, which are vector representations of documents. These embeddings are created using language models and are valuable for various natural language processing tasks such as information retrieval and document similarity analysis.
 
-`Installation:`
+**Installation:**
 
 To install VectorStore, you can use pip:
 
@@ -679,9 +678,9 @@ Finally, you can access the number of documents stored in the VectorStore using 
 #### Retrevial
 
 
-**`Vectorstore retrieval`**
+**Vectorstore retrieval**
 
-`Installation:`
+**Installation:**
 
 ```python
 # !pip install lark
