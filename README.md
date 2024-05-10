@@ -527,11 +527,11 @@ r_splitter = RecursiveCharacterTextSplitter(
 
 - `Parameters:`
 
-* `chunk_size:` The maximum size of each chunk in characters.
+  * `chunk_size:` The maximum size of each chunk in characters.
 
-* `chunk_overlap:` The overlap between consecutive chunks (in characters).
+  * `chunk_overlap:` The overlap between consecutive chunks (in characters).
 
-* `separators:` List of strings that define separators used for splitting the text. Empty strings represent no separation.
+  * `separators:` List of strings that define separators used for splitting the text. Empty strings represent no separation.
 
 - `Usage:` Useful for splitting long pieces of text into manageable chunks for processing.
 
@@ -550,11 +550,11 @@ c_splitter = CharacterTextSplitter(
 
 - `Parameters:`
 
-* `separator:` The string used to split the text into chunks.
+    * `separator:` The string used to split the text into chunks.
 
-* `chunk_size:` The maximum size of each chunk in characters.
+    * `chunk_size:` The maximum size of each chunk in characters.
 
-* `chunk_overlap:` The overlap between consecutive chunks (in characters).
+    * `chunk_overlap:` The overlap between consecutive chunks (in characters).
 
 - `Usage:` Suitable for simpler text splitting tasks where a single separator suffices.
 
@@ -569,7 +569,7 @@ pages = loader.load()
 
 - `Parameters:`
 
-* `"path_to_pdf_file":` The path to the PDF file.
+  * `"path_to_pdf_file":` The path to the PDF file.
 
 - `Returns:` A list of page objects representing the contents of each page in the PDF.
 
@@ -584,7 +584,7 @@ pages = loader.load()
 
 - `Parameters:`
 
-* `"directory_path":` The path to the directory containing Notion documents.
+  * `"directory_path":` The path to the directory containing Notion documents.
 
 - `Returns:` A list of document objects representing the contents of each document in the directory.
 
@@ -599,7 +599,7 @@ docs = c_splitter.split_documents(pages)
 
 - `Parameters:`
 
-* `pages:` The list of document objects to be split.
+  * `pages:` The list of document objects to be split.
 
 - `Returns:` A list of document chunks, each representing a portion of the original document.
 
