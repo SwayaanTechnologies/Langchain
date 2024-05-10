@@ -8,37 +8,37 @@
 
 2. [**Components**](#Components)
 
-    - [**Schema**](#Schema)
+    * [**Schema**](#Schema)
 
-    - [**Models**](#Models)
+    * [**Models**](#Models)
 
-    - [**Prompts**](#Prompts)
+    * [**Prompts**](#Prompts)
 
-    - [**Parsers**](#Parsers)
+    * [**Parsers**](#Parsers)
 
-    - [**Indexes**](#Indexes)
+    * [**Indexes**](#Indexes)
 
-        1. [**Document Loading**](#Document-Loading)   
+        - [**Document Loading**](#Document-Loading)   
 
-        2. [**Documnet Splitting**](#Documnet-Splitting)  
+        - [**Documnet Splitting**](#Documnet-Splitting)  
 
-        3. [**Vectors and Embeddings**](#Vectors-and-Embeddings) 
+        - [**Vectors and Embeddings**](#Vectors-and-Embeddings) 
 
-        4. [**Retrevial**](#retrevial)
+        - [**Retrevial**](#retrevial)
 
-    - [**Memory**](#Memory)
+    * [**Memory**](#Memory)
 
-    - [**Chains**](#Chains)
+    * [**Chains**](#Chains)
 
-    - [**Agents**](#Agents)
+    * [**Agents**](#Agents)
 
 3. [**References**](#References)
 
 ## Introduction to Langchain
 
-- LangChain is an innovative open-source framework designed to empower developers in building cutting-edge applications utilizing LLMs, or Large Language Models. These models, like the one I'm based on, possess advanced capabilities in natural language understanding and generation, making them ideal for a wide range of tasks such as text generation, summarization, translation, and more. 
+* LangChain is an innovative open-source framework designed to empower developers in building cutting-edge applications utilizing LLMs, or Large Language Models. These models, like the one I'm based on, possess advanced capabilities in natural language understanding and generation, making them ideal for a wide range of tasks such as text generation, summarization, translation, and more. 
 
-- LangChain provides a structured environment and tools that streamline the integration of LLMs into various applications, facilitating rapid development and deployment. With LangChain, developers can leverage the power of LLMs to create intelligent and dynamic solutions tailored to their specific needs, driving innovation in natural language processing technology.
+* LangChain provides a structured environment and tools that streamline the integration of LLMs into various applications, facilitating rapid development and deployment. With LangChain, developers can leverage the power of LLMs to create intelligent and dynamic solutions tailored to their specific needs, driving innovation in natural language processing technology.
 
 ### Evolve 
 
@@ -53,9 +53,9 @@
 
 ### Why do we need Langchain
 
-- LangChain involves preprocessing the text corpus by dividing it into manageable chunks or summaries, embedding them in a vector space, and subsequently searching for similar chunks when a question is posed
+* LangChain involves preprocessing the text corpus by dividing it into manageable chunks or summaries, embedding them in a vector space, and subsequently searching for similar chunks when a question is posed
 
-- LangChain simplifies the composition of these components by offering an abstraction.
+* LangChain simplifies the composition of these components by offering an abstraction.
 
     **`Efficient Integration:`** Integrating LLMs into applications can be complex  and time-consuming. LangChain streamlines this process by providing a framework  specifically tailored for working with LLMs, reducing development time and effort.
 
@@ -83,13 +83,13 @@
 
 5. [**Indexes**](#Indexes)
 
-    1. [**Document Loading**](#Document-Loading)   
+    * [**Document Loading**](#Document-Loading)   
 
-    2. [**Documnet Splitting**](#Documnet-Splitting)  
+    * [**Documnet Splitting**](#Documnet-Splitting)
 
-    3. [**Vectors and Embeddings**](#Vectors-and-Embeddings) 
+    * [**Vectors and Embeddings**](#Vectors-and-Embeddings)
 
-    4. [**Retrevial**](#retrevial)
+    * [**Retrevial**](#retrevial)
 
 6. [**Memory**](#Memory)
 
@@ -211,15 +211,15 @@ This part integrates with the Hugging Face pipeline for text generation. It defi
 
 ### Indexes
 
-- Indexes in the context of language models (LLMs) refer to structured representations of documents that facilitate efficient interaction with the documents. These indexes play a crucial role in the retrieval of relevant documents in response to user queries.
+* Indexes in the context of language models (LLMs) refer to structured representations of documents that facilitate efficient interaction with the documents. These indexes play a crucial role in the retrieval of relevant documents in response to user queries.
 
-- Imagine you have a vast collection of text documents. Without indexes, searching through this collection for relevant information would be like looking for a needle in a haystack. Indexes help organize this information in a way that makes it easier for LLMs to quickly find and retrieve the most relevant documents based on a user's query.
+* Imagine you have a vast collection of text documents. Without indexes, searching through this collection for relevant information would be like looking for a needle in a haystack. Indexes help organize this information in a way that makes it easier for LLMs to quickly find and retrieve the most relevant documents based on a user's query.
 
-- The primary use of indexes in chains is in the retrieval step. This involves taking a user's query and using the index to identify and return the most relevant documents. However, indexes can be used for other purposes besides retrieval, and retrieval itself can employ other methods besides indexes to find relevant documents.
+* The primary use of indexes in chains is in the retrieval step. This involves taking a user's query and using the index to identify and return the most relevant documents. However, indexes can be used for other purposes besides retrieval, and retrieval itself can employ other methods besides indexes to find relevant documents.
 
-- It's important to note that indexes are typically used for unstructured data, such as text documents. For structured data like SQL tables or APIs, different methods are employed.
+* It's important to note that indexes are typically used for unstructured data, such as text documents. For structured data like SQL tables or APIs, different methods are employed.
 
-- LangChain primarily supports indexes and retrieval mechanisms centered around vector databases. These databases store documents as vectors, which enables efficient searching and retrieval based on similarities between vectors.
+* LangChain primarily supports indexes and retrieval mechanisms centered around vector databases. These databases store documents as vectors, which enables efficient searching and retrieval based on similarities between vectors.
 
 #### Document Loading
 
@@ -242,9 +242,9 @@ from langchain.document_loaders import PyPDFLoader
 from langchain import HuggingFaceHub
 ```
 
-`PyPDFLoader:` A module from LangChain used for loading PDF documents.
+* `PyPDFLoader:` A module from LangChain used for loading PDF documents.
 
-`HuggingFaceHub:` A module from LangChain used for accessing pre-trained language models from the Hugging Face model hub.
+* `HuggingFaceHub:` A module from LangChain used for accessing pre-trained language models from the Hugging Face model hub.
 
 **PDF Loading**
 
@@ -254,9 +254,9 @@ loader = PyPDFLoader("MachineLearning-Lecture01.pdf")
 pages = loader.load()
 ```
 
-`loader: `An instance of ``PyPDFLoader`` initialized with the PDF file `"MachineLearning-Lecture01.pdf"`.
+* `loader: `An instance of ``PyPDFLoader`` initialized with the PDF file `"MachineLearning-Lecture01.pdf"`.
 
-`pages:` A list containing the extracted pages from the loaded PDF document.
+* `pages:` A list containing the extracted pages from the loaded PDF document.
 
 **Summarizer Initialization**
 
@@ -268,9 +268,9 @@ summarizer = HuggingFaceHub(
 )
 ```
 
-`summarizer:` An instance of `HuggingFaceHub` initialized with the BART-large model (`facebook/bart-large-cnn`) from the Hugging Face model hub.
+* `summarizer:` An instance of `HuggingFaceHub` initialized with the BART-large model (`facebook/bart-large-cnn`) from the Hugging Face model hub.
 
-`model_kwargs:` Additional keyword arguments passed to the model during initialization, including `temperature` and `max_length`.
+* `model_kwargs:` Additional keyword arguments passed to the model during initialization, including `temperature` and `max_length`.
 
 **Summarization Function**
 
@@ -294,13 +294,13 @@ print(summary)
 print(summarize)
 ```
 
-`page:` Retrieves the content of the 10th page from the extracted pages.
+* `page:` Retrieves the content of the 10th page from the extracted pages.
 
-`summary:` Generates a summary of the content of the 10th page using the `summarize` function and the initialized `summarizer`.
+* `summary:` Generates a summary of the content of the 10th page using the `summarize` function and the initialized `summarizer`.
 
-`print(summary):` Prints the generated summary.
+* `print(summary):` Prints the generated summary.
 
-`print(summarize):` (Assuming this was intended to be `print(summarizer)`) Prints the `summarizer` object, which might have been unintentional.
+* `print(summarize):` (Assuming this was intended to be `print(summarizer)`) Prints the `summarizer` object, which might have been unintentional.
 
 
 **output**
@@ -523,17 +523,17 @@ r_splitter = RecursiveCharacterTextSplitter(
 )
 ```
 
-`Purpose:` This initializes a text splitter that recursively splits text into chunks based on defined parameters.
+- `Purpose:` This initializes a text splitter that recursively splits text into chunks based on defined parameters.
 
-`Parameters:`
+- `Parameters:`
 
-- `chunk_size:` The maximum size of each chunk in characters.
+* `chunk_size:` The maximum size of each chunk in characters.
 
-- `chunk_overlap:` The overlap between consecutive chunks (in characters).
+* `chunk_overlap:` The overlap between consecutive chunks (in characters).
 
-- `separators:` List of strings that define separators used for splitting the text. Empty strings represent no separation.
+* `separators:` List of strings that define separators used for splitting the text. Empty strings represent no separation.
 
-`Usage:` Useful for splitting long pieces of text into manageable chunks for processing.
+- `Usage:` Useful for splitting long pieces of text into manageable chunks for processing.
 
 
 **`Using CharacterTextSplitter:`**
@@ -546,17 +546,17 @@ c_splitter = CharacterTextSplitter(
 )
 ```
 
-`Purpose:` This initializes a text splitter that splits text into chunks based on a single separator.
+- `Purpose:` This initializes a text splitter that splits text into chunks based on a single separator.
 
-`Parameters:`
+- `Parameters:`
 
-- `separator:` The string used to split the text into chunks.
+* `separator:` The string used to split the text into chunks.
 
-- `chunk_size:` The maximum size of each chunk in characters.
+* `chunk_size:` The maximum size of each chunk in characters.
 
-- `chunk_overlap:` The overlap between consecutive chunks (in characters).
+* `chunk_overlap:` The overlap between consecutive chunks (in characters).
 
-`Usage:` Suitable for simpler text splitting tasks where a single separator suffices.
+- `Usage:` Suitable for simpler text splitting tasks where a single separator suffices.
 
 **`Using PyPDFLoader`**
 
@@ -565,13 +565,13 @@ loader = PyPDFLoader("path_to_pdf_file")
 pages = loader.load()
 ```
 
-`Purpose:` This loads a PDF document and extracts its pages.
+- `Purpose:` This loads a PDF document and extracts its pages.
 
-`Parameters:`
+- `Parameters:`
 
-- `"path_to_pdf_file":` The path to the PDF file.
+* `"path_to_pdf_file":` The path to the PDF file.
 
-`Returns:` A list of page objects representing the contents of each page in the PDF.
+- `Returns:` A list of page objects representing the contents of each page in the PDF.
 
 **`Using NotionDirectoryLoader:`**
 
