@@ -42,13 +42,13 @@
 
 ### Evolve 
 
-**`Framework Enhancements:`** LangChain itself can evolve by receiving updates, improvements, and new features. This evolution might involve optimizing performance, adding support for new LLM architectures, enhancing compatibility with various programming languages and platforms, and incorporating feedback from the developer community.
+- **Framework Enhancements:** LangChain itself can evolve by receiving updates, improvements, and new features. This evolution might involve optimizing performance, adding support for new LLM architectures, enhancing compatibility with various programming languages and platforms, and incorporating feedback from the developer community.
 
-**`Model Training:`** Developers can use LangChain to evolve LLMs by training them on new datasets or fine-tuning existing models for specific tasks or domains. This process involves feeding the model additional data to improve its accuracy, adaptability, and language understanding capabilities.
+- **Model Training:** Developers can use LangChain to evolve LLMs by training them on new datasets or fine-tuning existing models for specific tasks or domains. This process involves feeding the model additional data to improve its accuracy, adaptability, and language understanding capabilities.
 
-**`Application Development:`** Developers can evolve their applications built with LangChain by continuously refining features, adding new functionalities, and improving user experiences. This iterative process allows applications to adapt to changing user needs, technological advancements, and market trends.
+- **Application Development:** Developers can evolve their applications built with LangChain by continuously refining features, adding new functionalities, and improving user experiences. This iterative process allows applications to adapt to changing user needs, technological advancements, and market trends.
 
-**`Community Collaboration:`** The LangChain community can evolve through collaboration, knowledge sharing, and the exchange of ideas. Developers can contribute to the framework's development, share their experiences and insights, and collectively address challenges and opportunities in LLM-based application development.
+- **Community Collaboration:** The LangChain community can evolve through collaboration, knowledge sharing, and the exchange of ideas. Developers can contribute to the framework's development, share their experiences and insights, and collectively address challenges and opportunities in LLM-based application development.
 
 
 ### Why do we need Langchain
@@ -57,19 +57,19 @@
 
 * LangChain simplifies the composition of these components by offering an abstraction.
 
-    **`Efficient Integration:`** Integrating LLMs into applications can be complex  and time-consuming. LangChain streamlines this process by providing a framework  specifically tailored for working with LLMs, reducing development time and effort.
+    - **Efficient Integration:** Integrating LLMs into applications can be complex  and time-consuming. LangChain streamlines this process by providing a framework  specifically tailored for working with LLMs, reducing development time and effort.
 
 
-    **`Scalability:`** As LLMs become increasingly large and sophisticated, managing    their integration and scalability becomes more challenging. LangChain offers   solutions to effectively handle the scalability of LLM-powered applications,  ensuring they can handle growing volumes of data and users.
+    - **Scalability:** As LLMs become increasingly large and sophisticated, managing    their integration and scalability becomes more challenging. LangChain offers   solutions to effectively handle the scalability of LLM-powered applications,  ensuring they can handle growing volumes of data and users.
 
 
-    **`Customization:`** Different applications have unique requirements and use    cases. LangChain enables developers to customize and fine-tune LLMs to suit their  specific needs, whether it's optimizing for performance, adapting to     domain-specific vocabularies, or incorporating specialized features.
+    - **Customization:** Different applications have unique requirements and use    cases. LangChain enables developers to customize and fine-tune LLMs to suit their  specific needs, whether it's optimizing for performance, adapting to     domain-specific vocabularies, or incorporating specialized features.
 
 
-    **`Open-Source Community:`** By being open-source, LangChain encourages     collaboration and innovation within the developer community. Contributors can   enhance the framework, fix bugs, add features, and share best practices,  fostering a vibrant ecosystem around LLM development.
+    - **Open-Source Community:** By being open-source, LangChain encourages     collaboration and innovation within the developer community. Contributors can   enhance the framework, fix bugs, add features, and share best practices,  fostering a vibrant ecosystem around LLM development.
 
 
-    **`Standardization:`** LangChain promotes standardization in LLM development    practices, making it easier for developers to understand and work with different   models. This standardization enhances interoperability between different  LLM-based applications and facilitates knowledge sharing among developers.
+    - **Standardization:** LangChain promotes standardization in LLM development    practices, making it easier for developers to understand and work with different   models. This standardization enhances interoperability between different  LLM-based applications and facilitates knowledge sharing among developers.
 
 ## Components
 
@@ -101,11 +101,20 @@
 
 ### Schema
 
+* In the context of Langchain, a schema refers to the structure or blueprint that defines the organization and relationships of data within a database or system. It provides a framework for organizing and representing data in a consistent and structured manner.
+
+* A schema typically includes the definition of tables, columns, data types, constraints, and relationships between tables. It acts as a guide for creating and managing the database, ensuring data integrity and facilitating efficient data retrieval and manipulation.
+
+* In Langchain, the schema plays a crucial role in defining the structure of the components such as models, prompts, parsers, and indexes. It helps in organizing and standardizing the data representation and ensures compatibility and interoperability between different components.
+
+* The schema can be defined using various techniques and languages, depending on the specific requirements and technologies used in the project. Commonly used schema definition languages include SQL (Structured Query Language), JSON (JavaScript Object Notation), and YAML (YAML Ain't Markup Language).
+
+
 
 
 ### Models
 
-`Loading Environment Variable`
+**Loading Environment Variable**
 
 ```python
 import promptlayer
@@ -115,7 +124,7 @@ os.environ["PROMPTLAYER_API_KEY"] = "pl_460558b60a94f36bb723dfdbd5409642"
 
 Here, the code imports the `promptlayer` module and sets the environment variable `PROMPTLAYER_API_KEY` to a specific API key. This API key is likely used for accessing a service that provides language model capabilities.
 
-`Setting Model Variable`
+**Setting Model Variable**
 
 ```python
 # account for deprecation of LLM model
@@ -135,7 +144,7 @@ print (llm_model)
 This section determines which language model to use based on the current date. If the current date is before June 12, 2024, it sets the `llm_model` variable to "gpt-3.5-turbo". Otherwise, it sets it to "gpt-3.5-turbo-0301". This decision might be based on model updates or improvements.
 
 
-`Defining Completion Function`
+**Defining Completion Function**
 
 ```python
 def get_completion(prompt, model=llm_model):
@@ -152,9 +161,10 @@ This function, `get_completion`, takes a prompt and an optional model name as in
 
 ### Prompts
 
-`Defining Prompt`
+**Defining Prompt**
 
 ```python
+
 customer_email = """
 Arrr, I be fuming that me blender lid \
 flew off and splattered me kitchen walls \
