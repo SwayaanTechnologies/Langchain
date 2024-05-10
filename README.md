@@ -116,7 +116,7 @@
 ```python
 import promptlayer
 import os
-os.environ["PROMPTLAYER_API_KEY"] = "pl_460558b60a94f36bb723dfdbd5409642"
+os.environ["PROMPTLAYER_API_KEY"] = "<your-api-key>"
 ```
 
 Here, the code imports the `promptlayer` module and sets the environment variable `PROMPTLAYER_API_KEY` to a specific API key. This API key is likely used for accessing a service that provides language model capabilities.
@@ -307,13 +307,6 @@ print(summarize)
 * `print(summary):` Prints the generated summary.
 
 * `print(summarize):` (Assuming this was intended to be `print(summarizer)`) Prints the `summarizer` object, which might have been unintentional.
-
-
-**output**
-
-```output
-Many students will try to build a cool machine learning application. Some students try to improve state-of-the-art machine learning algorithms. Some of those projects are also very successful. And a smaller minority of students sometimes try to prove theorems about machine learning.
-```
 
 ##### 2. youtube
 
