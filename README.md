@@ -106,6 +106,8 @@
 
 ![Components](img/companes.png)
 
+---
+
 ### Schema
 
 * The schema in LangChain can be defined using various techniques and languages, depending on the specific requirements and technologies used in the project. Commonly used schema definition languages include SQL (Structured Query Language), JSON (JavaScript Object Notation), and YAML (YAML Ain’t Markup Language).
