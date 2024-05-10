@@ -580,13 +580,13 @@ loader = NotionDirectoryLoader("directory_path")
 pages = loader.load()
 ```
 
-`Purpose:` This loads documents from a directory, assuming they are stored in Notion's format.
+- `Purpose:` This loads documents from a directory, assuming they are stored in Notion's format.
 
-`Parameters:`
+- `Parameters:`
 
-- `"directory_path":` The path to the directory containing Notion documents.
+* `"directory_path":` The path to the directory containing Notion documents.
 
-`Returns:` A list of document objects representing the contents of each document in the directory.
+- `Returns:` A list of document objects representing the contents of each document in the directory.
 
 
 **`Splitting Documents`**
@@ -595,13 +595,13 @@ pages = loader.load()
 docs = c_splitter.split_documents(pages)
 ```
 
-`Purpose:` This splits loaded documents into chunks using the defined text splitter.
+- `Purpose:` This splits loaded documents into chunks using the defined text splitter.
 
-`Parameters:`
+- `Parameters:`
 
-- `pages:` The list of document objects to be split.
+* `pages:` The list of document objects to be split.
 
-`Returns:` A list of document chunks, each representing a portion of the original document.
+- `Returns:` A list of document chunks, each representing a portion of the original document.
 
 #### Vectors and Embeddings
 
@@ -661,9 +661,9 @@ db = Chroma.from_documents(splits, embeddings)
 ```
 Then, create a VectorStore instance using the from_documents method. This method requires two parameters:
 
--` splits: `A list of document splits, where each split represents a document.
+* ` splits: `A list of document splits, where each split represents a document.
 
-- `embeddings:` A list of embeddings corresponding to the document splits.
+* `embeddings:` A list of embeddings corresponding to the document splits.
 
 ```python
 print(db._collection.count())
