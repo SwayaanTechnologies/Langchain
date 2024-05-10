@@ -83,7 +83,7 @@
 
 5. [**Indexes**](#Indexes)
 
-    * [**Document Loading**](#Document-Loading)   
+    * [**Document Loading**](#Document-Loading)
 
     * [**Documnet Splitting**](#Documnet-Splitting)
 
@@ -108,9 +108,6 @@
 * In Langchain, the schema plays a crucial role in defining the structure of the components such as models, prompts, parsers, and indexes. It helps in organizing and standardizing the data representation and ensures compatibility and interoperability between different components.
 
 * The schema can be defined using various techniques and languages, depending on the specific requirements and technologies used in the project. Commonly used schema definition languages include SQL (Structured Query Language), JSON (JavaScript Object Notation), and YAML (YAML Ain't Markup Language).
-
-
-
 
 ### Models
 
@@ -198,8 +195,7 @@ print(response)
 
 Here, the prompt string is printed, and the `get_completion` function is called with the prompt as input. The generated completion is then printed.
 
-
-`Hugging Face Integration`
+**Hugging Face Integration**
 
 ```python
 # Hugging Face Integration
@@ -241,7 +237,7 @@ import os
 os.environ['HUGGINGFACEHUB_API_TOKEN'] = hugging_facehub_key
 ```
 
-##### PDF
+##### 1. PDF
 
 Load PDF using `pypdf` into array of documents, where each document contains the page content and metadata with `page` number
 
@@ -319,7 +315,7 @@ print(summarize)
 Many students will try to build a cool machine learning application. Some students try to improve state-of-the-art machine learning algorithms. Some of those projects are also very successful. And a smaller minority of students sometimes try to prove theorems about machine learning.
 ```
 
-##### youtube
+##### 2. youtube
 
 **Install required packages**
 
@@ -388,7 +384,7 @@ print("Summary:", summary)
 Finally, we print the content and summary for demonstration purposes.
 
 
-##### URLs
+##### 3. URLs
 
 This line imports the `WebBaseLoader` from LangChain, which is used to load documents from a web URL.
 
@@ -433,7 +429,7 @@ print("Content:", content)
 print("Summary:", summary)
 ```
 
-##### NOTION
+##### 4. NOTION
 
 This line imports the `NotionDirectoryLoader` class from the `document_loaders` module in the LangChain framework. This loader is specifically designed to load documents from a directory containing Notion-exported Markdown files.
 
