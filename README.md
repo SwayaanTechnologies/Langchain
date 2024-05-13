@@ -122,43 +122,23 @@ This section imports the promptlayer library and sets the environment variable P
 #from langchain_community.chat_models.huggingface import ChatHuggingFace
 from langchain.chat_models import PromptLayerChatOpenAI
 from langchain.schema import (SystemMessage,HumanMessage,AIMessage)
-```
 
-These lines are commented out but suggest importing various components from the LangChain library, such as message schemas and chat models. However, it seems they are not used in the subsequent code.
-
-```python
 messages = [
     SystemMessage(content="You're a helpful assistant"),
     HumanMessage(
         content="What happens when an unstoppable force meets an immovable object?"
     ),
 ]
-```
 
-Here, a list of messages is created, consisting of a system message and a human message. The system message appears to set the context, while the human message poses a question.
-
-```python
 chat = PromptLayerChatOpenAI(pl_tags=["langchain"])
-```
 
-An instance of PromptLayerChatOpenAI is created, specifying the tags "langchain". This class likely facilitates interactions with the PromptLayer service using OpenAI's API.
-
-```python
 chat([
  SystemMessage(content="You are a helpful assistant that translates English to French."),
  HumanMessage(content="Translate this sentence from English to French. I love programming.")
 ])
-```
 
-This block of code initiates a chat interaction by providing a list of messages to the chat instance. The system message sets the context, and the human message poses a translation task from English to French.
-
-```python
 chat = PromptLayerChatOpenAI(temperature=0.1)
-```
 
-A new instance of `PromptLayerChatOpenAI` is created, this time setting the temperature parameter to 0.1. Temperature is a parameter that controls the randomness of the language model's responses during generation.
-
-```python
 # multiple sets of messages using .generate.
 batch_messages = [
     [
@@ -170,22 +150,28 @@ batch_messages = [
         HumanMessage(content="I love artificial intelligence.")
     ],
 ]
-```
 
-A list of multiple sets of messages is created, each containing a system message and a human message. These sets of messages are intended to be used in a batch for generating responses.
-
-```python
 result = chat.generate(batch_messages)
 print(result)
-```
 
-The `generate` method of the chat instance is called with the batch messages as input. This method likely generates responses for each set of messages in the batch and returns the results. The results are then printed.
-
-```python
 chat([HumanMessage(content="Translate this sentence from English to tamil. I love programming.")])
 ```
 
-Another human message is sent to the chat instance, this time requesting translation from English to Tamil.
+* These lines are commented out but suggest importing various components from the LangChain library, such as message schemas and chat models. However, it seems they are not used in the subsequent code.
+
+* Here, a list of messages is created, consisting of a system message and a human message. The system message appears to set the context, while the human message poses a question.
+
+* An instance of PromptLayerChatOpenAI is created, specifying the tags "langchain". This class likely facilitates interactions with the PromptLayer service using OpenAI's API.
+
+* This block of code initiates a chat interaction by providing a list of messages to the chat instance. The system message sets the context, and the human message poses a translation task from English to French.
+
+* A new instance of `PromptLayerChatOpenAI` is created, this time setting the temperature parameter to 0.1. Temperature is a parameter that controls the randomness of the language model's responses during generation.
+
+* A list of multiple sets of messages is created, each containing a system message and a human message. These sets of messages are intended to be used in a batch for generating responses.
+
+* The `generate` method of the chat instance is called with the batch messages as input. This method likely generates responses for each set of messages in the batch and returns the results. The results are then printed.
+
+* Another human message is sent to the chat instance, this time requesting translation from English to Tamil.
 
 ### Models
 
