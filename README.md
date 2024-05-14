@@ -934,9 +934,9 @@ conversation.predict(input="What is my name?")
 
 * We load memory variables, although it appears to be redundant in this context as no additional parameters are provided.
 
-*This line reinitializes the memory object with the same parameters as before. However, it seems redundant since the memory was already initialized earlier.
+* This line reinitializes the memory object with the same parameters as before. However, it seems redundant since the memory was already initialized earlier.
 
-*We create a `ConversationChain` object, passing in a language model (`llm`), the initialized memory object, and setting verbose to False.
+* We create a `ConversationChain` object, passing in a language model (`llm`), the initialized memory object, and setting verbose to False.
 
 * We predict responses to three different inputs using the `ConversationChain` object. Each input represents a message in a conversation.
 
