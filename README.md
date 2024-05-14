@@ -867,6 +867,8 @@ print(llm_chain.run(question))
 
 * We define a question to be asked to the language model: "Which city does the company's headquarters for our international employees reside in?" and use the `llm_chain` to generate and print the model's response.
 
+---
+
 #### **Conversation Buffer Memory**
 
 * This method involves stacking all user-agent interactions into the prompt, allowing the model to track the entire conversation. However, it poses limitations in handling long conversations due to token span constraints.
@@ -923,6 +925,8 @@ memory.load_memory_variables({})
 
     * These lines save and load conversation context into the memory buffer **save_context()** stores input-output pairs in the memory, while **load_memory_variables({})** resets the memory variables.
 
+---
+
 #### **Conversation Buffer Window Memory**
 
 * This approach limits the memory to the last few interactions, addressing token constraints while still retaining recent context. It's a compromise between full conversation tracking and token efficiency.
@@ -972,6 +976,8 @@ conversation.predict(input="What is my name?")
 
 * We predict responses to three different inputs using the `ConversationChain` object. Each input represents a message in a conversation.
 
+---
+
 #### **Conversation Token Buffer Memory**
 
 ```python
@@ -1020,6 +1026,8 @@ memory.load_memory_variables({})
 
         * `oad_memory_variables:` Loads memory variables, potentially for configuration or additional data.
 
+---
+
 #### **Conversation Summary Memory**
 
 * This method summarizes the conversation at each step, reducing token usage but maintaining context. It provides a balance between retaining conversation history and token efficiency.
@@ -1064,6 +1072,8 @@ memory.load_memory_variables({})
 * We create a `ConversationChain` object named `conversation` that uses the language model (`llm`) and the initialized memory object. The `verbose=True` parameter enables verbose mode for additional information during conversation processing.
 
 * We predict a response to the input "What would be a good demo to show?" using the `ConversationChain` object. This input triggers the model to generate a response based on the conversation context and the stored summaries.
+
+---
 
 #### **Knowledge Graph Memory**
 
