@@ -40,8 +40,6 @@
 
       6. [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
 
-      7. [**Entity Memory**](#Entity-Memory)
-
     * [**Chains**](#Chains)
 
     * [**Agents**](#Agents)
@@ -121,8 +119,6 @@ LangChain allows developers to create data-aware and agentic applications that c
     * [**Conversation Summary Memory**](#Conversation-Summary-Memory)
 
     * [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
-
-    * [**Entity Memory**](#Entity-Memory)
 
 7. [**Chains**](#Chains)
 
@@ -1153,75 +1149,6 @@ print(conversation_with_kg.memory.kg.get_triples())
 **7. Printing the Knowledge Graph and Its Triples**
 
 Finally, we print the knowledge graph object and its triples (relationships between entities) to see the structure of the knowledge graph.
-
----
-
-#### **Entity Memory**
-
-* Extracts specific entities mentioned in the conversation, such as names, numbers, or keywords, for further processing or response generation. It aids in understanding user intent and context.
-
-```python
-from langchain.memory import ConversationEntityMemory
-from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
-from langchain import HuggingFaceHub
-from pprint import pprint
-
-ENTITY_MEMORY_CONVERSATION_TEMPLATE.template
-
-repo_id = "google/flan-t5-large"  # The ID of the pre-trained model on Hugging Face
-llm = HuggingFaceHub(
-    repo_id=repo_id, model_kwargs={"temperature": 0.5, "max_length": 64}
-)
-
-conversation_with_entity_memory = ConversationChain(
-    llm=llm,
-    verbose=True,
-    prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
-    memory=ConversationEntityMemory()
-)
-
-conversation.predict(input="Hi I am Sam. My TV is broken but it is under warranty.")
-conversation.predict(input="How can I get it fixed. The warranty number is A512453")
-
-conversation.memory.entity_cache
-
-conversation.predict(input="Can you send the repair person call Dave to fix it?.")
-
-conversation.memory.entity_cache
-pprint(conversation.memory.store)
-```
-
-**1. Importing Necessary Modules**
-
-* We import modules for managing memory in conversations (`ConversationEntityMemory`), a template for entity memory conversations (`ENTITY_MEMORY_CONVERSATION_TEMPLATE`), and a module to use pre-trained language models from Hugging Face (`HuggingFaceHub`). Additionally, we import `pprint` for pretty-printing output.
-
-**2. Define the Language Model**
-
-* We specify the ID of the pre-trained model we want to use from Hugging Face (`google/flan-t5-large`). We then create an instance of `HuggingFaceHub` with this model, setting the `temperature` (which controls randomness in the output) and `max_length` (the maximum length of the generated text).
-
-**3. Initialize the Conversation Chain**
-
-* We set up a conversation chain using the defined language model, enabling verbose mode for detailed output, and providing the entity memory conversation template for prompts. The conversation chain uses `ConversationEntityMemory` to manage entity memory.
-
-**4. Simulate a Conversation**
-
-* We simulate a conversation where the user interacts with the AI by providing different inputs. The AI uses the entity memory to extract specific entities mentioned in the conversation.
-
-**5. Accessing Entity Cache**
-
-* We access the entity cache in the conversation memory to see the entities extracted from the conversation so far.
-
-**6. Continue the Conversation**
-
-* We continue the conversation with another input, asking the AI to send a repair person named Dave to fix the TV. The entity memory should capture the entity "Dave" from this input.
-
-**7. Check the Updated Entity Cache**
-
-* We check the updated entity cache to see if the entity "Dave" has been added to the memory. We also print the entire store of entities extracted from the conversation.
-
-**8. Print the Memory Store**
-
-* We use `pprint` to print the memory store, which contains all the entities extracted from the conversation. This provides a structured view of the entities stored in the memory.
 
 ---
 
