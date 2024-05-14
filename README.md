@@ -409,54 +409,40 @@ These lines are comments indicating that you need to install specific packages (
 from langchain.document_loaders.generic import GenericLoader
 from langchain.document_loaders.parsers import OpenAIWhisperParser
 from langchain.document_loaders.blob_loaders.youtube_audio import YoutubeAudioLoader
-```
 
-Here, we import necessary modules from LangChain for loading documents from various sources. Specifically, we import `GenericLoader` for loading documents, `OpenAIWhisperParser` for parsing text, and `YoutubeAudioLoader` for loading audio from YouTube.
-
-```python
 # Define the YouTube video URL
 url = "https://www.youtube.com/watch?v=jGwO_UgTS7I"
 # Define the directory to save the downloaded content
 save_dir = "../docs/youtube/"
-```
-
-These lines define the YouTube video URL and the directory to save the downloaded content from the video.
-
-```python
 # Initialize the loader with YouTubeAudioLoader and OpenAIWhisperParser
 loader = GenericLoader(
     YoutubeAudioLoader([url], save_dir),
     OpenAIWhisperParser()
 )
-```
-
-Here, we initialize the document loader with `YoutubeAudioLoader` for loading audio content from the specified URL and `OpenAIWhisperParser` for parsing the audio content.
-
-```python
 docs = loader.load()
-```
 
-We load the documents using the initialized loader, which downloads the audio content from the YouTube video, transcribes it, and parses it into documents.
-
-```python
 content = docs[0].page_content[:500]
-```
 
-We extract the content from the first document and select the first 500 characters to display as an example.
-
-```python
 # Assuming 'summarizer' is an instantiated summarization model
 # You can summarize the content using it
 summary = summarize(summarizer, docs)
-```
 
-Here, assuming `summarizer` is an instantiated summarization model (like the one initialized previously), we use it to summarize the loaded documents.
-
-```python
 # Print the content and summary
 print("Content:", content)
 print("Summary:", summary)
 ```
+
+* Here, we import necessary modules from LangChain for loading documents from various sources. Specifically, we import `GenericLoader` for loading documents, `OpenAIWhisperParser` for parsing text, and `YoutubeAudioLoader` for loading audio from YouTube.
+
+* These lines define the YouTube video URL and the directory to save the downloaded content from the video.
+
+* Here, we initialize the document loader with `YoutubeAudioLoader` for loading audio content from the specified URL and `OpenAIWhisperParser` for parsing the audio content.
+
+* We load the documents using the initialized loader, which downloads the audio content from the YouTube video, transcribes it, and parses it into documents.
+
+* We extract the content from the first document and select the first 500 characters to display as an example.
+
+* Here, assuming `summarizer` is an instantiated summarization model (like the one initialized previously), we use it to summarize the loaded documents.
 
 Finally, we print the content and summary for demonstration purposes.
 
@@ -464,69 +450,51 @@ Finally, we print the content and summary for demonstration purposes.
 
 ##### 3. URLs
 
-This line imports the `WebBaseLoader` from LangChain, which is used to load documents from a web URL.
-
 ```python
 from langchain.document_loaders import WebBaseLoader
-```
 
-Here, we initialize a `WebBaseLoader` object with the URL of a document hosted on the web. This loader will fetch the document from the specified URL.
-
-```python
 # Initialize the WebBaseLoader with the URL
 loader = WebBaseLoader("https://github.com/tamaraiselva/git-demo/blob/main/metriales.docx")
-```
 
-This line loads the document(s) using the initialized loader.
-
-```python
 # Load documents
 docs = loader.load()
-```
 
-We retrieve the content of the first document loaded. In this case, we only take the first 500 characters of the content for demonstration purposes.
-
-```python
 # Get the content of the first document
 content = docs[0].page_content[:500]
-```
 
-Here, we summarize the content of the document(s) using a pre-instantiated summarization model named `summarizer`. However, there seems to be a slight issue here. The `summarize` function expects a single document's content, but we're passing the entire list of documents. It should likely be `summary = summarize(summarizer, content)` instead.
-
-```python
 # Assuming 'summarizer' is an instantiated summarization model
 # You can summarize the content using it
 summary = summarize(summarizer, docs)
-```
 
-Finally, we print the content of the document and its summary for inspection.
-
-```python
 # Print the content and summary
 print("Content:", content)
 print("Summary:", summary)
 ```
 
+* This line imports the `WebBaseLoader` from LangChain, which is used to load documents from a web URL.
+
+* Here, we initialize a `WebBaseLoader` object with the URL of a document hosted on the web. This loader will fetch the document from the specified URL.
+
+* This line loads the document(s) using the initialized loader.
+
+* We retrieve the content of the first document loaded. In this case, we only take the first 500 characters of the content for demonstration purposes.
+
+* Here, we summarize the content of the document(s) using a pre-instantiated summarization model named `summarizer`. However, there seems to be a slight issue here. The `summarize` function expects a single document's content, but we're passing the entire list of documents. It should likely be `summary = summarize(summarizer, content)` instead.
+
+* Finally, we print the content of the document and its summary for inspection.
+
 ---
 
 ##### 4. NOTION
 
-This line imports the `NotionDirectoryLoader` class from the `document_loaders` module in the LangChain framework. This loader is specifically designed to load documents from a directory containing Notion-exported Markdown files.
+* This line imports the `NotionDirectoryLoader` class from the `document_loaders` module in the LangChain framework. This loader is specifically designed to load documents from a directory containing Notion-exported Markdown files.
 
 ```python
 from langchain.document_loaders import NotionDirectoryLoader
-```
 
-Here, we create an instance of the `NotionDirectoryLoader` class and provide the path to the directory where Notion-exported Markdown files are located. In this case, the directory is named "notion".
-
-```python
 loader = NotionDirectoryLoader("notion")
 docs = loader.load()
-```
 
-We use the `load()` method of the `loader` instance to load the documents from the specified directory. This method returns a list of `Document` objects representing the loaded documents.
-
-```python
 if docs:
     print(docs[0].page_content[0:100])
     print(docs[0].metadata)
@@ -534,7 +502,11 @@ else:
     print("No Notion documents were loaded.")
 ```
 
-This conditional statement checks if any documents were loaded. If there are documents, it prints the first 100 characters of the content of the first document (`docs[0].page_content[0:100]`) and the metadata of the first document (`docs[0].metadata`). If no documents were loaded, it prints a message indicating that no Notion documents were loaded.
+* Here, we create an instance of the `NotionDirectoryLoader` class and provide the path to the directory where Notion-exported Markdown files are located. In this case, the directory is named "notion".
+
+* We use the `load()` method of the `loader` instance to load the documents from the specified directory. This method returns a list of `Document` objects representing the loaded documents.
+
+* This conditional statement checks if any documents were loaded. If there are documents, it prints the first 100 characters of the content of the first document (`docs[0].page_content[0:100]`) and the metadata of the first document (`docs[0].metadata`). If no documents were loaded, it prints a message indicating that no Notion documents were loaded.
 
 ---
 
@@ -547,51 +519,42 @@ from secret_key import hugging_facehub_key
 import os
 os.environ['HUGGINGFACEHUB_API_TOKEN'] = hugging_facehub_key
 ```
+
 **Text Splitting**
 
 Here, we import the `CharacterTextSplitter` module from LangChain. This module provides functionality to split text into smaller chunks based on characters.
 
 ```python
 from langchain.text_splitter import CharacterTextSplitter
-```
 
-We define the parameters for text splitting.` chunk_size` specifies the maximum length of each chunk, and `chunk_overlap` specifies how much overlap there should be between adjacent chunks.
-
-```python
 chunk_size =26
 chunk_overlap = 4
-```
 
-We create an instance of `CharacterTextSplitter` and initialize it with the specified parameters. Optionally, you can specify a `separator` if you want to split the text based on a particular character or string.
-
-```python
 # Initialize the CharacterTextSplitter
 c_splitter = CharacterTextSplitter(
     chunk_size=chunk_size,
     chunk_overlap=chunk_overlap,
     separator=' '  # Optional, if you want to split by a separator
 )
-```
 
-We define the text that we want to split into smaller chunks.
-
-```python
 # Define the text
 text = 'abcdefghijklmnopqrstuvwxyzabcdefg'
-```
 
-We use the `split_text()` method of the `CharacterTextSplitter` instance to split the text into smaller chunks based on the specified parameters
-
-```python
 # Split the text using the CharacterTextSplitter
 chunks = c_splitter.split_text(text)
-```
 
-Finally, we print the resulting chunks.
-
-```python
 print(chunks)
 ```
+
+* We define the parameters for text splitting.` chunk_size` specifies the maximum length of each chunk, and `chunk_overlap` specifies how much overlap there should be between adjacent chunks.
+
+* We create an instance of `CharacterTextSplitter` and initialize it with the specified parameters. Optionally, you can specify a `separator` if you want to split the text based on a particular character or string.
+
+* We define the text that we want to split into smaller chunks.
+
+* We use the `split_text()` method of the `CharacterTextSplitter` instance to split the text into smaller chunks based on the specified parameters
+
+* Finally, we print the resulting chunks.
 
 **Recursive splitting details**
 
@@ -600,10 +563,7 @@ print(chunks)
 ```python
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader, NotionDirectoryLoader
-```
 
-
-```python
 r_splitter = RecursiveCharacterTextSplitter(
     chunk_size=chunk_size,
     chunk_overlap=chunk_overlap,
@@ -700,31 +660,27 @@ docs = c_splitter.split_documents(pages)
 ```python
 # !pip install sentence-transformers
 from langchain.embeddings import OpenAIEmbeddings, HuggingFaceEmbeddings
-```
-This line is a comment indicating that you should install the sentence-transformers package if you haven't already. It's likely included as a reminder in case the package isn't installed in your environment.
 
-Here, we import two different types of embedding models from LangChain: `OpenAIEmbeddings` and `HuggingFaceEmbeddings`. These models are used to generate embeddings for text.
-
-```python
 embeddings = HuggingFaceEmbeddings()
-```
 
-We initialize an embedding model using` HuggingFaceEmbeddings()`. This creates an instance of the Hugging Face embedding model.
-
-```python
 text = "This is a test document to check the embeddings."
 text_embedding = embeddings.embed_query(text)
-```
-We define a sample text that we want to generate embeddings for.
 
-We use the initialized embedding model (`embeddings`) to generate embeddings for the given text (`text`) using the `embed_query()` method.
-
-```python
 print(f'Embeddings lenght: {len(text_embedding)}')
 print (f"Here's a sample: {text_embedding[:5]}...")
 ```
 
-We print the length of the embeddings generated for the text and show a sample of the embeddings. The length indicates the dimensionality of the embeddings, and the sample provides a glimpse of the first few values of the embeddings.
+* This line is a comment indicating that you should install the sentence-transformers package if you haven't already. It's likely included as a reminder in case the package isn't installed in your environment.
+
+* Here, we import two different types of embedding models from LangChain: `OpenAIEmbeddings` and `HuggingFaceEmbeddings`. These models are used to generate embeddings for text.
+
+* We initialize an embedding model using` HuggingFaceEmbeddings()`. This creates an instance of the Hugging Face embedding model.
+
+* We define a sample text that we want to generate embeddings for.
+
+* We use the initialized embedding model (`embeddings`) to generate embeddings for the given text (`text`) using the `embed_query()` method.
+
+* We print the length of the embeddings generated for the text and show a sample of the embeddings. The length indicates the dimensionality of the embeddings, and the sample provides a glimpse of the first few values of the embeddings.
 
 **Vectorstore**
 
@@ -736,33 +692,26 @@ To install VectorStore, you can use pip:
 
 ```python
 # ! pip install langchain-chroma
-```
-`Usage:`
-
-```python
 from langchain_chroma import Chroma
-```
 
-First, import the Chroma class from langchain_chroma module.
-
-```python
 db = Chroma.from_documents(splits, embeddings)
-```
-Then, create a VectorStore instance using the from_documents method. This method requires two parameters:
 
-* ` splits: `A list of document splits, where each split represents a document.
-
-* `embeddings:` A list of embeddings corresponding to the document splits.
-
-```python
 print(db._collection.count())
 ```
-Finally, you can access the number of documents stored in the VectorStore using the count() method on the _collection attribute.
+
+* First, import the Chroma class from langchain_chroma module.
+
+* Then, create a VectorStore instance using the from_documents method. This method requires two parameters:
+
+  * ` splits: `A list of document splits, where each split represents a document.
+
+  * `embeddings:` A list of embeddings corresponding to the document splits.
+
+* Finally, you can access the number of documents stored in the VectorStore using the count() method on the _collection attribute.
 
 ---
 
 #### Retrevial
-
 
 **Vectorstore retrieval**
 
@@ -771,53 +720,42 @@ Finally, you can access the number of documents stored in the VectorStore using 
 ```python
 # !pip install lark
 # !pip install pypdf tiktoken faiss-cpu
-```
 
-This code block is commented out, but it suggests installing necessary packages using pip. However, since it's commented out, it doesn't affect the execution of the code. These packages seem to be dependencies for LangChain.
-
-```python
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
-```
 
-These lines import necessary modules from LangChain for document loading (`PyPDFLoader`), text splitting (`CharacterTextSplitter`, `RecursiveCharacterTextSplitter`), vector stores (`FAISS`), and embeddings (`HuggingFaceEmbeddings`).
-
-```python
 loader = PyPDFLoader("MachineLearning-Lecture01.pdf")
 documents = loader.load()
-```
 
-Here, a `PyPDFLoader` instance is created to load a PDF document named "MachineLearning-Lecture01.pdf". The `load()` method is then used to extract the content of the document into a list of documents.
-
-```python
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 texts = text_splitter.split_documents(documents)
-```
 
-A `CharacterTextSplitter` instance is created with specified parameters for chunk size and overlap. Then, the `split_documents()` method is used to split the documents into smaller text chunks based on the specified parameters.
-
-```python
 # Initialize the HuggingFaceEmbeddings
 embeddings = HuggingFaceEmbeddings()
 db = FAISS.from_documents(texts, embeddings)
-```
 
-An instance of `HuggingFaceEmbeddings` is initialized. Then, a FAISS vector store (`FAISS`) is created from the text chunks using the embeddings obtained from the Hugging Face model.
-
-```python
 # You can also specify search kwargs like k to use when doing retrieval.
 #retriever = db.as_retriever()
 retriever = db.as_retriever(search_kwargs={"k": 2})
-```
 
-A retriever object is created from the FAISS vector store. Additional search arguments, such as the number of nearest neighbors (`k`), can be specified.
-
-```python
 print(len(documents))
 ```
-This line prints the number of documents loaded from the PDF file.
+
+* This code block is commented out, but it suggests installing necessary packages using pip. However, since it's commented out, it doesn't affect the execution of the code. These packages seem to be dependencies for LangChain.
+
+* These lines import necessary modules from LangChain for document loading (`PyPDFLoader`), text splitting (`CharacterTextSplitter`, `RecursiveCharacterTextSplitter`), vector stores (`FAISS`), and embeddings (`HuggingFaceEmbeddings`).
+
+* Here, a `PyPDFLoader` instance is created to load a PDF document named "MachineLearning-Lecture01.pdf". The `load()` method is then used to extract the content of the document into a list of documents.
+
+* A `CharacterTextSplitter` instance is created with specified parameters for chunk size and overlap. Then, the `split_documents()` method is used to split the documents into smaller text chunks based on the specified parameters.
+
+* An instance of `HuggingFaceEmbeddings` is initialized. Then, a FAISS vector store (`FAISS`) is created from the text chunks using the embeddings obtained from the Hugging Face model.
+
+* A retriever object is created from the FAISS vector store. Additional search arguments, such as the number of nearest neighbors (`k`), can be specified.
+
+* This line prints the number of documents loaded from the PDF file.
 
 ---
 
@@ -827,83 +765,271 @@ Memory which is still in beta phase is an essential component in a conversation.
 
 ![image](img/memory.png)
 
+**Loading Environment Variable**
+
+```python
+from secret_key import hugging_facehub_key
+import os
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = hugging_facehub_key
+```
+
+**Models**
+
+```python
+import datetime
+current_date = datetime.datetime.now().date()
+if current_date < datetime.date(2024,5,5):
+    llm_name = "gpt-3.5-turbo-0301"
+else:
+    llm_name = "gpt-3.5-turbo"
+print(llm_name)
+```
+
+**1. Chat Message History**
+
 ```python
 from langchain.memory import ChatMessageHistory
-```
+from langchain import PromptTemplate, LLMChain
 
-Here, we import the ChatMessageHistory class from LangChain's memory module. This class allows us to maintain a history of user and AI messages during a conversation.
-
-```python
+# Initialize chat message history
 history = ChatMessageHistory()
-```
 
-We create an instance of `ChatMessageHistory` named `history` to store the chat message history.
-
-```python
+# Add user and AI messages to the history
 history.add_user_message("hi!")
-
 history.add_ai_message("whats up?")
-```
 
-We add a user message "hi!" to the chat history using the `add_user_message` method.
+# Print the current messages in the history
+print(history.messages)
 
-Similarly, we add an AI message "whats up?" to the chat history using the `add_ai_message` method.
-
-```python
-history.messages
-
+# Add another user message and print the updated history
 history.add_user_message("Fine, what about you?")
-history.messages
+print(history.messages)
+
+# Define a prompt template with a question variable
+template = """Question: {question}
+
+Answer: Let's think step by step."""
+prompt = PromptTemplate(template=template, input_variables=["question"])
+
+# Create an LLMChain with the prompt template and a language model
+# Note: 'llm' should be initialized before using it here
+llm_chain = LLMChain(prompt=prompt, llm=llm)
+
+# Define a question and run the chain to get the model's response
+question = "Which city does the company's headquarters for our international employees reside in?"
+print(llm_chain.run(question))
 ```
 
-We access the messages stored in the chat history. This will display both the user and AI messages added earlier.
+* This code block imports necessary modules from LangChain for managing chat message history (`ChatMessageHistory`), creating prompt templates (`PromptTemplate`), and executing language model chains (`LLMChain`).
 
-Another user message "Fine, what about you?" is added to the chat history.
-from langchain.chat_models import ChatHuggingFace
+* An instance of `ChatMessageHistory` is initialized to manage the chat message history.
 
-We access the updated chat history to view all the messages, including the latest user message.
+* We add a message from the user to the chat history with the content "hi!". 
+
+* We add a message from the AI to the chat history with the content "whats up?".
+
+* We print the current messages in the chat history.
+
+* We add another message from the user to the chat history with the content "Fine, what about you?" and then display the updated chat messages.
+
+* We define a template for prompting the language model. The template includes a placeholder {*question*} for the user's question and a fixed part "Answer: Let's think step by step." to guide the model's response.
+
+* We create a `PromptTemplate` instance using the defined template. The `input_variables` parameter specifies that the template expects a variable named `question`.
+
+* We create an `LLMChain` instance using the `prompt` and a language model instance `llm`. This chain will use the prompt template to generate responses based on the input question.
+
+* We define a question to be asked to the language model: "Which city does the company's headquarters for our international employees reside in?" and use the `llm_chain` to generate and print the model's response.
+
+
+**2. Conver sation Buffer Memory**
 
 ```python
-from langchain.chat_models import ChatHuggingFace
-```
+from langchain.chains import ConversationChain
+from langchain.memory import ConversationBufferMemory
 
-Here, we import the ChatHuggingFace class from LangChain's chat_models module. This class allows us to interact with Hugging Face models for conversational AI tasks.
-
-```python
-llm = ChatHuggingFace(
-    repo_id="HuggingFaceH4/zephyr-7b-beta",
-    task="text-generation",
-    model_kwargs={
-        "max_new_tokens": 512,
-        "top_k": 30,
-        "temperature": 0.1,
-        "repetition_penalty": 1.03,
-    },
+memory = ConversationBufferMemory()
+conversation = ConversationChain(
+    llm=llm, 
+    memory = memory,
+    verbose=True
 )
-```
 
-We initialize an instance of the `ChatHuggingFace` class named `llm`. This instance is configured to use a specific model (`HuggingFaceH4/zephyr-7b-beta`) for text generation, with certain model parameters like `max_new_tokens`, `top_k`, `temperature`, and `repetition_penalty`.
+conversation.predict(input="Hi, my name is ram")
+conversation.predict(input="What is 1+1?")
+conversation.predict(input="What is my name?")
+print(memory.buffer)
+memory.load_memory_variables({})
+memory = ConversationBufferMemory()
+memory.save_context({"input": "Hi"}, 
+                    {"output": "What's up"})
+print(memory.buffer)
+memory.load_memory_variables({})
+memory.save_context({"input": "Not much, just hanging"}, 
+                    {"output": "Cool"})
+memory.load_memory_variables({})
+```
+1. **Importing Necessary Modules**
+
+    * Here, we import modules required for setting up a conversation chain and managing conversation memory.
+
+2. **Setting up Conversation Memory**
+
+    * This line initializes a conversation memory buffer, which will store the context and history of the conversation.
+
+3. **Creating a Conversation Chain**
+
+    * A conversation chain is created, which uses a language model (llm) and the initialized conversation memory buffer. Setting verbose=True enables verbose mode, providing additional information during conversation processing
+
+4. **Interacting with the Conversation Chain**
+
+    * These lines simulate a conversation by providing inputs to the conversation chain. Each input triggers a response from the language model based on the conversation context.
+
+5. **Accessing Conversation Memory**
+
+    * This line prints the current content of the conversation memory buffer, which includes the conversation history and context.
+
+6. **Managing Conversation Memory**
+
+    * These lines demonstrate managing conversation memory. `load_memory_variables({})` clears the memory buffer, while `ConversationBufferMemory()` creates a new instance of the conversation memory.
+
+    * These lines save and load conversation context into the memory buffer **save_context()** stores input-output pairs in the memory, while **load_memory_variables({})** resets the memory variables.
+
+**3. Conversation Buffer Window Memory**
 
 ```python
-chat = ChatHuggingFace()
-ai_response = chat(history.messages)
-ai_response
+from langchain.memory import ConversationBufferWindowMemory
+
+# Initialize ConversationBufferWindowMemory with k=1
+memory = ConversationBufferWindowMemory(k=1)
+
+# Save conversation contexts
+memory.save_context({"input": "Hi"},
+                    {"output": "What's up"})
+memory.save_context({"input": "Not much, just hanging"},
+                    {"output": "Cool"})
+
+# Load memory variables (optional)
+memory.load_memory_variables({})
+
+# Reinitialize memory (optional, seems redundant)
+memory = ConversationBufferWindowMemory(k=1)
+
+# Create ConversationChain object
+conversation = ConversationChain(
+    llm=llm, 
+    memory=memory,
+    verbose=False
+)
+
+# Predict responses to inputs
+conversation.predict(input="Hi, my name is ram")
+conversation.predict(input="What is 1+1?")
+conversation.predict(input="What is my name?")
 ```
+* We import the ConversationBufferWindowMemory class from the LangChain library. This class represents a memory module that stores conversation contexts.
 
-We create another instance of `ChatHuggingFace` named `chat`. This instance will be used for generating AI responses based on the chat history.
+* We initialize a ConversationBufferWindowMemory instance with a window size of 1 (k=1). This means that the memory will retain the most recent conversation context.
 
-We generate an AI response using the `chat` instance and pass the chat history (`history.messages`) as input. The AI model processes the history and generates a response.
+* We save two conversation contexts into the memory. Each context consists of an input and an output.
+
+* We load memory variables, although it appears to be redundant in this context as no additional parameters are provided.
+
+*This line reinitializes the memory object with the same parameters as before. However, it seems redundant since the memory was already initialized earlier.
+
+*We create a `ConversationChain` object, passing in a language model (`llm`), the initialized memory object, and setting verbose to False.
+
+* We predict responses to three different inputs using the `ConversationChain` object. Each input represents a message in a conversation.
+
+**4. Conversation Token Buffer Memory**
 
 ```python
-history.add_ai_message(ai_response.content)
-history.messages
+#!pip install tiktoken
+from langchain.memory import ConversationTokenBufferMemory
+# Initialize memory
+memory = ConversationTokenBufferMemory(llm=llm, max_token_limit=50)
+
+# Save contexts
+memory.save_context({"input": "AI is what?!"}, {"output": "Amazing!"})
+memory.save_context({"input": "Backpropagation is what?"}, {"output": "Beautiful!"})
+memory.save_context({"input": "Chatbots are what?"}, {"output": "Charming!"})
+
+# Load memory variables
+memory.load_memory_variables({})
+
 ```
 
-The AI response generated is added to the chat history using the `add_ai_message` method.
+* `Installation:` First, ensure you have the tiktoken library installed by running !pip install tiktoken.
 
-Finally, we access the updated chat history to view all the messages, including the latest AI response that was added.
+* `Importing Modules:` Import the necessary module from LangChain:
 
-----
+    * This imports the ConversationTokenBufferMemory class, which is used to manage conversation tokens in a buffer memory.
+
+* `Initializing Memory:` Create an instance of `ConversationTokenBufferMemory`:
+
+    * Initialize the memory object with the language model (llm) and a maximum token limit of 50.
+
+* `Saving Contexts:` Save conversation contexts into the memory:
+    
+    * Each `save_context` call saves an input-output pair into the memory. For example, the input "AI is what?!" corresponds to the output "Amazing!".
+
+* `Loading Memory Variables:` Load memory variables to reset the memory:
+    
+    * Each save_context call saves an input-output pair into the memory. For example, the input "AI is what?!" corresponds to the output "Amazing!". 
+
+* To document this code for clarity:
+
+    * `Purpose:` The code manages conversation tokens in a buffer memory, allowing the storage and retrieval of input-output pairs.
+
+    * `Initialization:` The ConversationTokenBufferMemory class is initialized with a language model and a maximum token limit.
+    
+    * **Functionality:**
+
+        * `Saving Contexts:` Saves input-output pairs into the memory.
+
+        * `oad_memory_variables:` Loads memory variables, potentially for configuration or additional data.
+
+**5. Conversation Summary Memory**
+
+```python
+from langchain.memory import ConversationSummaryBufferMemory
+# create a long string
+schedule = "There is a meeting at 8am with your product team. \
+You will need your powerpoint presentation prepared. \
+9am-12pm have time to work on your LangChain \
+project which will go quickly because Langchain is such a powerful tool. \
+At Noon, lunch at the italian resturant with a customer who is driving \
+from over an hour away to meet you to understand the latest in AI. \
+Be sure to bring your laptop to show the latest LLM demo."
+
+memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=100)
+memory.save_context({"input": "Hello"}, {"output": "What's up"})
+memory.save_context({"input": "Not much, just hanging"},
+                    {"output": "Cool"})
+memory.save_context({"input": "What is on the schedule today?"}, 
+                    {"output": f"{schedule}"})
+memory.load_memory_variables({})
+conversation = ConversationChain(
+    llm=llm, 
+    memory = memory,
+    verbose=True
+)
+conversation.predict(input="What would be a good demo to show?")
+memory.load_memory_variables({})
+```
+
+* We import the `ConversationSummaryBufferMemory` class from the LangChain memory module. This class allows us to store and manage conversational context and summaries.
+
+* We create a long string named `schedule` that contains a detailed schedule for the day, including meetings, work on a project, lunch plans, and more.
+
+* We initialize a `ConversationSummaryBufferMemory` object named `memory`. This object will store conversational context and summaries. We pass the language model (`llm`) and a maximum token limit (`max_token_limit`) as parameters.
+
+* We save conversational contexts and their corresponding summaries into the memory object. Each context consists of an input (what was said in the conversation) and an output (the summary or response). Here, we save three different conversational contexts and their corresponding summaries.
+
+* We load the memory variables into the memory object. This step ensures that the memory is ready for use in the conversation chain.
+
+* We create a `ConversationChain` object named `conversation` that uses the language model (`llm`) and the initialized memory object. The `verbose=True` parameter enables verbose mode for additional information during conversation processing.
+
+* We predict a response to the input "What would be a good demo to show?" using the `ConversationChain` object. This input triggers the model to generate a response based on the conversation context and the stored summaries.
 
 ### Chains
 
