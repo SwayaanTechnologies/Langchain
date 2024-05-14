@@ -1163,43 +1163,89 @@ For scenarios where the output of one function needs to serve as the input for t
 ```python
 from langchain import HuggingFaceHub
 from langchain import PromptTemplate, LLMChain
+
+# Article text
+article = '''Coinbase, the second-largest crypto exchange by trading volume, released its Q4 2022 earnings on Tuesday, giving shareholders and market players alike an updated look into its financials. In response to the report, the company's shares are down modestly in early after-hours trading.In the fourth quarter of 2022, Coinbase generated 
+2.49 billion in the year-ago quarter. Coin base's top line was not enough to cover its expenses: The company lost 
+2.46 per share, and an adjusted EBITDA deficit of 
+581.2 million in revenue and earnings per share of -
+201.8 million driven by 8.4 million monthly transaction users (MTUs), according to data provided by Yahoo Finance.Before its Q4 earnings were released, Coinbase's stock had risen 86% year-to-date. Even with that rally, the value of Coinbase when measured on a per-share basis is still down significantly from its 52-week high of 
+26 billion in the third quarter of last year to 
+133 billion to 
+1.5 trillion during 2022, which resulted in Coinbase's total trading volumes and transaction revenues to fall 50% and 66% year-over-year, respectively, the company reported.As you would expect with declines in trading volume, trading revenue at Coinbase fell in Q4 compared to the third quarter of last year, dipping from 
+322.1 million. (TechCrunch is comparing Coinbase's Q4 2022 results to Q3 2022 instead of Q4 2021, as the latter comparison would be less useful given how much the crypto market has changed in the last year; we're all aware that overall crypto activity has fallen from the final months of 2021.)There were bits of good news in the Coinbase report. While Coinbase's trading revenues were less than exuberant, the company's other revenues posted gains. What Coinbase calls its "subscription and services revenue" rose from 
+282.8 million in Q4 of the same year, a gain of just over 34% in a single quarter.And even as the crypto industry faced a number of catastrophic events, including the Terra/LUNA and FTX collapses to name a few, there was still growth in other areas. The monthly active developers in crypto have more than doubled since 2020 to over 20,000, while major brands like Starbucks, Nike and Adidas have dived into the space alongside social media platforms like Instagram and Reddit.With big players getting into crypto, industry players are hoping this move results in greater adoption both for product use cases and trading volumes. Although there was a lot of movement from traditional retail markets and Web 2.0 businesses, trading volume for both consumer and institutional users fell quarter-over-quarter for Coinbase.Looking forward, it'll be interesting to see if these pieces pick back up and trading interest reemerges in 2023, or if platforms like Coinbase will have to keep looking elsewhere for revenue (like its subscription service) if users continue to shy away from the market.
+'''
+
+# Create prompt for extracting facts
+fact_extraction_prompt = PromptTemplate(
+    input_variables=["text_input"],
+    template="Extract the key facts out of this text. Don't include opinions. Give each fact a number and keep them short sentences. :\n\n {text_input}"
+)
+
+# Initialize fact extraction chain
+fact_extraction_chain = LLMChain(llm=llm, prompt=fact_extraction_prompt)
+
+# Extract facts
+facts = fact_extraction_chain.run(article)
+print(facts)
+
+# Create prompt for investor update
+investor_update_prompt = PromptTemplate(
+    input_variables=["facts"],
+    template="Write an investor update using these key facts:\n\n {facts}"
+)
+
+# Initialize investor update chain
+investor_update_chain = LLMChain(llm=llm, prompt=investor_update_prompt)
+
+# Generate investor update
+investor_update = investor_update_chain.run(facts)
+print(investor_update)
+
+# Create prompt for knowledge graph triples
+triples_prompt = PromptTemplate(
+    input_variables=["facts"],
+    template="Take the following list of facts and turn them into triples for a knowledge graph:\n\n {facts}"
+)
+
+# Initialize triples chain
+triples_chain = LLMChain(llm=llm, prompt=triples_prompt)
+
+# Generate triples
+triples = triples_chain.run(facts)
+print(triples)
 ```
 
-Here, we import necessary modules from LangChain. We import `HuggingFaceHub` to utilize a pre-trained language model from the Hugging Face model hub, `PromptTemplate` to create a template for generating prompts, and `LLMChain` to create a chain for executing language model tasks.
+* We import the necessary components from LangChain: HuggingFaceHub for accessing the language model, PromptTemplate for defining prompts, and LLMChain for creating chains of operations with the language model.
 
-```python
-llm_hf = HuggingFaceHub(repo_id="google/flan-t5-xl", model_kwargs={"temperature":0, "max_length":64})
-```
+**1. Article Text**
 
-We initialize a language model from the Hugging Face model hub. In this case, we're using the T5 model (`google/flan-t5-xl`). We also provide some model-specific arguments like `temperature` and `max_length`.
+* Here, we define a long article text about Coinbase's financial performance and developments in the crypto market.
 
-```python
-template = """Question: {question}
+**2. Fact Extraction Prompt**
 
-Answer: Let's think step by step."""
-prompt = PromptTemplate(template=template, input_variables=["question"])
-```
+* We create a prompt template for extracting key facts from the article text. The template instructs the model to extract facts without including opinions and present each fact as a numbered short sentence.
 
-We define a prompt template using the `PromptTemplate` class. The template contains a placeholder {`question`} for the input question. This template will be used to generate prompts for the language model.
+* We set up an LLMChain with the fact extraction prompt, which combines the language model (llm) with the prompt.
 
-```python
-llm_chain = LLMChain(prompt=prompt, llm=llm_hf)
-```
+* We run the chain on the article to extract key facts, storing the result in the facts variable.
 
-We create an `LLMChain` instance by providing the prompt template and the initialized language model (`llm_hf`). This chain will use the template to generate prompts for the language model.
+**3. Investor Update Prompt**
 
-```python
-question = "Who won the FIFA World Cup in the year 1994? "
-```
+* Next, we define a prompt for generating an investor update using the extracted facts. We create another LLMChain with this prompt.
 
-We define a question that we want to ask the language model.
+* We run the chain on the extracted facts to generate an investor update based on the key facts.
 
-```python
-print(llm_chain.run(question))  
-```
+**4. Knowledge Graph Triples Prompt**
 
-We run the defined question through the LLMChain by calling the run method and passing the question as input. This will generate a prompt using the template, execute it using the language model, and return the generated response.
+* We create a prompt template for converting the extracted facts into triples for a knowledge graph. The template instructs the model to transform the facts into structured triples.
 
+* We run the triples chain using the extracted facts to generate knowledge graph triples.
+
+**5. Print Results**
+
+* Finally, we print the extracted facts, the generated investor update, and the knowledge graph triples to see the outputs of each step in the chain.
 ---
 
 ### **Agents**
