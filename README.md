@@ -1,8 +1,8 @@
-# Langchain
+# **Langchain**
 
 ![logo](https://media.gettyimages.com/id/1801115823/photo/in-this-photo-illustration-the-langchain-logo-is-displayed.jpg?b=1&s=594x594&w=0&k=20&c=OpkcRRc6G8I_-jYYk4Tgu5gWVtgYilTypQ4naXcNJqU=)
 
-## TABLE OF CONTENT
+## **TABLE OF CONTENT**
 
 1. [**Introduction to Langchain**](#Introduction-to-Langchain)
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Introduction to Langchain
+## **Introduction to Langchain**
 
 * LangChain is an open-source framework designed to simplify the creation of applications using large language models (LLMs). It provides a standard interface for chains, lots of integrations with other tools, and end-to-end chains for common applications. It allows AI developers to develop applications based on the combined Large Language Models (LLMs) such as GPT-4 with external sources of computation and data. This framework comes with a package for both Python and JavaScript.
 
@@ -44,7 +44,7 @@
 
 ---
 
-### Evolve 
+### **Evolve **
 
 * The journey of LangChain began as an ambitious project to overcome the limitations of early language models. Its evolution is marked by significant milestones that reflect the rapid advancement of AI and NLP technologies. Initially, language models were constrained by simplistic rule-based systems that lacked the ability to understand context or generate natural-sounding text. As machine learning and deep learning techniques matured, the foundation for LangChain was set.
 
@@ -60,7 +60,7 @@
 
 ---
 
-### Why do we need Langchain?
+### **Why do we need Langchain?**
 LangChain allows developers to create data-aware and agentic applications that can interact with their environment and leverage the power of large language models. Here are some use cases and examples of applications built with LangChain:
 
 * **Autonomous agents:** LangChain can be used to create autonomous agents that can write code, run tests, and deploy applications using natural language commands. This is particularly useful for automating repetitive tasks and improving productivity.
@@ -73,7 +73,7 @@ LangChain allows developers to create data-aware and agentic applications that c
 
 ---
 
-## Components
+## **Components**
 
 1. [**Schema**](#Schema)
 
@@ -95,6 +95,16 @@ LangChain allows developers to create data-aware and agentic applications that c
 
 6. [**Memory**](#Memory)
 
+    * [**Chat Message History**](#Chat-Message-History)
+
+    * [**Conversation Buffer Memory**](#Conversation-Buffer-Memory)
+
+    * [**Conversation Buffer Window Memory**](#Conversation-Buffer-Window-Memory)
+    
+    * [**Conversation Token Buffer Memory**](#Conversation-Token-Buffer-Memory)
+
+    * [**Conversation Summary Memory**](#Conversation-Summary-Memory)
+
 7. [**Chains**](#Chains)
 
 8. [**Agents**](#Agents)
@@ -103,7 +113,7 @@ LangChain allows developers to create data-aware and agentic applications that c
 
 ---
 
-### Schema
+### **Schema**
 
 * The schema in LangChain can be defined using various techniques and languages, depending on the specific requirements and technologies used in the project. Commonly used schema definition languages include SQL (Structured Query Language), JSON (JavaScript Object Notation), and YAML (YAML Ain’t Markup Language).
 
@@ -173,7 +183,7 @@ chat([HumanMessage(content="Translate this sentence from English to tamil. I lov
 
 * Another human message is sent to the chat instance, this time requesting translation from English to Tamil.
 
-### Models
+### **Models**
 
 models, such as GPT-4, are trained on vast amounts of text data and can generate human-like text based on the input they are given. They are the core of LangChain applications, enabling capabilities like natural language understanding and generation.
 
@@ -226,7 +236,7 @@ This function, `get_completion`, takes a prompt and an optional model name as in
 
 ---
 
-### Prompts
+### **Prompts**
 
 A language model prompt is a user-provided set of instructions or input designed to guide the model's response. This aids the model in understanding the context and producing relevant output, whether it involves answering questions, completing sentences, or participating in a conversation
 
@@ -255,7 +265,7 @@ This section defines a customer email and a desired style. Then, it constructs a
 
 ---
 
-### Parsers
+### **Parsers**
 
 ```python
 # Output Parsers
@@ -288,7 +298,7 @@ This part integrates with the Hugging Face pipeline for text generation. It defi
 
 ---
 
-### Indexes
+### **Indexes**
 
 * Indexes in the context of language models (LLMs) refer to structured representations of documents that facilitate efficient interaction with the documents. These indexes play a crucial role in the retrieval of relevant documents in response to user queries.
 
@@ -307,7 +317,7 @@ This part integrates with the Hugging Face pipeline for text generation. It defi
 
 ---
 
-#### Document Loading
+#### **Document Loading**
 
 **Loading Environment Variable**
 
@@ -319,7 +329,7 @@ os.environ['HUGGINGFACEHUB_API_TOKEN'] = hugging_facehub_key
 
 ---
 
-##### 1. PDF
+##### **PDF**
 
 Load PDF using `pypdf` into array of documents, where each document contains the page content and metadata with `page` number
 
@@ -392,7 +402,7 @@ print(summarize)
 
 ---
 
-##### 2. youtube
+##### **youtube**
 
 **Install required packages**
 
@@ -448,7 +458,7 @@ Finally, we print the content and summary for demonstration purposes.
 
 ---
 
-##### 3. URLs
+##### **URL`s**
 
 ```python
 from langchain.document_loaders import WebBaseLoader
@@ -485,7 +495,7 @@ print("Summary:", summary)
 
 ---
 
-##### 4. NOTION
+##### **NOTION**
 
 * This line imports the `NotionDirectoryLoader` class from the `document_loaders` module in the LangChain framework. This loader is specifically designed to load documents from a directory containing Notion-exported Markdown files.
 
@@ -510,7 +520,7 @@ else:
 
 ---
 
-#### Documnet Splitting
+#### **Documnet Splitting**
 
 **Loading Environment Variable**
 
@@ -653,7 +663,7 @@ docs = c_splitter.split_documents(pages)
 
 ---
 
-#### Vectors and Embeddings
+#### **Vectors and Embeddings**
 
 **Embeddings**
 
@@ -711,7 +721,7 @@ print(db._collection.count())
 
 ---
 
-#### Retrevial
+#### **Retrevial**
 
 **Vectorstore retrieval**
 
@@ -759,7 +769,7 @@ print(len(documents))
 
 ---
 
-### Memory
+### **Memory**
 
 Memory which is still in beta phase is an essential component in a conversation. This allows us to infer information in past conversations. Users have various options, including preserving the complete history of all conversations, summarizing the ongoing conversation, or retaining the most recent n exchanges.
 
@@ -785,7 +795,7 @@ else:
 print(llm_name)
 ```
 
-**1. Chat Message History**
+#### **Chat Message History**
 
 ```python
 from langchain.memory import ChatMessageHistory
@@ -841,7 +851,7 @@ print(llm_chain.run(question))
 * We define a question to be asked to the language model: "Which city does the company's headquarters for our international employees reside in?" and use the `llm_chain` to generate and print the model's response.
 
 
-**2. Conver sation Buffer Memory**
+#### **Conversation Buffer Memory**
 
 ```python
 from langchain.chains import ConversationChain
@@ -894,7 +904,7 @@ memory.load_memory_variables({})
 
     * These lines save and load conversation context into the memory buffer **save_context()** stores input-output pairs in the memory, while **load_memory_variables({})** resets the memory variables.
 
-**3. Conversation Buffer Window Memory**
+#### **Conversation Buffer Window Memory**
 
 ```python
 from langchain.memory import ConversationBufferWindowMemory
@@ -940,7 +950,7 @@ conversation.predict(input="What is my name?")
 
 * We predict responses to three different inputs using the `ConversationChain` object. Each input represents a message in a conversation.
 
-**4. Conversation Token Buffer Memory**
+#### **Conversation Token Buffer Memory**
 
 ```python
 #!pip install tiktoken
@@ -988,7 +998,7 @@ memory.load_memory_variables({})
 
         * `oad_memory_variables:` Loads memory variables, potentially for configuration or additional data.
 
-**5. Conversation Summary Memory**
+#### **Conversation Summary Memory**
 
 ```python
 from langchain.memory import ConversationSummaryBufferMemory
@@ -1031,7 +1041,7 @@ memory.load_memory_variables({})
 
 * We predict a response to the input "What would be a good demo to show?" using the `ConversationChain` object. This input triggers the model to generate a response based on the conversation context and the stored summaries.
 
-### Chains
+### **Chains**
 
 Chains form the backbone of LangChain's workflows, seamlessly integrating Language Model Models (LLMs) with other components to build applications through the execution of a series of functions.
 
@@ -1079,7 +1089,7 @@ We run the defined question through the LLMChain by calling the run method and p
 
 ---
 
-### Agents
+### **Agents**
 
 Agents, at their core, leverage a language model to make decisions about a sequence of actions to be taken. Unlike chains where a predefined sequence of actions is hard coded directly in the code, agents use a llm as a reasoning engine to determine the actions to be taken and their order.
 
