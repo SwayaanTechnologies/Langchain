@@ -28,6 +28,20 @@
 
     * [**Memory**](#Memory)
 
+      1. [**Chat Message History**](#Chat-Message-History)
+
+      2. [**Conversation Buffer Memory**](#Conversation-Buffer-Memory)
+
+      3. [**Conversation Buffer Window Memory**](#Conversation-Buffer-Window-Memory)
+
+      4.  [**Conversation Token Buffer Memory**](#Conversation-Token-Buffer-Memory)
+
+      5. [**Conversation Summary Memory**](#Conversation-Summary-Memory)
+
+      6. [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
+
+      7. [**Entity Memory**](#Entity-Memory)
+
     * [**Chains**](#Chains)
 
     * [**Agents**](#Agents)
@@ -44,7 +58,7 @@
 
 ---
 
-### **Evolve **
+### **Evolve**
 
 * The journey of LangChain began as an ambitious project to overcome the limitations of early language models. Its evolution is marked by significant milestones that reflect the rapid advancement of AI and NLP technologies. Initially, language models were constrained by simplistic rule-based systems that lacked the ability to understand context or generate natural-sounding text. As machine learning and deep learning techniques matured, the foundation for LangChain was set.
 
@@ -61,6 +75,7 @@
 ---
 
 ### **Why do we need Langchain?**
+
 LangChain allows developers to create data-aware and agentic applications that can interact with their environment and leverage the power of large language models. Here are some use cases and examples of applications built with LangChain:
 
 * **Autonomous agents:** LangChain can be used to create autonomous agents that can write code, run tests, and deploy applications using natural language commands. This is particularly useful for automating repetitive tasks and improving productivity.
@@ -100,10 +115,14 @@ LangChain allows developers to create data-aware and agentic applications that c
     * [**Conversation Buffer Memory**](#Conversation-Buffer-Memory)
 
     * [**Conversation Buffer Window Memory**](#Conversation-Buffer-Window-Memory)
-    
+
     * [**Conversation Token Buffer Memory**](#Conversation-Token-Buffer-Memory)
 
     * [**Conversation Summary Memory**](#Conversation-Summary-Memory)
+
+    * [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
+
+    * [**Entity Memory**](#Entity-Memory)
 
 7. [**Chains**](#Chains)
 
@@ -414,7 +433,6 @@ print(summarize)
 
 These lines are comments indicating that you need to install specific packages (`yt_dlp`, `pydub`, and `openai`). You can install them using pip if you haven't already done so.
 
-
 ```python
 from langchain.document_loaders.generic import GenericLoader
 from langchain.document_loaders.parsers import OpenAIWhisperParser
@@ -646,7 +664,6 @@ pages = loader.load()
 
 - `Returns:` A list of document objects representing the contents of each document in the directory.
 
-
 **`Splitting Documents`**
 
 ```python
@@ -684,7 +701,7 @@ print (f"Here's a sample: {text_embedding[:5]}...")
 
 * Here, we import two different types of embedding models from LangChain: `OpenAIEmbeddings` and `HuggingFaceEmbeddings`. These models are used to generate embeddings for text.
 
-* We initialize an embedding model using` HuggingFaceEmbeddings()`. This creates an instance of the Hugging Face embedding model.
+* We initialize an embedding model using`HuggingFaceEmbeddings()`. This creates an instance of the Hugging Face embedding model.
 
 * We define a sample text that we want to generate embeddings for.
 
@@ -850,8 +867,9 @@ print(llm_chain.run(question))
 
 * We define a question to be asked to the language model: "Which city does the company's headquarters for our international employees reside in?" and use the `llm_chain` to generate and print the model's response.
 
-
 #### **Conversation Buffer Memory**
+
+* This method involves stacking all user-agent interactions into the prompt, allowing the model to track the entire conversation. However, it poses limitations in handling long conversations due to token span constraints.
 
 ```python
 from langchain.chains import ConversationChain
@@ -878,6 +896,7 @@ memory.save_context({"input": "Not much, just hanging"},
                     {"output": "Cool"})
 memory.load_memory_variables({})
 ```
+
 1. **Importing Necessary Modules**
 
     * Here, we import modules required for setting up a conversation chain and managing conversation memory.
@@ -905,6 +924,8 @@ memory.load_memory_variables({})
     * These lines save and load conversation context into the memory buffer **save_context()** stores input-output pairs in the memory, while **load_memory_variables({})** resets the memory variables.
 
 #### **Conversation Buffer Window Memory**
+
+* This approach limits the memory to the last few interactions, addressing token constraints while still retaining recent context. It's a compromise between full conversation tracking and token efficiency.
 
 ```python
 from langchain.memory import ConversationBufferWindowMemory
@@ -936,6 +957,7 @@ conversation.predict(input="Hi, my name is ram")
 conversation.predict(input="What is 1+1?")
 conversation.predict(input="What is my name?")
 ```
+
 * We import the ConversationBufferWindowMemory class from the LangChain library. This class represents a memory module that stores conversation contexts.
 
 * We initialize a ConversationBufferWindowMemory instance with a window size of 1 (k=1). This means that the memory will retain the most recent conversation context.
@@ -979,11 +1001,11 @@ memory.load_memory_variables({})
     * Initialize the memory object with the language model (llm) and a maximum token limit of 50.
 
 * `Saving Contexts:` Save conversation contexts into the memory:
-    
+
     * Each `save_context` call saves an input-output pair into the memory. For example, the input "AI is what?!" corresponds to the output "Amazing!".
 
 * `Loading Memory Variables:` Load memory variables to reset the memory:
-    
+
     * Each save_context call saves an input-output pair into the memory. For example, the input "AI is what?!" corresponds to the output "Amazing!". 
 
 * To document this code for clarity:
@@ -991,7 +1013,7 @@ memory.load_memory_variables({})
     * `Purpose:` The code manages conversation tokens in a buffer memory, allowing the storage and retrieval of input-output pairs.
 
     * `Initialization:` The ConversationTokenBufferMemory class is initialized with a language model and a maximum token limit.
-    
+
     * **Functionality:**
 
         * `Saving Contexts:` Saves input-output pairs into the memory.
@@ -999,6 +1021,8 @@ memory.load_memory_variables({})
         * `oad_memory_variables:` Loads memory variables, potentially for configuration or additional data.
 
 #### **Conversation Summary Memory**
+
+* This method summarizes the conversation at each step, reducing token usage but maintaining context. It provides a balance between retaining conversation history and token efficiency.
 
 ```python
 from langchain.memory import ConversationSummaryBufferMemory
@@ -1041,6 +1065,156 @@ memory.load_memory_variables({})
 
 * We predict a response to the input "What would be a good demo to show?" using the `ConversationChain` object. This input triggers the model to generate a response based on the conversation context and the stored summaries.
 
+#### **Knowledge Graph Memory**
+
+* Utilizes a KG structure to extract relevant information from the conversation, organizing it into entities and relationships. It enhances contextual understanding and facilitates downstream tasks.
+
+```python
+from langchain.memory import ConversationKGMemory
+from langchain.memory import ConversationBufferWindowMemory
+from langchain import HuggingFaceHub
+import networkx as nx
+import matplotlib.pyplot as plt
+
+memory = ConversationBufferWindowMemory(k=1)  
+
+# Define LLM
+repo_id = "google/flan-t5-large"
+llm = HuggingFaceHub(
+    repo_id=repo_id, model_kwargs={"temperature": 0.5, "max_length": 64}
+)
+
+template = """The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. 
+If the AI does not know the answer to a question, it truthfully says it does not know. The AI ONLY uses information contained in the "Relevant Information" section and does not hallucinate.
+
+Relevant Information:
+
+{history}
+
+Conversation:
+Human: {input}
+AI:"""
+prompt = PromptTemplate(input_variables=["history", "input"], template=template)
+
+conversation_with_kg = ConversationChain(
+    llm=llm, 
+    verbose=True, 
+    prompt=prompt,
+    memory=ConversationKGMemory(llm=llm)
+)
+
+
+conversation_with_kg.predict(input="Hi there! I am Sam")
+conversation_with_kg.predict(input="My TV is broken and I need some customer assistance")
+conversation_with_kg.predict(input="Yes it is and it is still under warranty. my warranty number is A512423")
+
+# nx.draw(conversation_with_kg.memory.kg, with_labels=True)
+# plt.show()
+
+print(conversation_with_kg.memory.kg)
+print(conversation_with_kg.memory.kg.get_triples())
+```
+
+**1. Importing Required Modules**
+
+* We import necessary modules from LangChain for memory management and Hugging Face integration, as well as NetworkX and Matplotlib for handling and visualizing the knowledge graph.
+
+**2. Setting Up the Language Model**
+
+*We define a language model (LLM) using the `google/flan-t5-large` model from Hugging Face. Model-specific parameters like `temperature` and `max_length` are also specified.
+
+**3. Creating the Prompt Template**
+
+
+* We create a prompt template that guides the conversation between the human and the AI. The AI is instructed to use only the information provided in the "Relevant Information" section and avoid fabricating answers.
+
+**4. Setting Up the Conversation Chain**
+
+* We set up a conversation chain using the defined LLM, the prompt template, and a `ConversationKGMemory` for maintaining a knowledge graph memory.
+
+**5. Running the Conversation**
+
+* We simulate a conversation where the user interacts with the AI, providing different inputs. The AI uses the knowledge graph memory to maintain context and provide relevant responses.
+
+**6. Visualizing the Knowledge Graph**
+
+* This part of the code (commented out) is for visualizing the knowledge graph using NetworkX and Matplotlib. If uncommented, it would draw the graph and display it.
+
+**7. Printing the Knowledge Graph and Its Triples**
+
+Finally, we print the knowledge graph object and its triples (relationships between entities) to see the structure of the knowledge graph.
+
+---
+
+#### **Entity Memory**
+
+* Extracts specific entities mentioned in the conversation, such as names, numbers, or keywords, for further processing or response generation. It aids in understanding user intent and context.
+
+```python
+from langchain.memory import ConversationEntityMemory
+from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
+from langchain import HuggingFaceHub
+from pprint import pprint
+
+ENTITY_MEMORY_CONVERSATION_TEMPLATE.template
+
+repo_id = "google/flan-t5-large"  # The ID of the pre-trained model on Hugging Face
+llm = HuggingFaceHub(
+    repo_id=repo_id, model_kwargs={"temperature": 0.5, "max_length": 64}
+)
+
+conversation_with_entity_memory = ConversationChain(
+    llm=llm,
+    verbose=True,
+    prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
+    memory=ConversationEntityMemory()
+)
+
+conversation.predict(input="Hi I am Sam. My TV is broken but it is under warranty.")
+conversation.predict(input="How can I get it fixed. The warranty number is A512453")
+
+conversation.memory.entity_cache
+
+conversation.predict(input="Can you send the repair person call Dave to fix it?.")
+
+conversation.memory.entity_cache
+pprint(conversation.memory.store)
+```
+
+**1. Importing Necessary Modules**
+
+* We import modules for managing memory in conversations (`ConversationEntityMemory`), a template for entity memory conversations (`ENTITY_MEMORY_CONVERSATION_TEMPLATE`), and a module to use pre-trained language models from Hugging Face (`HuggingFaceHub`). Additionally, we import `pprint` for pretty-printing output.
+
+**2. Define the Language Model**
+
+* We specify the ID of the pre-trained model we want to use from Hugging Face (`google/flan-t5-large`). We then create an instance of `HuggingFaceHub` with this model, setting the `temperature` (which controls randomness in the output) and `max_length` (the maximum length of the generated text).
+
+**3. Initialize the Conversation Chain**
+
+* We set up a conversation chain using the defined language model, enabling verbose mode for detailed output, and providing the entity memory conversation template for prompts. The conversation chain uses `ConversationEntityMemory` to manage entity memory.
+
+**4. Simulate a Conversation**
+
+* We simulate a conversation where the user interacts with the AI by providing different inputs. The AI uses the entity memory to extract specific entities mentioned in the conversation.
+
+**5. Accessing Entity Cache**
+
+* We access the entity cache in the conversation memory to see the entities extracted from the conversation so far.
+
+**6. Continue the Conversation**
+
+* We continue the conversation with another input, asking the AI to send a repair person named Dave to fix the TV. The entity memory should capture the entity "Dave" from this input.
+
+**7. Check the Updated Entity Cache**
+
+* We check the updated entity cache to see if the entity "Dave" has been added to the memory. We also print the entire store of entities extracted from the conversation.
+
+**8. Print the Memory Store**
+
+* We use `pprint` to print the memory store, which contains all the entities extracted from the conversation. This provides a structured view of the entities stored in the memory.
+
+---
+
 ### **Chains**
 
 Chains form the backbone of LangChain's workflows, seamlessly integrating Language Model Models (LLMs) with other components to build applications through the execution of a series of functions.
@@ -1053,6 +1227,7 @@ For scenarios where the output of one function needs to serve as the input for t
 from langchain import HuggingFaceHub
 from langchain import PromptTemplate, LLMChain
 ```
+
 Here, we import necessary modules from LangChain. We import `HuggingFaceHub` to utilize a pre-trained language model from the Hugging Face model hub, `PromptTemplate` to create a template for generating prompts, and `LLMChain` to create a chain for executing language model tasks.
 
 ```python
@@ -1067,6 +1242,7 @@ template = """Question: {question}
 Answer: Let's think step by step."""
 prompt = PromptTemplate(template=template, input_variables=["question"])
 ```
+
 We define a prompt template using the `PromptTemplate` class. The template contains a placeholder {`question`} for the input question. This template will be used to generate prompts for the language model.
 
 ```python
