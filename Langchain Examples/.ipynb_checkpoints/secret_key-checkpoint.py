@@ -1,2 +1,0 @@
-hugging_facehub_key = "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"
-openai_key = "sk-proj-Wcb2X2pLzsHFNLpDC5jhT3BlbkFJcn912FfYNEcOTGtrZXyt"
