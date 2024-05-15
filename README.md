@@ -1150,6 +1150,47 @@ print(conversation_with_kg.memory.kg.get_triples())
 
 Finally, we print the knowledge graph object and its triples (relationships between entities) to see the structure of the knowledge graph.
 
+```python
+from langchain.memory import ConversationEntityMemory
+from langchain.chains.conversation import ConversationChain
+from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
+from langchain import HuggingFaceHub
+from pprint import pprint
+
+# Define LLM
+repo_id = "google/flan-t5-large"  # The ID of the pre-trained model on Hugging Face
+llm = HuggingFaceHub(
+    repo_id=repo_id, model_kwargs={"temperature": 0.5, "max_length": 64}
+)
+
+# Initialize ConversationEntityMemory
+memory = ConversationEntityMemory(llm=llm)
+
+# Initialize ConversationChain
+conversation = ConversationChain(
+    llm=llm, 
+    verbose=True,
+    prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
+    memory=memory
+)
+
+# Make predictions and interact with memory
+conversation.predict(input="Hi I am Sam. My TV is broken but it is under warranty.")
+conversation.predict(input="How can I get it fixed. The warranty number is A512453")
+
+# Access the entity cache
+conversation.memory.entity_cache
+
+conversation.predict(input="Can you send the repair person call Dave to fix it?")
+conversation.memory.entity_cache
+
+
+# Pretty print the memory object
+pprint(conversation.memory)
+
+
+```
+
 ---
 
 ### **Chains**
