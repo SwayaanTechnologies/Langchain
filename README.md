@@ -40,6 +40,8 @@
 
       6. [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
 
+      7. [**Entity Memory**](#Entity-Memory)
+
     * [**Chains**](#Chains)
 
     * [**Agents**](#Agents)
@@ -54,9 +56,9 @@
 
 * LangChain follows a general pipeline where a user asks a question to the language model where the vector representation of the question is used to do a similarity search in the vector database and the relevant information is fetched from the vector database and the response is later fed to the language model. further, the language model generates an answer or takes an action.
 
-1. [**Evolve**](#Evolve)
+  1. [**Evolve**](#Evolve)
 
-2. [**Why do we need Langchain?**](#Why-do-we-need-Langchain?)
+  2. [**Why do we need Langchain?**](#Why-do-we-need-Langchain?)
 
 ---
 
@@ -123,6 +125,8 @@ LangChain allows developers to create data-aware and agentic applications that c
     * [**Conversation Summary Memory**](#Conversation-Summary-Memory)
 
     * [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
+
+    * [**Entity Memory**](#Entity-Memory)
 
 7. [**Chains**](#Chains)
 
@@ -1154,6 +1158,12 @@ print(conversation_with_kg.memory.kg.get_triples())
 
 Finally, we print the knowledge graph object and its triples (relationships between entities) to see the structure of the knowledge graph.
 
+---
+
+#### **Entity Memory**
+
+* Extracts specific entities mentioned in the conversation, such as names, numbers, or keywords, for further processing or response generation. It aids in understanding user intent and context.
+
 ```python
 from langchain.memory import ConversationEntityMemory
 from langchain.chains.conversation import ConversationChain
@@ -1206,6 +1216,7 @@ pprint(conversation.memory)
 * We access the entity cache stored in the memory object to view the entities and their relationships at different points in the conversation.
 
 * We pretty-print the memory object to display the entities and relationships stored in the entity cache.
+
 ---
 
 ### **Chains**
