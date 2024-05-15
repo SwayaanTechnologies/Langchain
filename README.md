@@ -1187,10 +1187,21 @@ conversation.memory.entity_cache
 
 # Pretty print the memory object
 pprint(conversation.memory)
-
-
 ```
 
+* We import the necessary modules and functions. `ConversationEntityMemory` and `ConversationChain` are used to manage and conduct conversations with entity memory. `ENTITY_MEMORY_CONVERSATION_TEMPLATE` is a predefined prompt template. `HuggingFaceHub` allows us to use a pre-trained model from Hugging Face, and `pprint` is used for pretty-printing objects for better readability.This code snippet demonstrates the use of the `ConversationEntityMemory` class in LangChain to manage entities and their relationships in a conversation.
+
+* We define the language model (LLM) using the `HuggingFaceHub` class. We specify the model ID (`google/flan-t5-large`) and provide model-specific arguments (`temperature` and `max_length`). The `temperature` controls the randomness of the output, and `max_length` specifies the maximum length of the generated text.
+
+* We initialize a `ConversationEntityMemory` object named `memory`. This memory object will store entities and their relationships during the conversation.
+
+* We create a `ConversationChain` object named `conversation` that uses the language model (`llm`), enables verbose mode, specifies a predefined prompt template (`ENTITY_MEMORY_CONVERSATION_TEMPLATE`), and uses the initialized memory object.
+
+* We simulate a conversation by providing inputs to the conversation chain. The AI responds based on the conversation context and the entity memory.
+
+* We access the entity cache stored in the memory object to view the entities and their relationships at different points in the conversation.
+
+* We pretty-print the memory object to display the entities and relationships stored in the entity cache.
 ---
 
 ### **Chains**
