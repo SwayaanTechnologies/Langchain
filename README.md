@@ -8,43 +8,43 @@
 
 2. [**Components**](#Components)
 
-    * [**Schema**](#Schema)
+  * [**Schema**](#Schema)
 
-    * [**Models**](#Models)
+  * [**Models**](#Models)
 
-    * [**Prompts**](#Prompts)
+  * [**Prompts**](#Prompts)
 
-    * [**Parsers**](#Parsers)
+  * [**Parsers**](#Parsers)
 
-    * [**Indexes**](#Indexes)
+  * [**Indexes**](#Indexes)
 
-        - [**Document Loading**](#Document-Loading)   
+    - [**Document Loading**](#Document-Loading)   
 
-        - [**Documnet Splitting**](#Documnet-Splitting)  
+    -  [**Documnet Splitting**](#Documnet-Splitting)  
 
-        - [**Vectors and Embeddings**](#Vectors-and-Embeddings) 
+    - [**Vectors and Embeddings**](#Vectors-and-Embeddings) 
 
-        - [**Retrevial**](#retrevial)
+    - [**Retrevial**](#retrevial)
 
-    * [**Memory**](#Memory)
+  * [**Memory**](#Memory)
 
-      1. [**Chat Message History**](#Chat-Message-History)
+    - [**Chat Message History**](#Chat-Message-History)
 
-      2. [**Conversation Buffer Memory**](#Conversation-Buffer-Memory)
+    - [**Conversation Buffer Memory**](#Conversation-Buffer-Memory)
 
-      3. [**Conversation Buffer Window Memory**](#Conversation-Buffer-Window-Memory)
+    - [**Conversation Buffer Window Memory**](#Conversation-Buffer-Window-Memory)
 
-      4.  [**Conversation Token Buffer Memory**](#Conversation-Token-Buffer-Memory)
+    - [**Conversation Token Buffer Memory**](#Conversation-Token-Buffer-Memory)
 
-      5. [**Conversation Summary Memory**](#Conversation-Summary-Memory)
+    - [**Conversation Summary Memory**](#Conversation-Summary-Memory)
 
-      6. [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
+    - [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
 
-      7. [**Entity Memory**](#Entity-Memory)
+    - [**Entity Memory**](#Entity-Memory)
 
-    * [**Chains**](#Chains)
+  * [**Chains**](#Chains)
 
-    * [**Agents**](#Agents)
+  * [**Agents**](#Agents)
 
 3. [**References**](#References)
 
@@ -401,7 +401,7 @@ def summarize(llm, text) -> str:
     return llm.invoke(f"Summarize this: {text}!")
 ```
 
-`Summarize:` A function that takes a language model (`llm`) and text as input and returns a summarized version of the text using the model.
+`Summarizer:` A function that takes a language model (`llm`) and text as input and returns a summarized version of the text using the model.
 
 `llm.invoke:` Invokes the language model to generate a summary of the provided text.
 
@@ -421,7 +421,7 @@ print(summarize)
 
 * `print(summary):` Prints the generated summary.
 
-* `print(summarize):` (Assuming this was intended to be `print(summarizer)`) Prints the `summarizer` object, which might have been unintentional.
+* `print(summarizer):` (Assuming this was intended to be `print(summarizer)`) Prints the `summarizer` object, which might have been unintentional.
 
 ---
 
@@ -474,9 +474,7 @@ print("Summary:", summary)
 
 * We extract the content from the first document and select the first 500 characters to display as an example.
 
-* Here, assuming `summarizer` is an instantiated summarization model (like the one initialized previously), we use it to summarize the loaded documents.
-
-Finally, we print the content and summary for demonstration purposes.
+* Here, assuming `summarizer` is an instantiated summarization model (like the one initialized previously), we use it to summarizer the loaded documents.
 
 ---
 
@@ -630,11 +628,11 @@ c_splitter = CharacterTextSplitter(
 
 - `Parameters:`
 
-    * `separator:` The string used to split the text into chunks.
+  * `separator:` The string used to split the text into chunks.
 
-    * `chunk_size:` The maximum size of each chunk in characters.
+  * `chunk_size:` The maximum size of each chunk in characters.
 
-    * `chunk_overlap:` The overlap between consecutive chunks (in characters).
+  * `chunk_overlap:` The overlap between consecutive chunks (in characters).
 
 - `Usage:` Suitable for simpler text splitting tasks where a single separator suffices.
 
@@ -745,8 +743,6 @@ print(db._collection.count())
 #### **Retrevial**
 
 **Vectorstore retrieval**
-
-**Installation:**
 
 ```python
 # !pip install lark
@@ -1012,23 +1008,23 @@ memory.load_memory_variables({})
 
 * `Saving Contexts:` Save conversation contexts into the memory:
 
-    * Each `save_context` call saves an input-output pair into the memory. For example, the input "AI is what?!" corresponds to the output "Amazing!".
+  * Each `save_context` call saves an input-output pair into the memory. For example, the input "AI is what?!" corresponds to the output "Amazing!".
 
 * `Loading Memory Variables:` Load memory variables to reset the memory:
 
-    * Each save_context call saves an input-output pair into the memory. For example, the input "AI is what?!" corresponds to the output "Amazing!". 
+  * Each save_context call saves an input-output pair into the memory. For example, the input "AI is what?!" corresponds to the output "Amazing!". 
 
 * To document this code for clarity:
 
-    * `Purpose:` The code manages conversation tokens in a buffer memory, allowing the storage and retrieval of input-output pairs.
+  * `Purpose:` The code manages conversation tokens in a buffer memory, allowing the storage and retrieval of input-output pairs.
 
-    * `Initialization:` The ConversationTokenBufferMemory class is initialized with a language model and a maximum token limit.
+  * `Initialization:` The ConversationTokenBufferMemory class is initialized with a language model and a maximum token limit.
 
-    * **Functionality:**
+  * **Functionality:**
 
-        * `Saving Contexts:` Saves input-output pairs into the memory.
+    * `Saving Contexts:` Saves input-output pairs into the memory.
 
-        * `oad_memory_variables:` Loads memory variables, potentially for configuration or additional data.
+    * `oad_memory_variables:` Loads memory variables, potentially for configuration or additional data.
 
 ---
 
@@ -1135,7 +1131,7 @@ print(conversation_with_kg.memory.kg.get_triples())
 
 **2. Setting Up the Language Model**
 
-*We define a language model (LLM) using the `google/flan-t5-large` model from Hugging Face. Model-specific parameters like `temperature` and `max_length` are also specified.
+* We define a language model (LLM) using the `google/flan-t5-large` model from Hugging Face. Model-specific parameters like `temperature` and `max_length` are also specified.
 
 **3. Creating the Prompt Template**
 
@@ -1156,7 +1152,7 @@ print(conversation_with_kg.memory.kg.get_triples())
 
 **7. Printing the Knowledge Graph and Its Triples**
 
-Finally, we print the knowledge graph object and its triples (relationships between entities) to see the structure of the knowledge graph.
+* Finally, we print the knowledge graph object and its triples (relationships between entities) to see the structure of the knowledge graph.
 
 ---
 
@@ -1223,7 +1219,9 @@ pprint(conversation.memory)
 
 Chains form the backbone of LangChain's workflows, seamlessly integrating Language Model Models (LLMs) with other components to build applications through the execution of a series of functions.
 
-The fundamental chain is the LLMChain, which straightforwardly invokes a model and a prompt template. For example, consider saving a prompt as "ExamplePrompt" and intending to run it with Flan-T5. By importing LLMChain from langchain.chains, you can define a chain_example like so: LLMChain(llm=flan-t5, prompt=ExamplePrompt). Executing the chain for a given input is as simple as calling chain_example.run("input").
+The fundamental chain is the LLMChain, which straightforwardly invokes a model and a prompt template. For example, consider saving a prompt as "ExamplePrompt" and intending to run it with Flan-T5. By importing LLMChain from langchain.chains, 
+
+`you can define a chain_example like so:` LLMChain(llm=flan-t5, prompt=ExamplePrompt). Executing the chain for a given input is as simple as calling chain_example.run("input").
 
 For scenarios where the output of one function needs to serve as the input for the next, SimpleSequentialChain comes into play. Each function within this chain can employ diverse prompts, tools, parameters, or even different models, catering to specific requirements.
 
@@ -1313,6 +1311,7 @@ print(triples)
 **5. Print Results**
 
 * Finally, we print the extracted facts, the generated investor update, and the knowledge graph triples to see the outputs of each step in the chain.
+
 ---
 
 ### **Agents**
