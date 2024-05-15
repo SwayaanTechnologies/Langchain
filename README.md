@@ -54,6 +54,10 @@
 
 * LangChain follows a general pipeline where a user asks a question to the language model where the vector representation of the question is used to do a similarity search in the vector database and the relevant information is fetched from the vector database and the response is later fed to the language model. further, the language model generates an answer or takes an action.
 
+1. [**Evolve**](#Evolve)
+
+2. [**Why do we need Langchain?**](#Why-do-we-need-Langchain?)
+
 ---
 
 ### **Evolve**
