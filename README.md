@@ -4,49 +4,44 @@
 
 ## **TABLE OF CONTENT**
 
-1. [**Introduction to Langchain**](#Introduction-to-Langchain)
+**1.** [**Introduction to Langchain**](#Introduction-to-Langchain)
 
-2. [**Components**](#Components)
+**2.** [**Components**](#Components)
 
-  * [**Schema**](#Schema)
+* [**Schema**](#Schema)
+* [**Models**](#Models)
+* [**Prompts**](#Prompts)
+* [**Parsers**](#Parsers)
+* [**Indexes**](#Indexes)
 
-  * [**Models**](#Models)
+  - [**Document Loading**](#Document-Loading)   
 
-  * [**Prompts**](#Prompts)
+  -  [**Documnet Splitting**](#Documnet-Splitting)  
 
-  * [**Parsers**](#Parsers)
+  - [**Vectors and Embeddings**](#Vectors-and-Embeddings) 
 
-  * [**Indexes**](#Indexes)
+  - [**Retrevial**](#retrevial)
 
-    - [**Document Loading**](#Document-Loading)   
+* [**Memory**](#Memory)
 
-    -  [**Documnet Splitting**](#Documnet-Splitting)  
+  - [**Chat Message History**](#Chat-Message-History)
 
-    - [**Vectors and Embeddings**](#Vectors-and-Embeddings) 
+  - [**Conversation Buffer Memory**](#Conversation-Buffer-Memory)
 
-    - [**Retrevial**](#retrevial)
+  - [**Conversation Buffer Window Memory**](#Conversation-Buffer-Window-Memory)
 
-  * [**Memory**](#Memory)
+  - [**Conversation Token Buffer Memory**](#Conversation-Token-Buffer-Memory)
 
-    - [**Chat Message History**](#Chat-Message-History)
+  - [**Conversation Summary Memory**](#Conversation-Summary-Memory)
 
-    - [**Conversation Buffer Memory**](#Conversation-Buffer-Memory)
+  - [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
 
-    - [**Conversation Buffer Window Memory**](#Conversation-Buffer-Window-Memory)
+  - [**Entity Memory**](#Entity-Memory)
 
-    - [**Conversation Token Buffer Memory**](#Conversation-Token-Buffer-Memory)
+* [**Chains**](#Chains)
+* [**Agents**](#Agents)
 
-    - [**Conversation Summary Memory**](#Conversation-Summary-Memory)
-
-    - [**Knowledge Graph Memory**](#Knowledge-Graph-Memory)
-
-    - [**Entity Memory**](#Entity-Memory)
-
-  * [**Chains**](#Chains)
-
-  * [**Agents**](#Agents)
-
-3. [**References**](#References)
+**3.** [**References**](#References)
 
 ---
 
