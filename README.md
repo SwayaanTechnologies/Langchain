@@ -290,6 +290,8 @@ This section defines a customer email and a desired style. Then, it constructs a
 
 ### **Parsers**
 
+Output parsers are responsible for taking the output of an LLM and transforming it to a more suitable format. This is very useful when you are using LLMs to generate any form of structured data.
+
 ```python
 # Output Parsers
 print(prompt)
