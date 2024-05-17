@@ -52,7 +52,6 @@
 * LangChain follows a general pipeline where a user asks a question to the language model where the vector representation of the question is used to do a similarity search in the vector database and the relevant information is fetched from the vector database and the response is later fed to the language model. further, the language model generates an answer or takes an action.
 
   1. [**Evolve**](#Evolve)
-
   2. [**Why do we need Langchain?**](#Why-do-we-need-Langchain?)
 
 ---
@@ -683,6 +682,10 @@ docs = c_splitter.split_documents(pages)
 
 **Embeddings**
 
+LangChain Embeddings are numerical representations of text data, designed to be fed into machine learning algorithms. These embeddings are crucial for a variety of natural language processing (NLP) tasks, such as sentiment analysis, text classification, and language translation.
+
+![image](img/e.jpg)
+
 ```python
 # !pip install sentence-transformers
 from langchain.embeddings import OpenAIEmbeddings, HuggingFaceEmbeddings
@@ -711,6 +714,9 @@ print (f"Here's a sample: {text_embedding[:5]}...")
 **Vectorstore**
 
 VectorStore is a component of LangChain that facilitates efficient storage and retrieval of document embeddings, which are vector representations of documents. These embeddings are created using language models and are valuable for various natural language processing tasks such as information retrieval and document similarity analysis.
+
+
+![image](img/v.jpg)
 
 **Installation:**
 
