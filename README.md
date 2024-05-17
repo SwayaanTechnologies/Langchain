@@ -1,5 +1,7 @@
 # **Langchain**
 
+These models are trained on massive amounts of text data to learn patterns and entity relationships in the language. LLMs use deep learning algorithms to process and understand natural language, performing tasks such as translating, analyzing sentiments, and generating new text.
+
 ![logo](https://media.gettyimages.com/id/1801115823/photo/in-this-photo-illustration-the-langchain-logo-is-displayed.jpg?b=1&s=594x594&w=0&k=20&c=OpkcRRc6G8I_-jYYk4Tgu5gWVtgYilTypQ4naXcNJqU=)
 
 ## **TABLE OF CONTENT**
