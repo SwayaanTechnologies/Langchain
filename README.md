@@ -49,9 +49,9 @@ These models are trained on massive amounts of text data to learn patterns and e
 
 ## **Introduction to Langchain**
 
-* LangChain is an open-source framework designed to simplify the creation of applications using large language models (LLMs). It provides a standard interface for chains, lots of integrations with other tools, and end-to-end chains for common applications. It allows AI developers to develop applications based on the combined Large Language Models (LLMs) such as GPT-4 with external sources of computation and data. This framework comes with a package for both Python and JavaScript.
-
-* LangChain follows a general pipeline where a user asks a question to the language model where the vector representation of the question is used to do a similarity search in the vector database and the relevant information is fetched from the vector database and the response is later fed to the language model. further, the language model generates an answer or takes an action.
+* Langchain is an open-source framework that equips developers with the necessary tools to create applications powered by large language models
+(LLMs). Langchain is similar to Lego blocks for LLMs; you can use multiple models for various behaviors for different tasks without having to learn each one from scratch,
+and then you can create pipelines using Langchain speed un application development.
 
   1. [**Evolve**](#Evolve)
   2. [**Why do we need Langchain?**](#Why-do-we-need-Langchain?)
@@ -76,7 +76,11 @@ These models are trained on massive amounts of text data to learn patterns and e
 
 ### **Why do we need Langchain?**
 
-LangChain allows developers to create data-aware and agentic applications that can interact with their environment and leverage the power of large language models. Here are some use cases and examples of applications built with LangChain:
+* Most of the LLMs(OpenAi, Al 21 Labs, LLaMA...) are not up to date
+
+* They are not good at Domain Knowledge and fail when working with Proprietary data
+
+* Working with different LLMs may become a tedious task
 
 * **Autonomous agents:** LangChain can be used to create autonomous agents that can write code, run tests, and deploy applications using natural language commands. This is particularly useful for automating repetitive tasks and improving productivity.
 
@@ -1230,6 +1234,8 @@ The fundamental chain is the LLMChain, which straightforwardly invokes a model a
 
 For scenarios where the output of one function needs to serve as the input for the next, SimpleSequentialChain comes into play. Each function within this chain can employ diverse prompts, tools, parameters, or even different models, catering to specific requirements.
 
+> Chains are simple objects that essentially string together several components (for linear pipelines).
+
 ```python
 from langchain import HuggingFaceHub
 from langchain import PromptTemplate, LLMChain
@@ -1322,6 +1328,8 @@ print(triples)
 ### **Agents**
 
 Agents, at their core, leverage a language model to make decisions about a sequence of actions to be taken. Unlike chains where a predefined sequence of actions is hard coded directly in the code, agents use a llm as a reasoning engine to determine the actions to be taken and their order.
+
+> Agents are more sophisticated, allowing business logic to let you choose how the components should interact
 
 ```python
 # !pip install google-search-results
