@@ -50,8 +50,9 @@ These models are trained on massive amounts of text data to learn patterns and e
 ## **Introduction to Langchain**
 
 * Langchain is an open-source framework that equips developers with the necessary tools to create applications powered by large language models
-(LLMs). Langchain is similar to Lego blocks for LLMs; you can use multiple models for various behaviors for different tasks without having to learn each one from scratch,
-and then you can create pipelines using Langchain speed un application development.
+(LLMs). Langchain is similar to Lego blocks for LLMs; you can use multiple models for various behaviors for different tasks without having to learn each one from scratch, and then you can create pipelines using Langchain speed un application development.
+
+![Langchain](img/langchain.jpeg)
 
   1. [**Evolve**](#Evolve)
   2. [**Why do we need Langchain?**](#Why-do-we-need-Langchain?)
@@ -142,6 +143,8 @@ and then you can create pipelines using Langchain speed un application developme
 
 * By defining a clear and consistent schema, LangChain ensures that data is organized and standardized, facilitating efficient data retrieval and manipulation. This is crucial for the performance and reliability of applications built with LangChain. It also ensures compatibility and interoperability between different components, making it easier for developers to build and manage their applications.
 
+**EXAMPLE**
+
 ```python
 import promptlayer
 import os
@@ -208,9 +211,13 @@ chat([HumanMessage(content="Translate this sentence from English to tamil. I lov
 
 ### **Models**
 
-models, such as GPT-4, are trained on vast amounts of text data and can generate human-like text based on the input they are given. They are the core of LangChain applications, enabling capabilities like natural language understanding and generation.
+* models, such as GPT-4, are trained on vast amounts of text data and can generate human-like text based on the input they are given. They are the core of LangChain applications, enabling capabilities like natural language understanding and generation.
 
-LangChain provides a standard interface for interacting with these models, abstracting away many of the complexities involved in working directly with LLMs. This makes it easier for developers to build applications that leverage the power of these models.
+* LangChain provides a standard interface for interacting with these models, abstracting away many of the complexities involved in working directly with LLMs. This makes it easier for developers to build applications that leverage the power of these models.
+
+![Models](img/model.jpg)
+
+**EXAMPLE**
 
 **Loading Environment Variable**
 
@@ -264,6 +271,8 @@ This function, `get_completion`, takes a prompt and an optional model name as in
 A language model prompt is a user-provided set of instructions or input designed to guide the model's response. This aids the model in understanding the context and producing relevant output, whether it involves answering questions, completing sentences, or participating in a conversation
 
 
+**EXAMPLE**
+
 ````python
 customer_email = """
 Arrr, I be fuming that me blender lid \
@@ -291,6 +300,8 @@ This section defines a customer email and a desired style. Then, it constructs a
 ### **Parsers**
 
 Output parsers are responsible for taking the output of an LLM and transforming it to a more suitable format. This is very useful when you are using LLMs to generate any form of structured data.
+
+**EXAMPLE**
 
 ```python
 # Output Parsers
@@ -339,6 +350,8 @@ This part integrates with the Hugging Face pipeline for text generation. It defi
   * **Document Splitting:** Once the documents are loaded, they are split into smaller chunks or segments. This is done to make the data more manageable and to improve the efficiency of the subsequent steps.
   * **Vectors and Embeddings:** Each chunk of data is then transformed into a vector representation, also known as an embedding. These embeddings capture the semantic meaning of the data and are used for efficient retrieval of relevant information. LangChain primarily supports indexes and retrieval mechanisms centered around vector databases.
   * **Retrieval:** This is the final step where a user’s query is taken and the system uses the index to identify and return the most relevant documents. The retrieval is based on the similarity between the query vector and the document vectors.
+
+![Indexes](img/index.png)
 
 ---
 
@@ -1226,15 +1239,19 @@ pprint(conversation.memory)
 
 ### **Chains**
 
-Chains form the backbone of LangChain's workflows, seamlessly integrating Language Model Models (LLMs) with other components to build applications through the execution of a series of functions.
+* Chains form the backbone of LangChain's workflows, seamlessly integrating Language Model Models (LLMs) with other components to build applications through the execution of a series of functions.
 
-The fundamental chain is the LLMChain, which straightforwardly invokes a model and a prompt template. For example, consider saving a prompt as "ExamplePrompt" and intending to run it with Flan-T5. By importing LLMChain from langchain.chains, 
+* The fundamental chain is the LLMChain, which straightforwardly invokes a model and a prompt template. For example, consider saving a prompt as "ExamplePrompt" and intending to run it with Flan-T5. By importing LLMChain from langchain.chains, 
 
-`you can define a chain_example like so:` LLMChain(llm=flan-t5, prompt=ExamplePrompt). Executing the chain for a given input is as simple as calling chain_example.run("input").
+* `you can define a chain_example like so:` LLMChain(llm=flan-t5, prompt=ExamplePrompt). Executing the chain for a given input is as simple as calling chain_example.run("input").
 
-For scenarios where the output of one function needs to serve as the input for the next, SimpleSequentialChain comes into play. Each function within this chain can employ diverse prompts, tools, parameters, or even different models, catering to specific requirements.
+* For scenarios where the output of one function needs to serve as the input for the next, SimpleSequentialChain comes into play. Each function within this chain can employ diverse prompts, tools, parameters, or even different models, catering to specific requirements.
+
+![image](img/chain.png)
 
 > Chains are simple objects that essentially string together several components (for linear pipelines).
+
+**EXAMPLE**
 
 ```python
 from langchain import HuggingFaceHub
@@ -1327,9 +1344,13 @@ print(triples)
 
 ### **Agents**
 
-Agents, at their core, leverage a language model to make decisions about a sequence of actions to be taken. Unlike chains where a predefined sequence of actions is hard coded directly in the code, agents use a llm as a reasoning engine to determine the actions to be taken and their order.
+* Agents, at their core, leverage a language model to make decisions about a sequence of actions to be taken. Unlike chains where a predefined sequence of actions is hard coded directly in the code, agents use a llm as a reasoning engine to determine the actions to be taken and their order.
 
-> Agents are more sophisticated, allowing business logic to let you choose how the components should interact
+![agent](img/agent.webp)
+
+  > Agents are more sophisticated, allowing business logic to let you choose how the components should interact
+
+**EXAMPLE**
 
 ```python
 # !pip install google-search-results
