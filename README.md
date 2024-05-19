@@ -43,7 +43,9 @@ These models are trained on massive amounts of text data to learn patterns and e
 * [**Chains**](#Chains)
 * [**Agents**](#Agents)
 
-**3.** [**References**](#References)
+**3.** [**Embeddings**](#Embeddings)
+
+**4.** [**References**](#References)
 
 ---
 
@@ -1346,7 +1348,7 @@ print(triples)
 
 * Agents, at their core, leverage a language model to make decisions about a sequence of actions to be taken. Unlike chains where a predefined sequence of actions is hard coded directly in the code, agents use a llm as a reasoning engine to determine the actions to be taken and their order.
 
-![agent](img/agent.webp)
+![agent](img/agent.svg)
 
   > Agents are more sophisticated, allowing business logic to let you choose how the components should interact
 
@@ -1406,6 +1408,142 @@ Here, we reinitialize the agent with an additional parameter `return_intermediat
 
 ---
 
+## **Embeddings**
+
+* Simply put, text embeddings are a method of translating words or sentences from human language into the language of computers — numbers. This numerical representation of text allows machines to understand and process language meaningfully, enabling many of the advanced NLP applications we use today.
+
+![embeddings](img/Embedding.webp)
+
+**Step 1: Using Hugging Face Transformers to Embed Sentences**
+
+* First, we utilize the transformers library from Hugging Face to embed sentences using a pre-trained BERT model.
+
+**1. Load the tokenizer and model:**
+
+```python
+from transformers import AutoTokenizer, AutoModel
+import torch
+
+# Choose a pre-trained model
+model_name = 'bert-base-uncased'
+
+# Load the tokenizer and model
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name)
+```
+
+**2. Define sentences and tokenize them:**
+
+```python
+# Define the sentences you want to embed
+sentences = ["This is a sample sentence.", "This is another example."]
+
+# Tokenize the sentences
+inputs = tokenizer(sentences, return_tensors='pt', padding=True, truncation=True)
+```
+
+**3.Print tokenized inputs:**
+
+```python
+# Verify the structure of inputs
+print("Tokenized Inputs:", inputs)
+print("input_ids:", inputs['input_ids'])
+print("attention_mask:", inputs['attention_mask'])
+```
+
+**4. Generate embeddings using the model:**
+
+```python
+# Generate embeddings
+with torch.no_grad():
+    outputs = model(**inputs)
+
+# Typically, use the [CLS] token's embedding (first token) for sentence-level tasks
+embeddings = outputs.last_hidden_state[:, 0, :]  # Shape: (batch_size, hidden_size)
+print("Transformers Embeddings:\n", embeddings)
+```
+
+**Step 2: Using Sentence-Transformers to Embed Sentences**
+
+* Next, we use the sentence-transformers library, which is designed to produce better sentence embeddings.
+
+**1. Load the SentenceTransformer model:**
+
+```python
+from sentence_transformers import SentenceTransformer
+
+# Load a pre-trained SentenceTransformer model
+model = SentenceTransformer('all-MiniLM-L6-v2')  # This is a smaller, faster model suitable for embeddings
+```
+
+**2. Encode sentences and print embeddings:**
+
+```python
+# Encode sentences to get their embeddings
+embeddings = model.encode(sentences)
+print("Sentence-Transformers Embeddings:\n", embeddings)
+```
+
+**Step 3: Encoding and Comparing Specific Sentences**
+
+* We proceed to encode specific sentences and compare their embeddings.
+
+**1. Encode new sentences:**
+
+```python
+emb_1 = model.encode(["What is the meaning of life?"])
+emb_2 = model.encode(["How does one spend their time well on Earth?"])
+emb_3 = model.encode(["Would you like a salad?"])
+
+print("Sentence-Transformers Embeddings:\n", emb_1)
+print("Sentence-Transformers Embeddings:\n", emb_2)
+print("Sentence-Transformers Embeddings:\n", emb_3)
+```
+
+**2. Print sample sentences and phrases:**
+
+```python
+in_1 = "The kids play in the park."
+in_2 = "The play was for kids in the park."
+print(in_1)
+print(in_2)
+in_pp_1 = ["kids", "play", "park"]
+in_pp_2 = ["play", "kids", "park"]
+```
+
+**3. Encode phrases and calculate their mean embeddings:**
+
+```python
+embeddings_1 = model.encode(in_pp_1)
+embeddings_2 = model.encode(in_pp_2)
+import numpy as np
+emb_array_1 = np.stack(embeddings_1)
+print(emb_array_1.shape)
+emb_array_2 = np.stack(embeddings_2)
+print(emb_array_2.shape)
+emb_2_mean = emb_array_2.mean(axis=0)
+emb_1_mean = emb_array_1.mean(axis=0)
+
+print(emb_1_mean.shape)
+print(emb_2_mean.shape)
+
+print(emb_1_mean[:4])
+print(emb_2_mean[:4])
+```
+
+**4. Encode sentences and print their first 4 values:**
+
+```python
+embedding_1 = model.encode([in_1])
+embedding_2 = model.encode([in_2])
+
+vector_1 = embedding_1[0]
+print("Vector 1 first 4 values:", vector_1[:4])
+vector_2 = embedding_2[0]
+print("Vector 2 first 4 values:", vector_2[:4])
+```
+
+---
 ## References
 
 1. https://github.com/sudarshan-koirala/youtube-stuffs/blob/main/langchain/LangChain_Components.ipynb
