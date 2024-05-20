@@ -134,6 +134,8 @@ These models are trained on massive amounts of text data to learn patterns and e
 
 8. [**Agents**](#Agents)
 
+9. [**Embeddings**](#Embeddings)
+
 ![Components](img/companes.png)
 
 ---
