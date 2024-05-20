@@ -51,8 +51,7 @@ These models are trained on massive amounts of text data to learn patterns and e
 
 ## **Introduction to Langchain**
 
-* Langchain is an open-source framework that equips developers with the necessary tools to create applications powered by large language models
-(LLMs). Langchain is similar to Lego blocks for LLMs; you can use multiple models for various behaviors for different tasks without having to learn each one from scratch, and then you can create pipelines using Langchain speed un application development.
+* Langchain is an open-source framework that equips developers with the necessary tools to create applications powered by large language models (LLMs). Langchain is similar to Lego blocks for LLMs; you can use multiple models for various behaviors for different tasks without having to learn each one from scratch, and then you can create pipelines using Langchain speed un application development.
 
 
   1. [**Evolve**](#Evolve)
