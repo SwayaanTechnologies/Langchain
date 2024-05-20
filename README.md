@@ -1558,3 +1558,11 @@ print("Vector 2 first 4 values:", vector_2[:4])
 5. https://www.youtube.com/watch?v=mBJqGAHoam4
 
 6. https://langchain-cn.readthedocs.io/en/latest/modules/models/text_embedding/examples/huggingfacehub.html
+
+7. https://www.youtube.com/watch?v=rh7aB-Pbxa4
+
+8. https://www.youtube.com/watch?v=RC3JOzN2F1w
+
+9. https://www.youtube.com/watch?v=SZorAJ4I-sA
+
+10. https://www.youtube.com/watch?v=iUmL4p_N79I
