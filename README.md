@@ -1806,66 +1806,68 @@ print(context)
 
 **1. Importing Libraries:**
 
-These lines import the necessary classes from the `llama_index` package. This includes embedding models, settings, data readers, vector stores, retrievers, query engines, and postprocessors.
+* These lines import the necessary classes from the `llama_index` package. This includes embedding models, settings, data readers, vector stores, retrievers, query engines, and postprocessors.
 
 **2. Setting Up the Embedding Model:**
 
-The code sets up the embedding model to be used for text embeddings. In this example, the `BAAI/bge-small-en-v1.5` model is chosen, but you can select a different model based on your requirements.
+* The code sets up the embedding model to be used for text embeddings. In this example, the `BAAI/bge-small-en-v1.5` model is chosen, but you can select a different model based on your requirements.
 
 **3. Setting the Language Model:**
 
-Sets the language model (LLM) to None, indicating that no specific LLM is being used directly in this setup.
+* Sets the language model (LLM) to None, indicating that no specific LLM is being used directly in this setup.
 
 **4. Configuring Document Chunking:**
 
-  * `chunk_size` defines the size of text chunks into which the documents will be split.
-  * `chunk_overlap` defines the overlap between consecutive chunks to ensure context continuity.
+* `chunk_size` defines the size of text chunks into which the documents will be split.
+
+* `chunk_overlap` defines the overlap between consecutive chunks to ensure context continuity.
 
 **5. Loading Documents:**
 
-The code loads documents from a specified directory. You need to replace `"docs"` with the actual path to your documents directory.
+* The code loads documents from a specified directory. You need to replace `"docs"` with the actual path to your documents directory.
 
 **6. Print Initial Document Count:**
 
-Prints the number of documents loaded to verify the initial count.
+* Prints the number of documents loaded to verify the initial count.
 
 **7. Filtering Documents:**
 
-Filters out specific documents based on criteria such as content or metadata. In this example, documents containing certain phrases are excluded.
+* Filters out specific documents based on criteria such as content or metadata. In this example, documents containing certain phrases are excluded.
 
 **8. Print Filtered Document Count:**
 
-Prints the number of documents after filtering to confirm the updated count.
+* Prints the number of documents after filtering to confirm the updated count.
 
 **9. Creating Vector Store Index:**
 
-Converts the documents into a vector store index, which facilitates efficient similarity search.
+* Converts the documents into a vector store index, which facilitates efficient similarity search.
 
 **10. Setting Top-k:**
 
-Defines how many top similar documents to retrieve in response to a query.
+* Defines how many top similar documents to retrieve in response to a query.
 
 **11. Configuring Retriever:**
 
-Sets up the retriever with the vector index and specifies that it should return the top `k` most similar documents.
+* Sets up the retriever with the vector index and specifies that it should return the top `k` most similar documents.
 
 **12. Assembling Query Engine:**
 
-Configures the query engine using the retriever and a similarity postprocessor. The postprocessor filters out results below a similarity threshold of 0.5.
+* Configures the query engine using the retriever and a similarity postprocessor. The postprocessor filters out results below a similarity threshold of 0.5.
 
 **13. Defining the Query:**
 
-Specifies the query string to be used for retrieving relevant documents.
+* Specifies the query string to be used for retrieving relevant documents.
 
 **14. Querying the Documents:**
 
-Executes the query using the query engine and retrieves the response containing the most relevant documents.
+* Executes the query using the query engine and retrieves the response containing the most relevant documents.
 
 **15. Formatting and Printing the Response:**
 
-  * Formats the response by concatenating the text of the retrieved documents up to the specified `top_k`limit.
+* Formats the response by concatenating the text of the retrieved documents up to the specified `top_k`limit.
 
-  * Prints the formatted context, providing a readable output of the retrieved document snippets.
+* Prints the formatted context, providing a readable output of the retrieved document snippets.
+
 ---
 ## References
 
