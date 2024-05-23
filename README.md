@@ -45,7 +45,11 @@ These models are trained on massive amounts of text data to learn patterns and e
 
 **3.** [**Embeddings**](#Embeddings)
 
-**4.** [**References**](#References)
+**4.** [**Chain of Thought**](#Chain-of-Thought)
+
+**5.** [**Retriever Augmented Generator**](#Retriever-Augmented-Generator)
+
+**6.** [**References**](#References)
 
 ---
 
@@ -1544,6 +1548,325 @@ print("Vector 2 first 4 values:", vector_2[:4])
 ```
 
 ---
+
+## **Chain of Thought**
+
+* Chain-of-thought prompting is a prompt engineering technique that aims to improve language models' performance on tasks requiring logic, calculation and decision-making by structuring the input prompt in a way that mimics human reasoning.
+
+* To construct a chain-of-thought prompt, a user typically appends an instruction such as "Describe your reasoning in steps" or "Explain your answer step by step" to the end of their query to a large language model (LLM). In essence, this prompting technique asks the LLM to not only generate an end result, but also detail the series of intermediate steps that led to that answer.
+
+* Guiding the model to articulate these intermediate steps has shown promising results. "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models," a seminal paper by the Google Brain research team presented at the 2022 NeurIPS conference, found that chain-of-thought prompting outperformed standard prompting techniques on a range of arithmetic, common-sense and symbolic reasoning benchmarks.
+
+> Chain of Thought (CoT) prompting is a technique that helps Large Language Models (LLMs) perform complex reasoning tasks by breaking down the problem into a series of intermediate steps. Think of it as providing the LLM with a roadmap to follow instead of just the destination.
+
+![chain-of-thought](img/cot.jpeg)
+
+### **Chain-of-Thought (CoT)**
+
+* Chain-of-Thought (CoT) prompting enhances reasoning in large language models(LLMs) by breaking down complex problems into smaller, manageable steps. This method mirrors how humans tackle complicated math or logic questions by decomposing them into intermediate steps that lead to a final answer.
+
+* CoT prompting involves structuring the input prompt to guide the LLM to explain its reasoning in a step-by-step manner. This approach has shown significant improvements in LLM performance on various reasoning tasks, including arithmetic, common-sense, and symbolic reasoning.
+
+* Researchers Wei et al. discovered that with the right examples, LLMs can also perform this step-by-step reasoning. This process, known as in-context learning, doesn't require adjusting the model's weights. By presenting the LLM with examples of how to break down problems, it learns to replicate this structured approach.
+
+![chain-of-thought](img/cot.webp)
+
+**Prompt:**
+
+```python
+The odd numbers in this group add up to an even number: 4, 8, 9, 15, 12, 2, 1.
+A: Adding all the odd numbers (9, 15, 1) gives 25. The answer is False.
+The odd numbers in this group add up to an even number: 17,  10, 19, 4, 8, 12, 24.
+A: Adding all the odd numbers (17, 19) gives 36. The answer is True.
+The odd numbers in this group add up to an even number: 16,  11, 14, 4, 8, 13, 24.
+A: Adding all the odd numbers (11, 13) gives 24. The answer is True.
+The odd numbers in this group add up to an even number: 17,  9, 10, 12, 13, 4, 2.
+A: Adding all the odd numbers (17, 9, 13) gives 39. The answer is False.
+The odd numbers in this group add up to an even number: 15, 32, 5, 13, 82, 7, 1. 
+A:
+```
+
+**Output:**
+
+```python
+Adding all the odd numbers (15, 5, 13, 7, 1) gives 41. The answer is False.
+```
+
+### **Few-Shot Prompting**
+
+* While large-language models demonstrate remarkable zero-shot capabilities, they still fall short on more complex tasks when using the zero-shot setting. Few-shot prompting can be used as a technique to enable in-context learning where we provide demonstrations in the prompt to steer the model to better performance. The demonstrations serve as conditioning for subsequent examples where we would like the model to generate a response.
+
+**Prompt:**
+
+```python
+A "whatpu" is a small, furry animal native to Tanzania. An example of a sentence that uses the word whatpu is:
+We were traveling in Africa and we saw these very cute whatpus. 
+To do a "farduddle" means to jump up and down really fast. An example of a sentence that uses the word farduddle is:
+```
+
+**Output:**
+
+```python
+When we won the game, we all started to farduddle in celebration.
+```
+
+### **Self-consistency Prompting**
+
+* This approach combines diverse reasoning paths with few-shot CoT to find the answer with the highest consistency. This method performs well with arithmetic and commonsense reasoning problems. Self-consistency prompt samples a diverse set of reasoning paths instead of the greedy one and then finalizes the most consistent answer by marginalizing out the sampled reasoning paths.
+
+![self-consistency](img/scot.png)
+
+**Prompt:**
+
+```python
+Q: There are 15 trees in the grove. Grove workers will plant trees in the grove today. After they are done,
+there will be 21 trees. How many trees did the grove workers plant today?
+A: We start with 15 trees. Later we have 21 trees. The difference must be the number of trees they planted.
+So, they must have planted 21 - 15 = 6 trees. The answer is 6.
+
+Q: If there are 3 cars in the parking lot and 2 more cars arrive, how many cars are in the parking lot?
+A: There are 3 cars in the parking lot already. 2 more arrive. Now there are 3 + 2 = 5 cars. The answer is 5.
+
+Q: Leah had 32 chocolates and her sister had 42. If they ate 35, how many pieces do they have left in total?
+A: Leah had 32 chocolates and Leah’s sister had 42. That means there were originally 32 + 42 = 74
+chocolates. 35 have been eaten. So in total they still have 74 - 35 = 39 chocolates. The answer is 39.
+
+Q: Jason had 20 lollipops. He gave Denny some lollipops. Now Jason has 12 lollipops. How many lollipops
+did Jason give to Denny?
+A: Jason had 20 lollipops. Since he only has 12 now, he must have given the rest to Denny. The number of
+lollipops he has given to Denny must have been 20 - 12 = 8 lollipops. The answer is 8.
+
+Q: Shawn has five toys. For Christmas, he got two toys each from his mom and dad. How many toys does
+he have now?
+A: He has 5 toys. He got 2 from mom, so after that he has 5 + 2 = 7 toys. Then he got 2 more from dad, so
+in total he has 7 + 2 = 9 toys. The answer is 9.
+
+Q: There were nine computers in the server room. Five more computers were installed each day, from
+monday to thursday. How many computers are now in the server room?
+A: There are 4 days from monday to thursday. 5 computers were added each day. That means in total 4 * 5 =
+20 computers were added. There were 9 computers in the beginning, so now there are 9 + 20 = 29 computers.
+The answer is 29.
+
+Q: Michael had 58 golf balls. On tuesday, he lost 23 golf balls. On wednesday, he lost 2 more. How many
+golf balls did he have at the end of wednesday?
+A: Michael initially had 58 balls. He lost 23 on Tuesday, so after that he has 58 - 23 = 35 balls. On
+Wednesday he lost 2 more so now he has 35 - 2 = 33 balls. The answer is 33.
+
+Q: Olivia has $23. She bought five bagels for $3 each. How much money does she have left?
+A: She bought 5 bagels for $3 each. This means she spent $15. She has $8 left.
+
+Q: When I was 6 my sister was half my age. Now I’m 70 how old is my sister?
+A:
+```
+
+**Output 1:**
+
+```python
+When I was 6 my sister was half my age, so she was 3. Now I am 70, so she is 70 - 3 = 67. The answer is 67.
+```
+
+**Output 2:**
+
+```python
+When the narrator was 6, his sister was half his age, which is 3. Now that the narrator is 70, his sister would be 70 - 3 = 67 years old. The answer is 67.
+```
+
+**Output 3:**
+
+```python
+When I was 6 my sister was half my age, so she was 3. Now I am 70, so she is 70/2 = 35. The answer is 35.
+```
+
+### **Zero-Shot Prompting**
+
+* Zero-shot prompting is a technique that allows large language models (LLMs) to generate responses to queries without any specific training on the task. By providing a prompt that describes the task or question, the LLM can generate an answer based on its pre-existing knowledge and understanding of language.
+
+* Large language models (LLMs) today, such as GPT-3.5 Turbo, GPT-4, and Claude 3, are tuned to follow instructions and are trained on large amounts of data. Large-scale training makes these models capable of performing some tasks in a "zero-shot" manner. Zero-shot prompting means that the prompt used to interact with the model won't contain examples or demonstrations. The zero-shot prompt directly instructs the model to perform a task without any additional examples to steer it.
+
+**Prompt:**
+
+```python
+Classify the text into neutral, negative or positive. 
+Text: I think the vacation is okay.
+Sentiment:
+```
+
+**Output:**
+
+```python
+Neutral
+```
+---
+
+## **Retriever Augmented Generator**
+
+* The basic usage of an LLM consists of giving it a prompt and getting back a response.
+
+![rag](img/llm.webp)
+
+* RAG works by adding a step to this basic process. Namely, a retrieval step is performed where, based on the user’s prompt, the relevant information is extracted from an external knowledge base and injected into the prompt before being passed to the LLM.
+
+![rag](img/rag.webp)
+
+There are 2 key elements of a RAG system: a retriever and a knowledge base.
+
+**Retriever**
+
+* A retriever takes a user prompt and returns relevant items from a knowledge base. This typically works using so-called text embeddings, numerical representations of text in concept space. In other words, these are numbers that represent the meaning of a given text.
+
+* Text embeddings can be used to compute a similarity score between the user’s query and each item in the knowledge base. The result of this process is a ranking of each item’s relevance to the input query.
+
+* The retriever can then take the top k (say k=3) most relevant items and inject them into the user prompt. This augmented prompt is then passed into the LLM for generation.
+
+![rag](img/retriver%20rag.webp)
+
+**Knowledge Base**
+
+* The next key element of a RAG system is a knowledge base. This houses all the information you want to make available to the LLM. While there are countless ways to construct a knowledge base for RAG, here I’ll focus on building one from a set of documents.
+
+* The process can be broken down into 4 key steps [2,3].
+
+  1. **Load docs** This consists of gathering a collection of documents and ensuring they are in a ready-to-parse format (more on this later).
+
+  2. **Chunk docs** Since LLMs have limited context windows, documents must be split into smaller chunks (e.g., 256 or 512 characters long).
+
+  3. **Embed chunks** Translate each chunk into numbers using a text embedding model.
+
+  4. **Load into Vector DB** Load text embeddings into a database (aka a vector database).
+
+![rag](img/KOT.webp)
+
+**EXAMPLE**
+
+```python
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex
+from llama_index.core.retrievers import VectorIndexRetriever
+from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.core.postprocessor import SimilarityPostprocessor
+
+# Import any embedding model from the Hugging Face hub
+# You can choose an embedding model as per your requirement
+Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+# Alternative embedding model
+# Settings.embed_model = HuggingFaceEmbedding(model_name="thenlper/gte-large")
+
+# Set LLM to None, assuming no language model is used directly here
+Settings.llm = None
+
+# Set chunk size and overlap for document chunking
+Settings.chunk_size = 256
+Settings.chunk_overlap = 25
+
+# Load articles from the directory
+# Replace "docs" with the actual path to your documents directory
+documents = SimpleDirectoryReader("docs").load_data()
+
+# Print the initial count of documents
+print(f"Initial number of documents: {len(documents)}")
+
+# Filter out documents based on specific criteria
+documents = [doc for doc in documents if "Member-only story" not in doc.text and
+             "The Data Entrepreneurs" not in doc.text and " min read" not in doc.text]
+
+# Print the count of documents after filtering
+print(f"Number of documents after filtering: {len(documents)}")
+
+# Store documents into a vector database
+index = VectorStoreIndex.from_documents(documents)
+
+# Set the number of documents to retrieve
+top_k = 3
+
+# Configure the retriever with the index and similarity threshold
+retriever = VectorIndexRetriever(
+    index=index,
+    similarity_top_k=top_k,
+)
+
+# Assemble the query engine with the retriever and postprocessor
+query_engine = RetrieverQueryEngine(
+    retriever=retriever,
+    node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.5)],
+)
+
+# Define the query
+query = "What is fat-tailedness?"
+
+# Get the response from the query engine
+response = query_engine.query(query)
+
+# Reformat and print the response
+context = "Context:\n"
+for i in range(min(top_k, len(response.source_nodes))):
+    context += response.source_nodes[i].text + "\n\n"
+
+print(context)
+```
+
+**1. Importing Libraries:**
+
+These lines import the necessary classes from the `llama_index` package. This includes embedding models, settings, data readers, vector stores, retrievers, query engines, and postprocessors.
+
+**2. Setting Up the Embedding Model:**
+
+The code sets up the embedding model to be used for text embeddings. In this example, the `BAAI/bge-small-en-v1.5` model is chosen, but you can select a different model based on your requirements.
+
+**3. Setting the Language Model:**
+
+Sets the language model (LLM) to None, indicating that no specific LLM is being used directly in this setup.
+
+**4. Configuring Document Chunking:**
+
+  * `chunk_size` defines the size of text chunks into which the documents will be split.
+  * `chunk_overlap` defines the overlap between consecutive chunks to ensure context continuity.
+
+**5. Loading Documents:**
+
+The code loads documents from a specified directory. You need to replace `"docs"` with the actual path to your documents directory.
+
+**6. Print Initial Document Count:**
+
+Prints the number of documents loaded to verify the initial count.
+
+**7. Filtering Documents:**
+
+Filters out specific documents based on criteria such as content or metadata. In this example, documents containing certain phrases are excluded.
+
+**8. Print Filtered Document Count:**
+
+Prints the number of documents after filtering to confirm the updated count.
+
+**9. Creating Vector Store Index:**
+
+Converts the documents into a vector store index, which facilitates efficient similarity search.
+
+**10. Setting Top-k:**
+
+Defines how many top similar documents to retrieve in response to a query.
+
+**11. Configuring Retriever:**
+
+Sets up the retriever with the vector index and specifies that it should return the top `k` most similar documents.
+
+**12. Assembling Query Engine:**
+
+Configures the query engine using the retriever and a similarity postprocessor. The postprocessor filters out results below a similarity threshold of 0.5.
+
+**13. Defining the Query:**
+
+Specifies the query string to be used for retrieving relevant documents.
+
+**14. Querying the Documents:**
+
+Executes the query using the query engine and retrieves the response containing the most relevant documents.
+
+**15. Formatting and Printing the Response:**
+
+  * Formats the response by concatenating the text of the retrieved documents up to the specified `top_k`limit.
+  
+  * Prints the formatted context, providing a readable output of the retrieved document snippets.
+---
 ## References
 
 1. https://github.com/sudarshan-koirala/youtube-stuffs/blob/main/langchain/LangChain_Components.ipynb
@@ -1565,3 +1888,5 @@ print("Vector 2 first 4 values:", vector_2[:4])
 9. https://www.youtube.com/watch?v=SZorAJ4I-sA
 
 10. https://www.youtube.com/watch?v=iUmL4p_N79I
+
+11. https://www.promptingguide.ai/techniques
