@@ -1718,7 +1718,7 @@ There are 2 key elements of a RAG system: a retriever and a knowledge base.
 
 * The retriever can then take the top k (say k=3) most relevant items and inject them into the user prompt. This augmented prompt is then passed into the LLM for generation.
 
-![rag](img/retriver%20rag.webp)
+![rag](img/retriverrag.webp)
 
 **Knowledge Base**
 
@@ -1864,7 +1864,7 @@ Executes the query using the query engine and retrieves the response containing 
 **15. Formatting and Printing the Response:**
 
   * Formats the response by concatenating the text of the retrieved documents up to the specified `top_k`limit.
-  
+
   * Prints the formatted context, providing a readable output of the retrieved document snippets.
 ---
 ## References
