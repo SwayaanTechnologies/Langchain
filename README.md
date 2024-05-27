@@ -2073,3 +2073,5 @@ for n in retrievals:
 10. https://www.youtube.com/watch?v=iUmL4p_N79I
 
 11. https://www.promptingguide.ai/techniques
+
+12. https://pub.towardsai.net/advanced-rag-techniques-an-illustrated-overview-04d193d8fec6
