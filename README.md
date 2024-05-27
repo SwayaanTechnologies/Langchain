@@ -1924,6 +1924,128 @@ print(context)
 
 *We will use Open Source LLM `zephyr-7b-alpha` and embedding `hkunlp/instructor-large`
 
+**A. Load Data** 
+
+    Before your chosen LLM can act on your data you need to load it. The way LlamaIndex does this is via data connectors, also called `Reader`. Data connectors ingest data from different data sources and format the data into `Document` objects. A `Document` is a collection of data (currently text, and in the future, images, and audio) and metadata about that data.
+
+```python
+PDFReader = download_loader("PDFReader")
+loader = PDFReader()
+docs = loader.load_data(file=Path("./docs/MachineLearning-Lecture01.pdf"))
+
+# combine all the text
+doc_text = "\n\n".join([d.get_content() for d in docs])
+documents = [Document(text=doc_text)]
+```
+
+**B. Chunking**
+
+    We will use `SentenceSplitter` that split the text while respecting the boundaries of sentences. This function is used to break down large bodies of text into smaller sections, ensuring that sentences aren't split in the middle and making it easier to process or analyze text data in manageable portions. We will create an initial set of nodes (chunk size 1024).
+
+```python
+node_parser = SentenceSplitter(chunk_size=1024)
+base_nodes = node_parser.get_nodes_from_documents(documents)
+# set node ids to be a constant
+for idx, node in enumerate(base_nodes):
+    node.id_ = f"node-{idx}"
+# print all the node ids corrosponding to all the chunks
+for node in base_nodes:
+  print(node.id_)
+```
+
+**C. Open Source LLM and Embedding**
+
+  We will use Open Source LLM `zephyr-7b-alpha` and will quantify it for memory and computation. This should run on a T4 GPU in the free tier on Colab.
+
+  In this example, we will use `hkunlp/instructor-large`. This is an instruction-finetuned text embedding model that can generate text embeddings tailored to any task (e.g., classification, retrieval, clustering, text evaluation, etc.) 
+
+  Now, we will be setting up the `ServiceContextobject`, and will be using it to construct an index and query. The input documents will be broken into nodes, and the embedding model will generate an embedding for each node. Then, at query time, the embedding model will be used again to embed the query text.
+
+```python
+from google.colab import userdata
+
+# huggingface api token for downloading zephyr-7b
+hf_token = userdata.get('hf_token')
+
+quantization_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_use_double_quant=True,
+)
+
+
+def messages_to_prompt(messages):
+  prompt = ""
+  for message in messages:
+    if message.role == 'system':
+      prompt += f"<|system|>\n{message.content}</s>\n"
+    elif message.role == 'user':
+      prompt += f"<|user|>\n{message.content}</s>\n"
+    elif message.role == 'assistant':
+      prompt += f"<|assistant|>\n{message.content}</s>\n"
+
+  # ensure we start with a system prompt, insert blank if needed
+  if not prompt.startswith("<|system|>\n"):
+    prompt = "<|system|>\n</s>\n" + prompt
+
+  # add final assistant prompt
+  prompt = prompt + "<|assistant|>\n"
+
+  return prompt
+
+
+# LLM
+llm = HuggingFaceLLM(
+    model_name="HuggingFaceH4/zephyr-7b-alpha",
+    tokenizer_name="HuggingFaceH4/zephyr-7b-alpha",
+    query_wrapper_prompt=PromptTemplate("<|system|>\n</s>\n<|user|>\n{query_str}</s>\n<|assistant|>\n"),
+    context_window=3900,
+    max_new_tokens=256,
+    model_kwargs={"quantization_config": quantization_config},
+    # tokenizer_kwargs={},
+    generate_kwargs={"temperature": 0.7, "top_k": 50, "top_p": 0.95},
+    messages_to_prompt=messages_to_prompt,
+    device_map="auto",
+)
+
+# Embedding
+embed_model = HuggingFaceInstructEmbeddings(
+    model_name="hkunlp/instructor-large", model_kwargs={"device": DEVICE}
+)
+
+# set your ServiceContext for all the next steps
+service_context = ServiceContext.from_defaults(
+    llm=llm, embed_model=embed_model
+)
+```
+
+**1. Baseline Retriever**
+Let’s define a baseline retriever that simply fetches the top-k raw text nodes by embedding similarity. But, we have to index our data first:
+
+**a. Indexing** With our data loaded, we now have a list of Document objects (or a list of Nodes). It’s time to build an `Index` over these objects so you can start querying them.
+
+In LlamaIndex terms, an `Index` is a data structure composed of `Document` objects, designed to enable querying by an LLM.
+
+```python
+# index
+base_index = VectorStoreIndex(base_nodes, service_context=service_context)
+```
+
+**b. Base Retriever** It simply fetches the top-k raw text nodes by embedding similarity.
+
+```python
+# find top 2 nodes
+base_retriever = base_index.as_retriever(similarity_top_k=2)
+
+retrievals = base_retriever.retrieve(
+    "Can you tell me about the Paged Optimizers?"
+)
+
+for n in retrievals:
+    display_source_node(n, source_length=1500)
+```
+
 
 ---
 
