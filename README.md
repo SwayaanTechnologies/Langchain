@@ -49,7 +49,9 @@ These models are trained on massive amounts of text data to learn patterns and e
 
 **5.** [**Retriever Augmented Generator**](#Retriever-Augmented-Generator)
 
-**6.** [**References**](#References)
+**6.** [**Advanced Retrieval Techniques**](#Advanced-Retrieval-Techniques)
+
+**7.** [**References**](#References)
 
 ---
 
@@ -1870,6 +1872,58 @@ print(context)
 * Formats the response by concatenating the text of the retrieved documents up to the specified `top_k`limit.
 
 * Prints the formatted context, providing a readable output of the retrieved document snippets.
+
+---
+
+## **Advanced Retrieval Techniques:**
+
+* RAG (Retrieval Augmented Generation) is a technique for augmenting LLM knowledge with additional, often private or real-time, data.
+
+* LLMs are trained on enormous bodies of data but they aren’t trained on your data. RAG solves this problem by adding your data to the data LLMs already have access to.
+
+* If you want to build AI applications that can reason about private data or data introduced after a model’s cutoff date, you need to augment the knowledge of the model with the specific information it needs. The process of bringing the appropriate information and inserting it into the model prompt is known as Retrieval Augmented Generation (RAG).
+
+* In RAG, your data is loaded and prepared for queries or “indexed”. User queries act on the index, which filters your data down to the most relevant context. This context and your query then go to the LLM along with a prompt, and the LLM responds.
+
+**Stages within RAG**
+
+* There are five key stages within RAG, which in turn will be a part of any larger application you build. These are:
+
+![rag](img/saage.webp)
+
+1. **Loading:** this refers to getting your data from where it lives — whether it’s text files, PDFs, another website, a database, or an API — into your pipeline. LlamaHub provides hundreds of connectors to choose from.
+
+2. **Spliting:** If we were to use these large sections, then we’d be inserting a lot of noisy/unwanted context and because all LLMs have a maximum context length, we wouldn’t be able to fit too much other relevant context. So instead, we’re going to split the text within each section into smaller chunks. Intuitively, smaller chunks will encapsulate single/few concepts and will be less noisy compared to larger chunks.
+
+> Text splitters break large Documents into smaller chunks. This is useful both for indexing data and for passing it in to a model, since large chunks are harder to search over and won’t in a model’s finite context window. Empirically models struggle to find the relevant context in very long prompts.
+
+3. **Indexing:** this means creating a data structure that allows for querying the data. For LLMs, this nearly always means creating vector embeddings, numerical representations of the meaning of your data, as well as numerous other metadata strategies to make it easy to accurately find contextually relevant data.
+
+4. **Storing:** once your data is indexed you will almost always want to store your index, as well as other metadata, to avoid having to re-index it.
+
+5. **Querying:** for any given indexing strategy there are many ways you can utilize LLMs and LlamaIndex data structures to query, including sub-queries, multi-step queries, and hybrid strategies.
+
+6. **Evaluation:** A critical step in any pipeline is checking how effective it is relative to other strategies, or when you make changes. Evaluation provides objective measures of how accurate, faithful, and fast your responses to queries are.
+
+**Advanced RAG**
+
+* Now we’ll dive into the overview of ONE of the advanced RAG techniques related to Context Enhancement i.e. Parent-Child Chunks Retrieval.
+
+> The concept here is to retrieve smaller chunks for better search quality, but add up surrounding context for LLM to reason upon.
+
+![rag](img/1.webp)
+
+**Implementation (Open Source LLM and Embedding)**
+
+* When you first perform retrieval, you may want to retrieve the reference as opposed to the raw text. You can have multiple references point to the same node.
+
+* In this blog, we will explore some different usages of node references:
+
+  * **Chunk references:** Different chunk sizes refer to a bigger chunk
+  * **Metadata references:** Summaries + Generated Questions referring to a bigger chunk
+
+*We will use Open Source LLM `zephyr-7b-alpha` and embedding `hkunlp/instructor-large`
+
 
 ---
 
