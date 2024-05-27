@@ -1926,7 +1926,7 @@ print(context)
 
 **A. Load Data** 
 
-    Before your chosen LLM can act on your data you need to load it. The way LlamaIndex does this is via data connectors, also called `Reader`. Data connectors ingest data from different data sources and format the data into `Document` objects. A `Document` is a collection of data (currently text, and in the future, images, and audio) and metadata about that data.
+Before your chosen LLM can act on your data you need to load it. The way LlamaIndex does this is via data connectors, also called `Reader`. Data connectors ingest data from different data sources and format the data into `Document` objects. A `Document` is a collection of data (currently text, and in the future, images, and audio) and metadata about that data.
 
 ```python
 PDFReader = download_loader("PDFReader")
@@ -1940,7 +1940,7 @@ documents = [Document(text=doc_text)]
 
 **B. Chunking**
 
-    We will use `SentenceSplitter` that split the text while respecting the boundaries of sentences. This function is used to break down large bodies of text into smaller sections, ensuring that sentences aren't split in the middle and making it easier to process or analyze text data in manageable portions. We will create an initial set of nodes (chunk size 1024).
+We will use `SentenceSplitter` that split the text while respecting the boundaries of sentences. This function is used to break down large bodies of text into smaller sections, ensuring that sentences aren't split in the middle and making it easier to process or analyze text data in manageable portions. We will create an initial set of nodes (chunk size 1024).
 
 ```python
 node_parser = SentenceSplitter(chunk_size=1024)
@@ -1955,11 +1955,11 @@ for node in base_nodes:
 
 **C. Open Source LLM and Embedding**
 
-  We will use Open Source LLM `zephyr-7b-alpha` and will quantify it for memory and computation. This should run on a T4 GPU in the free tier on Colab.
+We will use Open Source LLM `zephyr-7b-alpha` and will quantify it for memory and computation. This should run on a T4 GPU in the free tier on Colab.
 
-  In this example, we will use `hkunlp/instructor-large`. This is an instruction-finetuned text embedding model that can generate text embeddings tailored to any task (e.g., classification, retrieval, clustering, text evaluation, etc.) 
+In this example, we will use `hkunlp/instructor-large`. This is an instruction-finetuned text embedding model that can generate text embeddings tailored to any task (e.g., classification, retrieval, clustering, text evaluation, etc.) 
 
-  Now, we will be setting up the `ServiceContextobject`, and will be using it to construct an index and query. The input documents will be broken into nodes, and the embedding model will generate an embedding for each node. Then, at query time, the embedding model will be used again to embed the query text.
+Now, we will be setting up the `ServiceContextobject`, and will be using it to construct an index and query. The input documents will be broken into nodes, and the embedding model will generate an embedding for each node. Then, at query time, the embedding model will be used again to embed the query text.
 
 ```python
 from google.colab import userdata
@@ -2021,6 +2021,7 @@ service_context = ServiceContext.from_defaults(
 ```
 
 **1. Baseline Retriever**
+
 Let’s define a baseline retriever that simply fetches the top-k raw text nodes by embedding similarity. But, we have to index our data first:
 
 **a. Indexing** With our data loaded, we now have a list of Document objects (or a list of Nodes). It’s time to build an `Index` over these objects so you can start querying them.
