@@ -1891,7 +1891,7 @@ print(context)
 
 ![rag](img/saage.webp)
 
-1. **Loading:** this refers to getting your data from where it lives — whether it’s text files, PDFs, another website, a database, or an API — into your pipeline. LlamaHub provides hundreds of connectors to choose from.
+1. **Loading:** this refers to getting your data from where it lives — whether it’s text files, PDFs, another website, a database, or an API — into your pipeline.
 
 2. **Spliting:** If we were to use these large sections, then we’d be inserting a lot of noisy/unwanted context and because all LLMs have a maximum context length, we wouldn’t be able to fit too much other relevant context. So instead, we’re going to split the text within each section into smaller chunks. Intuitively, smaller chunks will encapsulate single/few concepts and will be less noisy compared to larger chunks.
 
@@ -2103,6 +2103,27 @@ all_nodes_dict = {n.node_id: n for n in all_nodes}
 ```
 
 Now, let's take a look at all the ALL nodes dictionary containing parent and child nodes.
+
+![output](img/output1.webp)
+
+Let’s check one child node and it’s a reference to its parent node. See, this index node (child) is referenced to node-0 (parent).
+
+![output](img/output2.webp)
+
+Similarly, you will see that these many smaller chunks (`IndexNode`) are associated with each of the original text chunks(`TextNode`) for example `node-0`. All of the smaller chunks reference to the large chunk in the metadata with `index_id` pointing to the index ID of the larger chunk.
+
+**a. Indexing (from these smaller chunks)**
+
+When we perform retrieval, we want to retrieve the reference as opposed to the raw text. You can have multiple references point to the same
+
+```python
+vector_index_chunk = VectorStoreIndex(
+    all_nodes, service_context=service_context
+)
+vector_retriever_chunk = vector_index_chunk.as_retriever(similarity_top_k=2)
+```
+
+
 ---
 
 ## References
