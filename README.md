@@ -2047,7 +2047,62 @@ for n in retrievals:
     display_source_node(n, source_length=1500)
 ```
 
+See the output node-id and similarity score.
 
+![output](img/output.webp)
+
+**c. Querying** Now we’ve loaded our data, and built an index, we’re ready to get to the most significant part of an LLM application: querying!
+
+The most important thing to know about querying is that it is just a prompt to an LLM: so it can be a question and get an answer, or a request for summarization, or a much more complex instruction.
+
+The basis of all querying is the QueryEngine. The simplest way to get a QueryEngine is to get your index to create one for you, like this:
+
+```python
+# create a query engine
+query_engine_base = RetrieverQueryEngine.from_args(
+    base_retriever, service_context=service_context
+)
+
+# query
+response = query_engine_base.query(
+    "Can you tell me about the Paged Optimizers?"
+)
+```
+
+**2. Chunk References: Smaller Child Chunks Referring to Bigger Parent Chunkl**
+
+Before, we used big pieces of text, each about 1024 characters long, for finding and putting together information. Now, we’ll try something different. Instead of using those big chunks, we’ll break them down into smaller pieces, like making smaller puzzles from a big one.
+
+Here’s how we’ll do it:
+
+Imagine each big piece of text is like a big jigsaw puzzle piece. We’ll split that big piece into smaller ones:
+
+From each big piece, we’ll create 4 slightly bigger pieces, each around 256 characters long.
+Next, we’ll have 2 even bigger pieces, each about 512 characters long.
+And of course, we’ll still keep the original big piece of 1024 characters. So, instead of just having one big piece, we’ll have lots of smaller ones. This helps us find specific things more easily, and when we need to see the bigger picture, we can always refer back to the original big piece.
+
+```python
+sub_chunk_sizes = [256, 512]
+sub_node_parsers = [SentenceSplitter(chunk_size=c) for c in sub_chunk_sizes]
+
+all_nodes = []
+for base_node in base_nodes:
+    for n in sub_node_parsers:
+        sub_nodes = n.get_nodes_from_documents([base_node])
+        sub_inodes = [
+            IndexNode.from_text_node(sn, base_node.node_id) for sn in sub_nodes
+        ]
+        all_nodes.extend(sub_inodes)
+
+    # also add original node to node
+    original_node = IndexNode.from_text_node(base_node, base_node.node_id)
+    all_nodes.append(original_node)
+
+
+all_nodes_dict = {n.node_id: n for n in all_nodes}
+```
+
+Now, let's take a look at all the ALL nodes dictionary containing parent and child nodes.
 ---
 
 ## References
