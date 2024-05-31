@@ -1985,6 +1985,64 @@ Hybrid search combines the traditional keyword search (like BM25) with vector-ba
 
    2. **Vector Retrieval:** The query is embedded into a vector, and similar document vectors are retrieved based on cosine similarity or other distance metrics.
 
+```python
+# Install Required Libraries:
+!pip -q install langchain huggingface_hub openai google-search-results tiktoken chromadb rank_bm25 faiss-cpu
+
+import os
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = "Enter your key here"
+# Import Necessary Modules:
+from langchain.retrievers import BM25Retriever, EnsembleRetriever
+from langchain.schema import Document
+from langchain.vectorstores import FAISS
+from langchain.embeddings import HuggingFaceEmbeddings
+# Prepare Document List:
+doc_list = [
+    "I like apples",
+    "I like oranges",
+    "Apples and oranges are fruits",
+    "I like computers by Apple",
+    "I love fruit juice"
+]
+# Initialize BM25 Retriever:
+bm25_retriever = BM25Retriever.from_texts(doc_list)
+bm25_retriever.k = 4  # Set the number of documents to retrieve
+# Retrieve documents using BM25:
+bm25_docs_apple = bm25_retriever.get_relevant_documents("Apple")
+bm25_docs_green_fruit = bm25_retriever.get_relevant_documents("a green fruit")
+# Initialize FAISS Retriever:
+embeddings = HuggingFaceEmbeddings()
+faiss_vectorstore = FAISS.from_texts(doc_list, embeddings)
+faiss_retriever = faiss_vectorstore.as_retriever(search_kwargs={"k": 4})
+# Retrieve documents using FAISS:
+faiss_docs_green_fruit = faiss_retriever.get_relevant_documents("A green fruit")
+# Combine Retrievers Using EnsembleRetriever:
+ensemble_retriever = EnsembleRetriever(retrievers=[bm25_retriever, faiss_retriever], weights=[0.5, 0.5])
+# Perform Searches Using Ensemble Retriever:
+docs_green_fruit = ensemble_retriever.get_relevant_documents("A green fruit")
+docs_apple_phones = ensemble_retriever.get_relevant_documents("Apple Phones")
+```
+
+**1. Install Required Libraries:** Ensure you have all the necessary libraries installed. You have already done this step.
+
+**2. Import Necessary Modules:** Import the modules required for setting up BM25 and FAISS retrievers.
+
+**3. Prepare Document List:** Create a list of documents that we will use for retrieval.
+
+**4. Initialize BM25 Retriever:** Set up the BM25 retriever which is a sparse retriever.
+
+**5. Initialize FAISS Retriever:** Set up the FAISS retriever which is a dense retriever.
+
+**6. Combine Retrievers Using EnsembleRetriever:** Use the EnsembleRetriever to combine both retrievers for hybrid search.
+
+**7. Perform Searches:** Perform searches using the ensemble retriever and observe the results.
+
+**BM25 Retriever:** It uses a bag-of-words approach to retrieve documents based on the occurrence of query terms.
+
+**FAISS Retriever:** It utilizes dense vector embeddings to retrieve documents based on the semantic similarity to the query.
+
+**Ensemble Retriever:** Combines the results of both BM25 and FAISS retrievers to provide a more comprehensive set of relevant documents.
+
 #### **Contextual Compressors & Filters**
 
 * Contextual Compressors and Filters are tools used in information retrieval systems to refine and extract relevant information from retrieved documents based on the context of a given query. These tools aim to enhance the efficiency and effectiveness of retrieval by presenting only the most useful and pertinent information to downstream processing components.
@@ -2034,6 +2092,7 @@ An alternative method involves prompting an LLM to formulate a question for ever
 > This method is the reverse of another approach called HyDE where the LLM generates a hypothetical response for the query. The response vector in conjunction with the query vector enhances search quality.
 
 ![Hypothetical Document](img/HypotheticalDocumentEmbeddings.jpg)
+
 #### **RAG Fusion**
 ---
 
