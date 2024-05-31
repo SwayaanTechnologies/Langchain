@@ -1985,6 +1985,8 @@ Hybrid search combines the traditional keyword search (like BM25) with vector-ba
 
    2. **Vector Retrieval:** The query is embedded into a vector, and similar document vectors are retrieved based on cosine similarity or other distance metrics.
 
+**EXAMPLE**
+
 ```python
 # Install Required Libraries:
 !pip -q install langchain huggingface_hub openai google-search-results tiktoken chromadb rank_bm25 faiss-cpu
