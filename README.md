@@ -1889,241 +1889,152 @@ print(context)
 
 * There are five key stages within RAG, which in turn will be a part of any larger application you build. These are:
 
-![rag](img/saage.webp)
+![rag](img/RAGadvanced.png)
 
-1. **Loading:** this refers to getting your data from where it lives — whether it’s text files, PDFs, another website, a database, or an API — into your pipeline.
+* Self Query Retrival
 
-2. **Spliting:** If we were to use these large sections, then we’d be inserting a lot of noisy/unwanted context and because all LLMs have a maximum context length, we wouldn’t be able to fit too much other relevant context. So instead, we’re going to split the text within each section into smaller chunks. Intuitively, smaller chunks will encapsulate single/few concepts and will be less noisy compared to larger chunks.
+* Parent Document Retriver
 
-> Text splitters break large Documents into smaller chunks. This is useful both for indexing data and for passing it in to a model, since large chunks are harder to search over and won’t in a model’s finite context window. Empirically models struggle to find the relevant context in very long prompts.
+* Hybrid Search BM25 & Ensembles
 
-3. **Indexing:** this means creating a data structure that allows for querying the data. For LLMs, this nearly always means creating vector embeddings, numerical representations of the meaning of your data, as well as numerous other metadata strategies to make it easy to accurately find contextually relevant data.
+* Contextual Compressors & Filters
 
-4. **Storing:** once your data is indexed you will almost always want to store your index, as well as other metadata, to avoid having to re-index it.
+* Hypothetical Document
 
-5. **Querying:** for any given indexing strategy there are many ways you can utilize LLMs and LlamaIndex data structures to query, including sub-queries, multi-step queries, and hybrid strategies.
+* RAG Fusion
 
-6. **Evaluation:** A critical step in any pipeline is checking how effective it is relative to other strategies, or when you make changes. Evaluation provides objective measures of how accurate, faithful, and fast your responses to queries are.
+#### **Self Query Retrival**
 
-**Advanced RAG**
+* In self-query retrieval, the model generates a query based on the input prompt and then retrieves relevant documents using this query. Essentially, the model asks itself a question and retrieves information to answer it.
 
-* Now we’ll dive into the overview of ONE of the advanced RAG techniques related to Context Enhancement i.e. Parent-Child Chunks Retrieval.
+* This approach can be useful when the input prompt is incomplete or ambiguous. By generating a query, the model can focus its retrieval on specific aspects of the prompt.
 
-> The concept here is to retrieve smaller chunks for better search quality, but add up surrounding context for LLM to reason upon.
+![Self Query Retrival](img/SelfQuerying.jpeg)
 
-![rag](img/1.webp)
+#### **Parent Document Retriver**
 
-**Implementation (Open Source LLM and Embedding)**
+* A The parent document retriever aims to retrieve a broader context or a “parent” document related to the input prompt. It helps the model understand the context in which the prompt occurs.
 
-* When you first perform retrieval, you may want to retrieve the reference as opposed to the raw text. You can have multiple references point to the same node.
+* For example, if the prompt refers to a specific event, the parent document retriever could retrieve a longer article or document that provides background information about that event.
 
-* In this blog, we will explore some different usages of node references:
+![Parent Document Retriver](img/ParentDocumentRetriver.png)
 
-  * **Chunk references:** Different chunk sizes refer to a bigger chunk
-  * **Metadata references:** Summaries + Generated Questions referring to a bigger chunk
+**1. Original Documents:** Start with the full set of documents that contain the information you want to query.
 
-*We will use Open Source LLM `zephyr-7b-alpha` and embedding `hkunlp/instructor-large`
+**2. Splitting Documents:** Split the original documents into smaller, more manageable parts called "parent chunks." These chunks should be of a decent size to maintain some context but not too large to become overly general.
 
-**A. Load Data** 
+**3. Creating Child Documents:** Each parent chunk is further split into smaller segments called "child documents." These child documents contain portions of the parent chunk, making them more specific and detailed.
 
-Before your chosen LLM can act on your data you need to load it. The way LlamaIndex does this is via data connectors, also called `Reader`. Data connectors ingest data from different data sources and format the data into `Document` objects. A `Document` is a collection of data (currently text, and in the future, images, and audio) and metadata about that data.
+**4. Embedding Child Documents:** Generate embeddings for each child document. Embeddings are vector representations of the documents that capture their semantic content. By having more specific child documents, the embeddings are also more specific and less likely to be diluted with irrelevant information.
 
-```python
-PDFReader = download_loader("PDFReader")
-loader = PDFReader()
-docs = loader.load_data(file=Path("./docs/MachineLearning-Lecture01.pdf"))
+**5. Query and Retrieval:**
 
-# combine all the text
-doc_text = "\n\n".join([d.get_content() for d in docs])
-documents = [Document(text=doc_text)]
-```
+* When a question is posed, it is converted into an embedding.
+* This question embedding is then used to find the most relevant child document embeddings.
 
-**B. Chunking**
+**6.Returning Parent Documents:** Instead of returning only the child document that matches the query embedding, the corresponding parent document is returned. This parent document provides a broader context, giving the language model more information to generate a comprehensive and accurate response.
 
-We will use `SentenceSplitter` that split the text while respecting the boundaries of sentences. This function is used to break down large bodies of text into smaller sections, ensuring that sentences aren't split in the middle and making it easier to process or analyze text data in manageable portions. We will create an initial set of nodes (chunk size 1024).
+![Parent Document Retriver](img/pdr.png)
 
-```python
-node_parser = SentenceSplitter(chunk_size=1024)
-base_nodes = node_parser.get_nodes_from_documents(documents)
-# set node ids to be a constant
-for idx, node in enumerate(base_nodes):
-    node.id_ = f"node-{idx}"
-# print all the node ids corrosponding to all the chunks
-for node in base_nodes:
-  print(node.id_)
-```
+#### **Hybrid Search BM25 & Ensembles**
 
-**C. Open Source LLM and Embedding**
+* Hybrid search integrates the strengths of both keyword-based and semantic-based search methods to enhance retrieval performance. Here, we will define and explain the key concepts involved, particularly focusing on BM25 and how it works within a hybrid search framework.
 
-We will use Open Source LLM `zephyr-7b-alpha` and will quantify it for memory and computation. This should run on a T4 GPU in the free tier on Colab.
+![Hybrid Search](img/HybridSearchBM25Ensembles.webp)
 
-In this example, we will use `hkunlp/instructor-large`. This is an instruction-finetuned text embedding model that can generate text embeddings tailored to any task (e.g., classification, retrieval, clustering, text evaluation, etc.) 
+**BM25 Overview**
+* BM25 (Best Matching 25) is a ranking function used in information retrieval and search engines to rank documents based on the relevance to a given query. It is a type of bag-of-words model and an improved version of the traditional TF-IDF (Term Frequency-Inverse Document Frequency) model. BM25 has been widely used since the 1970s and 1980s and remains a strong baseline for text retrieval tasks.
 
-Now, we will be setting up the `ServiceContextobject`, and will be using it to construct an index and query. The input documents will be broken into nodes, and the embedding model will generate an embedding for each node. Then, at query time, the embedding model will be used again to embed the query text.
+**Key Components of BM25:**
 
-```python
-from google.colab import userdata
+  1. **Term Frequency (TF):** Measures how often a term appears in a document.
 
-# huggingface api token for downloading zephyr-7b
-hf_token = userdata.get('hf_token')
+  2. **Inverse Document Frequency (IDF):** Measures how common or rare a term is across all documents.
 
-quantization_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_compute_dtype=torch.float16,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_use_double_quant=True,
-)
+  3. **Normalization:**Adjusts for the length of documents to avoid bias towards longer documents.
 
+BM25 creates sparse vectors where each dimension corresponds to a term, and the values represent term weights based on the TF-IDF score.
 
-def messages_to_prompt(messages):
-  prompt = ""
-  for message in messages:
-    if message.role == 'system':
-      prompt += f"<|system|>\n{message.content}</s>\n"
-    elif message.role == 'user':
-      prompt += f"<|user|>\n{message.content}</s>\n"
-    elif message.role == 'assistant':
-      prompt += f"<|assistant|>\n{message.content}</s>\n"
+**Hybrid Search**
 
-  # ensure we start with a system prompt, insert blank if needed
-  if not prompt.startswith("<|system|>\n"):
-    prompt = "<|system|>\n</s>\n" + prompt
+Hybrid search combines the traditional keyword search (like BM25) with vector-based search methods that leverage embeddings from deep learning models. This combination aims to utilize the precise matching of keyword search and the contextual understanding of vector search.
 
-  # add final assistant prompt
-  prompt = prompt + "<|assistant|>\n"
+**Components of Hybrid Search:**
 
-  return prompt
+1. **Keyword Search (BM25):**
 
+    1. **Precision:** BM25 is excellent at exact term matching and ranking documents based on keyword frequency and distribution.
 
-# LLM
-llm = HuggingFaceLLM(
-    model_name="HuggingFaceH4/zephyr-7b-alpha",
-    tokenizer_name="HuggingFaceH4/zephyr-7b-alpha",
-    query_wrapper_prompt=PromptTemplate("<|system|>\n</s>\n<|user|>\n{query_str}</s>\n<|assistant|>\n"),
-    context_window=3900,
-    max_new_tokens=256,
-    model_kwargs={"quantization_config": quantization_config},
-    # tokenizer_kwargs={},
-    generate_kwargs={"temperature": 0.7, "top_k": 50, "top_p": 0.95},
-    messages_to_prompt=messages_to_prompt,
-    device_map="auto",
-)
+    2. **Simplicity:** It uses straightforward counting mechanisms, making it efficient and interpretable.
 
-# Embedding
-embed_model = HuggingFaceInstructEmbeddings(
-    model_name="hkunlp/instructor-large", model_kwargs={"device": DEVICE}
-)
+    3. **Sparse Representation:** Documents and queries are represented as sparse vectors, focusing on specific terms.
 
-# set your ServiceContext for all the next steps
-service_context = ServiceContext.from_defaults(
-    llm=llm, embed_model=embed_model
-)
-```
+2. **Vector Search (Embeddings):**
 
-**1. Baseline Retriever**
+3. **Contextual Understanding:** Uses embeddings to capture the semantic meaning of words and phrases, allowing for understanding synonyms and related terms.
 
-Let’s define a baseline retriever that simply fetches the top-k raw text nodes by embedding similarity. But, we have to index our data first:
+4. **Dense Representation:** Documents and queries are represented as dense vectors in a high-dimensional space, capturing nuanced meanings.
 
-**a. Indexing** With our data loaded, we now have a list of Document objects (or a list of Nodes). It’s time to build an `Index` over these objects so you can start querying them.
+**How Hybrid Search Works:**
 
-In LlamaIndex terms, an `Index` is a data structure composed of `Document` objects, designed to enable querying by an LLM.
+1. **Initial Query Processing:** The user's query is processed in two ways—using BM25 for keyword-based retrieval and using an embedding model for semantic retrieval.
 
-```python
-# index
-base_index = VectorStoreIndex(base_nodes, service_context=service_context)
-```
+2. **Retrieval Stage:**
 
-**b. Base Retriever** It simply fetches the top-k raw text nodes by embedding similarity.
+   1. **BM25 Retrieval:** The query is matched against documents using BM25, retrieving a set of documents based on exact term matches and their relevance scores.
 
-```python
-# find top 2 nodes
-base_retriever = base_index.as_retriever(similarity_top_k=2)
+   2. **Vector Retrieval:** The query is embedded into a vector, and similar document vectors are retrieved based on cosine similarity or other distance metrics.
 
-retrievals = base_retriever.retrieve(
-    "Can you tell me about the Paged Optimizers?"
-)
+#### **Contextual Compressors & Filters**
 
-for n in retrievals:
-    display_source_node(n, source_length=1500)
-```
+* Contextual Compressors and Filters are tools used in information retrieval systems to refine and extract relevant information from retrieved documents based on the context of a given query. These tools aim to enhance the efficiency and effectiveness of retrieval by presenting only the most useful and pertinent information to downstream processing components.
 
-See the output node-id and similarity score.
+**Components of Contextual Compressors and Filters:**
 
-![output](img/output.webp)
+1. **Base Retriever:**
 
-**c. Querying** Now we’ve loaded our data, and built an index, we’re ready to get to the most significant part of an LLM application: querying!
+* Initially retrieves a set of documents or pieces of information relevant to the query.
 
-The most important thing to know about querying is that it is just a prompt to an LLM: so it can be a question and get an answer, or a request for summarization, or a much more complex instruction.
+2. **Document Compressors and Filters:**
 
-The basis of all querying is the QueryEngine. The simplest way to get a QueryEngine is to get your index to create one for you, like this:
+* Process the retrieved documents to extract and refine the information that is most useful for answering the query.
 
-```python
-# create a query engine
-query_engine_base = RetrieverQueryEngine.from_args(
-    base_retriever, service_context=service_context
-)
+* These tools operate based on the context of the query and the content of the documents, aiming to filter out irrelevant or extraneous information.
 
-# query
-response = query_engine_base.query(
-    "Can you tell me about the Paged Optimizers?"
-)
-```
+* Examples of operations performed by compressors and filters include:
 
-**2. Chunk References: Smaller Child Chunks Referring to Bigger Parent Chunkl**
+  1. Removing irrelevant sections of documents.
+  2. Extracting key information from documents.
+  3. Applying language models or other machine learning techniques to identify and select relevant content.
 
-Before, we used big pieces of text, each about 1024 characters long, for finding and putting together information. Now, we’ll try something different. Instead of using those big chunks, we’ll break them down into smaller pieces, like making smaller puzzles from a big one.
+**Workflow of Contextual Compressors and Filters:**
 
-Here’s how we’ll do it:
+1. **Document Retrieval:**
 
-Imagine each big piece of text is like a big jigsaw puzzle piece. We’ll split that big piece into smaller ones:
+* Begin with a base retriever that fetches a collection of documents relevant to the query.
 
-From each big piece, we’ll create 4 slightly bigger pieces, each around 256 characters long.
-Next, we’ll have 2 even bigger pieces, each about 512 characters long.
-And of course, we’ll still keep the original big piece of 1024 characters. So, instead of just having one big piece, we’ll have lots of smaller ones. This helps us find specific things more easily, and when we need to see the bigger picture, we can always refer back to the original big piece.
+2. **Document Processing:**
 
-```python
-sub_chunk_sizes = [256, 512]
-sub_node_parsers = [SentenceSplitter(chunk_size=c) for c in sub_chunk_sizes]
+* Contextual compressors and filters analyze the retrieved documents to identify and extract relevant information.
+This may involve various operations, such as cleaning up the document content, removing noise, and extracting essential details.
 
-all_nodes = []
-for base_node in base_nodes:
-    for n in sub_node_parsers:
-        sub_nodes = n.get_nodes_from_documents([base_node])
-        sub_inodes = [
-            IndexNode.from_text_node(sn, base_node.node_id) for sn in sub_nodes
-        ]
-        all_nodes.extend(sub_inodes)
+3. **Refined Document Set:**
 
-    # also add original node to node
-    original_node = IndexNode.from_text_node(base_node, base_node.node_id)
-    all_nodes.append(original_node)
+* The processed documents form a refined set of information, containing only the most relevant and useful content for answering the query.
+This refined set serves as input for further processing or analysis.
 
+4. **Evaluation and Feedback:**
 
-all_nodes_dict = {n.node_id: n for n in all_nodes}
-```
+* Optionally, the effectiveness of the compressors and filters can be evaluated by comparing the refined document set with the original retrieved documents.
 
-Now, let's take a look at all the ALL nodes dictionary containing parent and child nodes.
+#### **Hypothetical Document**
 
-![output](img/output1.webp)
+An alternative method involves prompting an LLM to formulate a question for every chunk, embedding these questions into vectors. During runtime, a query search is conducted against this index of question vectors, replacing the chunk vectors with question vectors in our index. Upon retrieval, the original text chunks are routed and provided as context for the LLM to generate an answer. The quality of the search will be better as there is higher semantic similarity between the query and the embedded hypothetical question.
 
-Let’s check one child node and it’s a reference to its parent node. See, this index node (child) is referenced to node-0 (parent).
+> This method is the reverse of another approach called HyDE where the LLM generates a hypothetical response for the query. The response vector in conjunction with the query vector enhances search quality.
 
-![output](img/output2.webp)
-
-Similarly, you will see that these many smaller chunks (`IndexNode`) are associated with each of the original text chunks(`TextNode`) for example `node-0`. All of the smaller chunks reference to the large chunk in the metadata with `index_id` pointing to the index ID of the larger chunk.
-
-**a. Indexing (from these smaller chunks)**
-
-When we perform retrieval, we want to retrieve the reference as opposed to the raw text. You can have multiple references point to the same
-
-```python
-vector_index_chunk = VectorStoreIndex(
-    all_nodes, service_context=service_context
-)
-vector_retriever_chunk = vector_index_chunk.as_retriever(similarity_top_k=2)
-```
-
-
+![Hypothetical Document](img/HypotheticalDocumentEmbeddings.jpg)
+#### **RAG Fusion**
 ---
 
 ## References
