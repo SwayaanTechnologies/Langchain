@@ -1911,6 +1911,156 @@ print(context)
 
 ![Self Query Retrival](img/SelfQuerying.jpeg)
 
+**EXAMPLE**
+
+```python
+!pip -q install langchain huggingface_hub openai google-search-results tiktoken chromadb lark
+import os
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = "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"
+## Self-querying Retriever
+
+from langchain.schema import Document
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import Chroma
+
+embeddings = HuggingFaceEmbeddings()
+## Example data with metadata attached
+docs = [
+    Document(
+        page_content="Complex, layered, rich red with dark fruit flavors",
+        metadata={"name":"Opus One", "year": 2018, "rating": 96, "grape": "Cabernet Sauvignon", "color":"red", "country":"USA"},
+    ),
+    Document(
+        page_content="Luxurious, sweet wine with flavors of honey, apricot, and peach",
+        metadata={"name":"Château d'Yquem", "year": 2015, "rating": 98, "grape": "Sémillon", "color":"white", "country":"France"},
+    ),
+    Document(
+        page_content="Full-bodied red with notes of black fruit and spice",
+        metadata={"name":"Penfolds Grange", "year": 2017, "rating": 97, "grape": "Shiraz", "color":"red", "country":"Australia"},
+    ),
+    Document(
+        page_content="Elegant, balanced red with herbal and berry nuances",
+        metadata={"name":"Sassicaia", "year": 2016, "rating": 95, "grape": "Cabernet Franc", "color":"red", "country":"Italy"},
+    ),
+    Document(
+        page_content="Highly sought-after Pinot Noir with red fruit and earthy notes",
+        metadata={"name":"Domaine de la Romanée-Conti", "year": 2018, "rating": 100, "grape": "Pinot Noir", "color":"red", "country":"France"},
+    ),
+    Document(
+        page_content="Crisp white with tropical fruit and citrus flavors",
+        metadata={"name":"Cloudy Bay", "year": 2021, "rating": 92, "grape": "Sauvignon Blanc", "color":"white", "country":"New Zealand"},
+    ),
+    Document(
+        page_content="Rich, complex Champagne with notes of brioche and citrus",
+        metadata={"name":"Krug Grande Cuvée", "year": 2010, "rating": 93, "grape": "Chardonnay blend", "color":"sparkling", "country":"New Zealand"},
+    ),
+    Document(
+        page_content="Intense, dark fruit flavors with hints of chocolate",
+        metadata={"name":"Caymus Special Selection", "year": 2018, "rating": 96, "grape": "Cabernet Sauvignon", "color":"red", "country":"USA"},
+    ),
+    Document(
+        page_content="Exotic, aromatic white with stone fruit and floral notes",
+        metadata={"name":"Jermann Vintage Tunina", "year": 2020, "rating": 91, "grape": "Sauvignon Blanc blend", "color":"white", "country":"Italy"},
+    ),
+]
+vectorstore = Chroma.from_documents(docs, embeddings)
+## Creating our self-querying retriever
+from langchain.llms import HuggingFaceHub
+from langchain.retrievers.self_query.base import SelfQueryRetriever
+from langchain.chains.query_constructor.base import AttributeInfo
+
+metadata_field_info = [
+    AttributeInfo(
+        name="grape",
+        description="The grape used to make the wine",
+        type="string or list[string]",
+    ),
+    AttributeInfo(
+        name="name",
+        description="The name of the wine",
+        type="string or list[string]",
+    ),
+    AttributeInfo(
+        name="color",
+        description="The color of the wine",
+        type="string or list[string]",
+    ),
+    AttributeInfo(
+        name="year",
+        description="The year the wine was released",
+        type="integer",
+    ),
+    AttributeInfo(
+        name="country",
+        description="The name of the country the wine comes from",
+        type="string",
+    ),
+    AttributeInfo(
+        name="rating", description="The Robert Parker rating for the wine 0-100", type="integer" #float
+    ),
+]
+document_content_description = "Brief description of the wine"
+
+llm = HuggingFaceHub(
+    repo_id="google/flan-t5-base", 
+    model_kwargs={"temperature": 0.5, "max_length": 512}
+)
+retriever = SelfQueryRetriever.from_llm(
+    llm,
+    vectorstore,
+    document_content_description,
+    metadata_field_info,
+    verbose=True
+)
+
+# This example only specifies a relevant query
+retriever.get_relevant_documents("What are some red wines")
+
+retriever.get_relevant_documents("I want a wine that has fruity nodes")
+
+# This example specifies a query and a filter
+retriever.get_relevant_documents("I want a wine that has fruity nodes and has a rating above 97")
+retriever.get_relevant_documents("What wines come from Italy?")
+
+# This example specifies a query and composite filter
+retriever.get_relevant_documents("What's a wine after 2015 but before 2020 that's all earthy")
+
+## Filter K
+
+retriever = SelfQueryRetriever.from_llm(
+    llm,
+    vectorstore,
+    document_content_description,
+    metadata_field_info,
+    enable_limit=True,
+    verbose=True,
+)
+
+# This example only specifies a relevant query - k= 2
+retriever.get_relevant_documents("what are two that have a rating above 97")
+retriever.get_relevant_documents("what are two wines that come from australia or New zealand")
+```
+
+1. **Installation of Required Packages:** The first line installs the necessary packages using pip.
+
+2. **Setting Hugging Face API Token:** An environment variable for the Hugging Face API token is set. This token is used for accessing models and resources on the Hugging Face model hub.
+
+3. **Creating Example Data:** Example wine data with associated metadata is created. Each wine document consists of a page content (description of the wine) and metadata fields such as name, year, rating, grape variety, color, and country of origin.
+
+4. **Embeddings and Vector Store:** HuggingFace embeddings are initialized. The `Chroma` vector store is then created from the documents and embeddings. This vector store enables efficient similarity search based on semantic embeddings.
+
+5. **Defining Metadata Attributes:** Metadata attributes are defined using `AttributeInfo`. These attributes provide information about the metadata fields such as name, description, and data type.
+
+6. **Initializing Hugging Face LLM (Large Language Model):** The Hugging Face model `google/flan-t5-base` is initialized as the Large Language Model (LLM) using the` HuggingFaceHub` class. This model will be used for generating queries based on user input.
+
+7. **Creating Self-Querying Retriever:** The self-querying retriever is initialized using the `SelfQueryRetriever.from_llm` method. This retriever combines the LLM with the vector store and metadata information to retrieve relevant documents based on user queries.
+
+8. **Querying the Retriever:** Various example queries are executed using the retriever's `get_relevant_documents` method. These queries demonstrate the system's ability to find relevant documents based on user-provided criteria such as wine characteristics, ratings, and country of origin.
+
+9. **Filtering with Limit (K):** Another self-querying retriever is initialized with the option to enable a limit (`k`) on the number of retrieved documents. Example queries with a limit of two documents are then executed to demonstrate the filtering capability.
+
+---
+
 #### **Parent Document Retriver**
 
 * A The parent document retriever aims to retrieve a broader context or a “parent” document related to the input prompt. It helps the model understand the context in which the prompt occurs.
@@ -2108,6 +2258,8 @@ print(f"Answer: {answer}")
 
 18. **RetrievalQA Example:** Set up `RetrievalQA` to query the documents and perform a sample query.
 
+---
+
 #### **Hybrid Search BM25 & Ensembles**
 
 * Hybrid search integrates the strengths of both keyword-based and semantic-based search methods to enhance retrieval performance. Here, we will define and explain the key concepts involved, particularly focusing on BM25 and how it works within a hybrid search framework.
@@ -2216,6 +2368,8 @@ docs_apple_phones = ensemble_retriever.get_relevant_documents("Apple Phones")
 **FAISS Retriever:** It utilizes dense vector embeddings to retrieve documents based on the semantic similarity to the query.
 
 **Ensemble Retriever:** Combines the results of both BM25 and FAISS retrievers to provide a more comprehensive set of relevant documents.
+
+---
 
 #### **Contextual Compressors & Filters**
 
@@ -2373,6 +2527,8 @@ Other specific modules and components from `langchain`.
 
 * Retrieving relevant documents again based on the query.
 
+---
+
 #### **Hypothetical Document**
 
 An alternative method involves prompting an LLM to formulate a question for every chunk, embedding these questions into vectors. During runtime, a query search is conducted against this index of question vectors, replacing the chunk vectors with question vectors in our index. Upon retrieval, the original text chunks are routed and provided as context for the LLM to generate an answer. The quality of the search will be better as there is higher semantic similarity between the query and the embedded hypothetical question.
@@ -2516,7 +2672,10 @@ print(docs[0].page_content)
 
 * Prints the content of the most relevant document returned by the similarity search.
 
+---
+
 #### **RAG Fusion**
+
 * RAG Fusion is an approach aimed at enhancing the Retrieval-Augmented Generation (RAG) model by addressing the gap between what users explicitly ask and what they actually intend to ask. This technique is particularly valuable in scenarios where users input vague or broad queries, but desire comprehensive and diverse responses.
 
 * The key components of RAG Fusion include:
@@ -2703,6 +2862,7 @@ print(wrap_text(response))
 14. **Wrapping and Printing the Response:**
 
 * Wraps the response text to a specified width and prints it.
+
 ---
 
 ## References
@@ -2730,3 +2890,5 @@ print(wrap_text(response))
 11. https://www.promptingguide.ai/techniques
 
 12. https://pub.towardsai.net/advanced-rag-techniques-an-illustrated-overview-04d193d8fec6
+
+13. https://www.youtube.com/playlist?list=PL8motc6AQftn-X1HkaGG9KjmKtWImCKJS
