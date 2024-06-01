@@ -1989,7 +1989,7 @@ Hybrid search combines the traditional keyword search (like BM25) with vector-ba
 
 ```python
 # Install Required Libraries:
-!pip -q install langchain huggingface_hub openai google-search-results tiktoken chromadb rank_bm25 faiss-cpu
+# !pip -q install langchain huggingface_hub openai google-search-results tiktoken chromadb rank_bm25 faiss-cpu
 
 import os
 os.environ['HUGGINGFACEHUB_API_TOKEN'] = "Enter your key here"
@@ -2094,6 +2094,141 @@ An alternative method involves prompting an LLM to formulate a question for ever
 > This method is the reverse of another approach called HyDE where the LLM generates a hypothetical response for the query. The response vector in conjunction with the query vector enhances search quality.
 
 ![Hypothetical Document](img/HypotheticalDocumentEmbeddings.jpg)
+
+**EXAMPLE**
+
+```python
+!pip -q install langchain huggingface_hub openai chromadb tiktoken faiss-cpu
+!pip install sentence_transformers
+!pip -q install -U FlagEmbedding
+
+import os
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = "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"
+
+from langchain.llms import HuggingFaceHub
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.chains import LLMChain, HypotheticalDocumentEmbedder
+from langchain.prompts import PromptTemplate
+
+from langchain.document_loaders import TextLoader
+import langchain
+from langchain.embeddings import HuggingFaceBgeEmbeddings
+
+model_name = "BAAI/bge-small-en-v1.5"
+encode_kwargs = {'normalize_embeddings': True}
+
+bge_embeddings = HuggingFaceBgeEmbeddings(
+    model_name=model_name,
+    model_kwargs={'device': 'cpu'},
+    encode_kwargs=encode_kwargs
+)
+
+llm = HuggingFaceHub()
+
+embeddings = HypotheticalDocumentEmbedder.from_llm(llm,
+                                                   bge_embeddings,
+                                                   prompt_key="web_search"
+                                                   )
+
+embeddings.llm_chain.prompt
+
+langchain.debug = True
+
+result = embeddings.embed_query("What items does McDonalds make?")
+
+multi_llm = HuggingFaceHub(repo_id="google/flan-t5-base", huggingfacehub_api_token="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")
+
+def generate_best_response(prompt, n=4, best_of=4):
+    responses = [multi_llm(prompt) for _ in range(n)]
+    best_response = max(responses, key=lambda response: len(response))
+    return best_response
+
+embeddings = HypotheticalDocumentEmbedder.from_llm(
+    multi_llm, bge_embeddings, "web_search"
+)
+
+result = embeddings.embed_query("What is McDonalds best selling item?")
+
+prompt_template = """Please answer the user's question as a single food item
+Question: {question}
+Answer:"""
+
+prompt = PromptTemplate(input_variables=["question"], template=prompt_template)
+
+llm_chain = LLMChain(llm=llm, prompt=prompt)
+
+embeddings = HypotheticalDocumentEmbedder(
+    llm_chain=llm_chain,
+    base_embeddings=bge_embeddings
+)
+
+result = embeddings.embed_query(
+    "What is is McDonalds best selling item?"
+)
+
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import CharacterTextSplitter
+
+loaders = [
+    TextLoader("blog_posts/blog.langchain.dev_announcing-langsmith_.txt", encoding='utf-8'),
+    TextLoader('blog_posts/blog.langchain.dev_benchmarking-question-answering-over-csv-data_.txt', encoding='utf-8'),
+    TextLoader('blog_posts/blog.langchain.dev_chat-loaders-finetune-a-chatmodel-in-your-voice_.txt', encoding='utf-8')
+]
+
+docs = []
+
+for loader in loaders:
+    try:
+        docs.extend(loader.load())
+
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+texts = text_splitter.split_documents(docs)
+
+prompt_template = """Please answer the user's question as related to Large Language Models
+Question: {question}
+Answer:"""
+
+prompt = PromptTemplate(input_variables=["question"], template=prompt_template)
+
+llm_chain = LLMChain(llm=llm, prompt=prompt)
+
+embeddings = HypotheticalDocumentEmbedder(
+    llm_chain=llm_chain,
+    base_embeddings=bge_embeddings
+)
+
+docsearch = Chroma.from_documents(texts, embeddings)
+
+query = "What are chat loaders?"
+docs = docsearch.similarity_search(query)
+
+print(docs[0].page_content)
+
+```
+
+* It installs required Python packages for natural language processing and related tasks.
+
+* Sets up environment variables for authentication with Hugging Face Hub.
+
+* Imports necessary modules and classes from the LangChain library.
+
+* Configures Hugging Face BGE embeddings and initializes a Hugging Face language model (LLM).
+
+* Sets up embeddings for hypothetical documents using the initialized LLM and BGE embeddings.
+
+* Defines a function to generate the best response given a prompt.
+
+* Defines prompt templates for generating responses to user questions.
+
+* Initializes a Language Model Chain with the LLM and prompt templates.
+
+* Loads and splits text documents for further processing.
+
+* Initializes a Chroma object for searching documents based on embeddings.
+
+* Performs a similarity search for documents relevant to a specific query.
+
+* Prints the content of the most relevant document returned by the similarity search.
 
 #### **RAG Fusion**
 ---
