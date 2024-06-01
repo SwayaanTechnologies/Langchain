@@ -2517,6 +2517,192 @@ print(docs[0].page_content)
 * Prints the content of the most relevant document returned by the similarity search.
 
 #### **RAG Fusion**
+* RAG Fusion is an approach aimed at enhancing the Retrieval-Augmented Generation (RAG) model by addressing the gap between what users explicitly ask and what they actually intend to ask. This technique is particularly valuable in scenarios where users input vague or broad queries, but desire comprehensive and diverse responses.
+
+* The key components of RAG Fusion include:
+
+  1. Query Duplication with a Twist: RAG Fusion starts by rewriting the user's input query into multiple similar queries. Each of these modified queries is then processed independently through a vector search to retrieve different sets of results.
+
+  2. Vector Search and Result Ranking: The modified queries undergo vector searches, retrieving distinct sets of relevant information. These results are subsequently ranked using reciprocal rank fusion, which ensures that the most pertinent information is prioritized across multiple queries.
+
+  3. Generative Output Integration: The re-ranked outputs from the vector searches are treated as contextual inputs and combined with the original query and prompt. This integrated information is then fed into a generative model, such as a large language model (LLM), to formulate a comprehensive response.
+
+**EXAMPLE**
+
+```python
+import os
+import requests
+import zipfile
+from io import BytesIO
+import textwrap
+from langchain.llms import HuggingFaceHub
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores.chroma import Chroma
+from langchain.document_loaders import DirectoryLoader
+from langchain.embeddings import HuggingFaceBgeEmbeddings
+from langchain.chat_models import ChatGooglePalm
+from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate, PromptTemplate
+from langchain.schema.output_parser import StrOutputParser
+from langchain.schema.runnable import RunnablePassthrough
+from langchain.load import dumps, loads
+from operator import itemgetter
+
+# Function to download and extract zip files
+def download_and_extract_zip(url, target_folder):
+    if not os.path.exists(target_folder):
+        os.makedirs(target_folder)
+
+    response = requests.get(url)
+    if response.status_code != 200:
+        raise Exception(f"Failed to download file: {url}")
+
+    with zipfile.ZipFile(BytesIO(response.content)) as zip_ref:
+        zip_ref.extractall(target_folder)
+
+    print(f"Files extracted to {target_folder}")
+
+# Set environment variable for HuggingFaceHub API token
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = "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"
+
+# Download and extract text files and Chroma database
+text_files_url = "https://www.dropbox.com/scl/fi/av3nw07o5mo29cjokyp41/singapore_text_files_languages.zip?rlkey=xqdy5f1modtbnrzzga9024jyw&dl=1"
+chroma_db_url = 'https://www.dropbox.com/scl/fi/3kep8mo77h642kvpum2p7/singapore_chroma_db.zip?rlkey=4ry4rtmeqdcixjzxobtmaajzo&dl=1'
+text_files_folder = "singapore_text"
+chroma_db_folder = "chroma_db"
+
+download_and_extract_zip(text_files_url, text_files_folder)
+download_and_extract_zip(chroma_db_url, '.')
+
+# Load documents
+loader = DirectoryLoader('singapore_text/Textfiles3/English/', glob="*.txt", show_progress=True)
+docs = loader.load()
+
+# Concatenate and split text
+raw_text = ''.join([doc.page_content for doc in docs if doc.page_content])
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100, length_function=len, is_separator_regex=False)
+texts = text_splitter.split_text(raw_text)
+
+# Load embeddings and vector database
+model_name = "BAAI/bge-small-en-v1.5"
+encode_kwargs = {'normalize_embeddings': True}
+bge_embeddings = HuggingFaceBgeEmbeddings(model_name=model_name, model_kwargs={'device': 'cpu'}, encode_kwargs=encode_kwargs)
+
+db = Chroma(persist_directory="./chroma_db", embedding_function=bge_embeddings)
+
+# Retriever and Chat Model setup
+retriever = db.as_retriever(k=5)
+model = ChatGooglePalm()
+
+# Prompt template for RAG
+template = """Answer the question based only on the following context:
+{context}
+
+Question: {question}
+"""
+prompt = ChatPromptTemplate.from_template(template)
+
+# Function to generate multiple queries
+generate_queries_prompt = ChatPromptTemplate(input_variables=['question'], messages=[
+    SystemMessagePromptTemplate(prompt=PromptTemplate(input_variables=[], template='You are a helpful assistant that generates multiple search queries based on a single input query.')),
+    HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['question'], template='Generate multiple search queries related to: {question} \n OUTPUT (4 queries):'))
+])
+generate_queries = generate_queries_prompt | ChatGooglePalm(temperature=0) | StrOutputParser() | (lambda x: x.split("\n"))
+
+# Reciprocal Rank Fusion function
+def reciprocal_rank_fusion(results, k=60):
+    fused_scores = {}
+    for docs in results:
+        for rank, doc in enumerate(docs):
+            doc_str = dumps(doc)
+            if doc_str not in fused_scores:
+                fused_scores[doc_str] = 0
+            fused_scores[doc_str] += 1 / (rank + k)
+    reranked_results = [(loads(doc), score) for doc, score in sorted(fused_scores.items(), key=lambda x: x[1], reverse=True)]
+    return reranked_results
+
+# RAG Fusion chain
+ragfusion_chain = generate_queries | retriever.map() | reciprocal_rank_fusion
+
+# Full RAG Fusion chain with prompt
+full_rag_fusion_chain = (
+    {
+        "context": ragfusion_chain,
+        "question": RunnablePassthrough()
+    }
+    | prompt
+    | model
+    | StrOutputParser()
+)
+
+# Query and get response
+query = "Tell me about Universal Studios Singapore?"
+response = full_rag_fusion_chain.invoke({"question": query, "original_query": query})
+
+# Wrap and print the response
+def wrap_text(text, width=90):
+    lines = text.split('\n')
+    wrapped_lines = [textwrap.fill(line, width=width) for line in lines]
+    return '\n'.join(wrapped_lines)
+
+print(wrap_text(response))
+
+```
+
+1. **Download and Extraction Functions:**
+
+* `download_and_extract_zip:` This function downloads a zip file from a given URL and extracts its contents to a specified target folder.
+
+2. **Setting Environment Variables:**
+
+* Sets the environment variable `HUGGINGFACEHUB_API_TOKEN` with a Hugging Face Hub API token.
+
+3. **Downloading Text Files and Chroma Database:**
+
+* Downloads and extracts text files and a Chroma database from Dropbox URLs.
+
+4. **Loading Documents:**
+
+* Loads text documents from the extracted text files.
+
+5. **Text Preprocessing:**
+
+* Concatenates the text from all documents and splits it into smaller chunks.
+
+6. **Loading Embeddings and Vector Database:**
+
+* Loads pre-trained embeddings using a Hugging Face model and creates a vector database using Chroma.
+
+7. **Retriever and Chat Model Setup:**
+
+* Configures a retriever using the Chroma vector database and sets up a conversational AI model using Google PaLM.
+
+8. **Prompt Template for RAG (Retrieval-Augmented Generation):**
+
+* Defines a template for prompts used in the RAG fusion chain.
+
+9. **Function to Generate Multiple Queries:**
+
+* Defines a function that generates multiple search queries based on a single input query using the Google PaLM model.
+
+10. **Reciprocal Rank Fusion Function:**
+
+* Defines a function to perform reciprocal rank fusion on retrieval results.
+
+11. **RAG Fusion Chain:**
+
+* Constructs a fusion chain that generates multiple search queries, retrieves documents, and performs fusion using the reciprocal rank fusion function.
+
+12. **Full RAG Fusion Chain with Prompt:**
+
+* Combines the RAG fusion chain with a prompt for generating responses to a user query.
+
+13. **Querying and Getting Response:**
+
+* Executes the full RAG fusion chain with a specific query and obtains the response.
+
+14. **Wrapping and Printing the Response:**
+
+* Wraps the response text to a specified width and prints it.
 ---
 
 ## References
