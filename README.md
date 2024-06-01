@@ -2087,6 +2087,8 @@ This refined set serves as input for further processing or analysis.
 
 * Optionally, the effectiveness of the compressors and filters can be evaluated by comparing the refined document set with the original retrieved documents.
 
+**EXAMPLE**
+
 ```python
 import os
 from langchain.vectorstores import FAISS
