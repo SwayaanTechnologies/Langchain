@@ -2087,6 +2087,118 @@ This refined set serves as input for further processing or analysis.
 
 * Optionally, the effectiveness of the compressors and filters can be evaluated by comparing the refined document set with the original retrieved documents.
 
+```python
+import os
+from langchain.vectorstores import FAISS
+from langchain.schema import Document
+from langchain.vectorstores import Chroma
+from langchain.embeddings import HuggingFaceBgeEmbeddings
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.retrievers import ContextualCompressionRetriever
+from langchain.llms import HuggingFaceHub
+from langchain.retrievers.document_compressors import LLMChainExtractor, LLMChainFilter
+
+# Setting up Hugging Face BGE Embeddings
+model_name = "BAAI/bge-small-en-v1.5"
+encode_kwargs = {'normalize_embeddings': True}
+bge_embeddings = HuggingFaceBgeEmbeddings(
+    model_name=model_name,
+    model_kwargs={'device': 'cpu'},
+    encode_kwargs=encode_kwargs
+)
+
+# Loading and Splitting Text Documents
+loaders = [
+    TextLoader("blog_posts/blog.langchain.dev_announcing-langsmith_.txt", encoding='utf-8'),
+    TextLoader('blog_posts/blog.langchain.dev_benchmarking-question-answering-over-csv-data_.txt', encoding='utf-8')
+]
+docs = []
+for loader in loaders:
+    docs.extend(loader.load())
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+texts = text_splitter.split_documents(docs)
+
+# Creating a Document Retriever with FAISS
+retriever = FAISS.from_documents(texts, bge_embeddings).as_retriever()
+
+# Performing Document Retrieval
+docs = retriever.get_relevant_documents("What is LangSmith?")
+
+# Adding Contextual Compression
+llm = HuggingFaceHub(repo_id="google/flan-t5-base", model_kwargs={"temperature": 0.5, "max_length": 512})
+compressor = LLMChainExtractor.from_llm(llm)
+compression_retriever = ContextualCompressionRetriever(base_compressor=compressor, base_retriever=retriever)
+
+# Retrieving Compressed Documents
+compressed_docs = compression_retriever.get_relevant_documents("What is LangSmith?")
+
+# Using LLMChainFilter for Compression
+_filter = LLMChainFilter.from_llm(llm)
+compression_retriever = ContextualCompressionRetriever(base_compressor=_filter, base_retriever=retriever)
+compressed_docs = compression_retriever.get_relevant_documents("What is LangSmith?")
+```
+
+1. **Importing necessary libraries:**
+
+**`os`:** To interact with the operating system.
+
+**`langchain`:** A library for natural language processing tasks.
+
+**`HuggingFaceEmbeddings`:** Embeddings from the Hugging Face library.
+
+**`TextLoader`, `RecursiveCharacterTextSplitter`, `InMemoryStore`:**Components for loading and processing text data.
+
+**`HuggingFaceBgeEmbeddings`:`**Embeddings specifically designed for the LangChain library.
+
+**`FAISS`:** A library for efficient similarity search and clustering of dense vectors.
+
+**`Chroma`:** A component for representing text data.
+
+Other specific modules and components from `langchain`.
+
+2. **Setting up Hugging Face BGE (Big Green Egg) embeddings:**
+
+* Specifying the model name and any additional arguments.
+
+* Creating an instance of `HuggingFaceBgeEmbeddings`.
+
+3. **Loading and splitting text documents:**
+
+* Creating instances of `TextLoader` for each text file.
+
+* Loading documents from text files.
+
+* Splitting the documents into smaller chunks using `CharacterTextSplitter`.
+
+4. Defining a helper function `pretty_print_docs` to print out the loaded documents nicely.
+
+5. **Using the FAISS library to create a document retriever:**
+
+* Creating a FAISS index from the documents.
+
+* Using the BGE embeddings for vector representation.
+
+* Getting relevant documents based on a query ("What is LangSmith?").
+
+6. **Introducing contextual compression using an LLMChainExtractor:**
+
+* Creating an instance of HuggingFaceHub for a language model.
+
+* Creating an LLMChainExtractor from the language model.
+
+* Using the extractor as a compressor in a ContextualCompressionRetriever.
+
+7. Retrieving relevant documents after compression based on the same query.
+
+8. **Exploring another compression technique using LLMChainFilter:**
+
+* Creating an LLMChainFilter from the same language model.
+
+* Using the filter as a compressor in a new ContextualCompressionRetriever.
+
+* Retrieving relevant documents again based on the query.
+
 #### **Hypothetical Document**
 
 An alternative method involves prompting an LLM to formulate a question for every chunk, embedding these questions into vectors. During runtime, a query search is conducted against this index of question vectors, replacing the chunk vectors with question vectors in our index. Upon retrieval, the original text chunks are routed and provided as context for the LLM to generate an answer. The quality of the search will be better as there is higher semantic similarity between the query and the embedded hypothetical question.
