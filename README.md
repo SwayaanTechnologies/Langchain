@@ -1936,6 +1936,178 @@ print(context)
 
 ![Parent Document Retriver](img/pdr.png)
 
+**EXAMPLE**
+
+```python
+# Import necessary modules
+from langchain.schema import Document
+from langchain.vectorstores import Chroma
+from langchain.retrievers import ParentDocumentRetriever
+
+# For text splitting and document loading
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.storage import InMemoryStore
+from langchain.document_loaders import TextLoader
+
+# For embeddings
+from langchain.embeddings import HuggingFaceBgeEmbeddings
+
+# Define the model name and embedding settings
+model_name = "BAAI/bge-small-en-v1.5"
+encode_kwargs = {'normalize_embeddings': True}  # Normalize to compute cosine similarity
+
+# Initialize the BGE embeddings
+bge_embeddings = HuggingFaceBgeEmbeddings(
+    model_name=model_name,
+    model_kwargs={'device': 'cpu'},
+    encode_kwargs=encode_kwargs
+)
+
+# Load documents from text files
+loaders = [
+    TextLoader("blog_posts/blog.langchain.dev_announcing-langsmith_.txt", encoding='utf-8'),
+    TextLoader('blog_posts/blog.langchain.dev_benchmarking-question-answering-over-csv-data_.txt', encoding='utf-8')
+]
+
+# Aggregate all loaded documents
+docs = []
+for loader in loaders:
+    docs.extend(loader.load())
+
+# Check the number of loaded documents
+print(f"Number of loaded documents: {len(docs)}")
+
+# Initialize a text splitter for creating small chunks
+child_splitter = RecursiveCharacterTextSplitter(chunk_size=400)
+
+# Set up the Chroma vector store for indexing child chunks
+vectorstore = Chroma(
+    collection_name="full_documents",
+    embedding_function=bge_embeddings
+)
+
+# Initialize the in-memory storage for parent documents
+store = InMemoryStore()
+
+# Set up the ParentDocumentRetriever for the smaller chunks
+full_doc_retriever = ParentDocumentRetriever(
+    vectorstore=vectorstore,
+    docstore=store,
+    child_splitter=child_splitter,
+)
+
+# Add documents to the retriever
+full_doc_retriever.add_documents(docs, ids=None)
+
+# List stored keys to verify documents are added
+print(f"Stored keys: {list(store.yield_keys())}")
+
+# Perform a similarity search on the child chunks
+sub_docs = vectorstore.similarity_search("what is langsmith", k=2)
+print(f"Number of sub-documents retrieved: {len(sub_docs)}")
+print(sub_docs[0].page_content)
+
+# Retrieve full documents based on the query
+retrieved_docs = full_doc_retriever.get_relevant_documents("what is langsmith")
+print(f"Number of retrieved documents: {len(retrieved_docs)}")
+print(retrieved_docs[0].page_content)
+
+# Retrieving larger chunks
+# Initialize a text splitter for creating larger parent chunks
+parent_splitter = RecursiveCharacterTextSplitter(chunk_size=2000)
+
+# Reinitialize the text splitter for smaller child chunks (as before)
+child_splitter = RecursiveCharacterTextSplitter(chunk_size=400)
+
+# Set up another Chroma vector store for the split parent documents
+vectorstore = Chroma(
+    collection_name="split_parents",
+    embedding_function=bge_embeddings
+)
+
+# Reinitialize the in-memory storage
+store = InMemoryStore()
+
+# Set up the ParentDocumentRetriever for the larger parent chunks
+big_chunks_retriever = ParentDocumentRetriever(
+    vectorstore=vectorstore,
+    docstore=store,
+    child_splitter=child_splitter,
+    parent_splitter=parent_splitter,
+)
+
+# Add documents to the new retriever
+big_chunks_retriever.add_documents(docs)
+
+# Verify the added documents
+print(f"Stored keys in new retriever: {len(list(store.yield_keys()))}")
+
+# Perform a similarity search on the larger parent chunks
+sub_docs = vectorstore.similarity_search("what is langsmith")
+print(f"Number of sub-documents retrieved: {len(sub_docs)}")
+print(sub_docs[0].page_content)
+
+# Retrieve full parent documents based on the query
+retrieved_docs = big_chunks_retriever.get_relevant_documents("what is langsmith")
+print(f"Number of retrieved documents: {len(retrieved_docs)}")
+print(retrieved_docs[0].page_content)
+print(retrieved_docs[1].page_content)
+
+# Example of using RetrievalQA for querying the documents
+from langchain.chains import RetrievalQA
+from langchain.llms import HuggingFaceHub
+
+# Initialize RetrievalQA with the larger chunk retriever
+qa = RetrievalQA.from_chain_type(
+    llm=HuggingFaceHub(),
+    chain_type="stuff",  # Ensure this matches your actual setup
+    retriever=big_chunks_retriever
+)
+
+# Perform a query
+query = "What is Langsmith?"
+answer = qa.run(query)
+print(f"Answer: {answer}")
+```
+
+**Explanation:**
+
+1. **Import Necessary Modules:** Import all necessary modules from LangChain, Chroma, and Hugging Face.
+
+2. **Model and Embeddings Setup:** Define the model name for BGE embeddings and initialize it with appropriate settings.
+
+3. **Document Loading:** Load documents from text files using `TextLoader` and aggregate them into a list.
+
+4. **Small Chunk Splitting:** Use `RecursiveCharacterTextSplitter` to split documents into small chunks (400 characters).
+
+5. **Chroma Vector Store Setup:** Initialize the Chroma vector store to index the small chunks.
+
+6. **In-Memory Storage Setup:** Set up an in-memory store for parent documents.
+
+7. **ParentDocumentRetriever for Small Chunks:** Set up `ParentDocumentRetriever` to handle small chunks and add the documents to it.
+
+8. **Verify Document Addition:** List the keys in the storage to verify the documents have been added.
+
+9. **Perform Similarity Search:** Use the Chroma vector store to perform a similarity search on the small chunks.
+
+10. **Retrieve Full Documents:** Retrieve full documents based on the query using the `ParentDocumentRetriever`.
+
+11. **Large Chunk Splitting:** Reinitialize text splitters for larger parent chunks (2000 characters) and smaller child chunks (400 characters).
+
+12. **Set Up New Chroma Vector Store:** Initialize another Chroma vector store for the larger parent chunks.
+
+13. **Reinitialize In-Memory Storage:** Reinitialize the in-memory storage.
+
+14. **ParentDocumentRetriever for Large Chunks:** Set up another `ParentDocumentRetriever` for the larger chunks and add the documents to it.
+
+15. **Verify New Document Addition:** Verify the documents added to the new retriever.
+
+16. **Perform Similarity Search on Large Chunks:** Perform a similarity search on the larger parent chunks.
+
+17. **Retrieve Full Parent Documents:** Retrieve full parent documents based on the query using the new `ParentDocumentRetriever`.
+
+18. **RetrievalQA Example:** Set up `RetrievalQA` to query the documents and perform a sample query.
+
 #### **Hybrid Search BM25 & Ensembles**
 
 * Hybrid search integrates the strengths of both keyword-based and semantic-based search methods to enhance retrieval performance. Here, we will define and explain the key concepts involved, particularly focusing on BM25 and how it works within a hybrid search framework.
