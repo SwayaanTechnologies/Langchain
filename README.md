@@ -2267,6 +2267,7 @@ print(f"Answer: {answer}")
 ![Hybrid Search](img/HybridSearchBM25Ensembles.webp)
 
 **BM25 Overview**
+
 * BM25 (Best Matching 25) is a ranking function used in information retrieval and search engines to rank documents based on the relevance to a given query. It is a type of bag-of-words model and an improved version of the traditional TF-IDF (Term Frequency-Inverse Document Frequency) model. BM25 has been widely used since the 1970s and 1980s and remains a strong baseline for text retrieval tasks.
 
 **Key Components of BM25:**
@@ -2278,6 +2279,8 @@ print(f"Answer: {answer}")
   3. **Normalization:**Adjusts for the length of documents to avoid bias towards longer documents.
 
 BM25 creates sparse vectors where each dimension corresponds to a term, and the values represent term weights based on the TF-IDF score.
+
+![BM25](img/bm25A.png)
 
 **Hybrid Search**
 
