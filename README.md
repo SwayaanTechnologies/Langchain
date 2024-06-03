@@ -2270,17 +2270,31 @@ print(f"Answer: {answer}")
 
 * BM25 (Best Matching 25) is a ranking function used in information retrieval and search engines to rank documents based on the relevance to a given query. It is a type of bag-of-words model and an improved version of the traditional TF-IDF (Term Frequency-Inverse Document Frequency) model. BM25 has been widely used since the 1970s and 1980s and remains a strong baseline for text retrieval tasks.
 
+**What it does:** It looks at how often your search words appear in a document and considers the document’s length to provide the most relevant results.
+
+**Why it’s useful:** It’s perfect for sorting through huge collections of documents, like a digital library, without bias towards longer documents or overused words.
+
 **Key Components of BM25:**
 
-  1. **Term Frequency (TF):** Measures how often a term appears in a document.
+  1. **Term Frequency (TF):** This counts how many times your search terms appear in a document.
 
-  2. **Inverse Document Frequency (IDF):** Measures how common or rare a term is across all documents.
+  2. **Inverse Document Frequency (IDF):** This gives more importance to rare terms, making sure common words don’t dominate.
 
-  3. **Normalization:**Adjusts for the length of documents to avoid bias towards longer documents.
+  3. **Document Length Normalization:** This ensures longer documents don’t unfairly dominate the results.
+
+  4. **Query Term Saturation:** This stops excessively repeated terms from skewing the results.
 
 BM25 creates sparse vectors where each dimension corresponds to a term, and the values represent term weights based on the TF-IDF score.
 
 ![BM25](img/bm25A.png)
+
+**When is BM25/ Keyword search Ideal?**
+
+  1. **Large Document Collections:** Perfect for big databases where you need to sort through lots of information.
+  
+  2. **Preventing Bias:** Great for balancing term frequency and document length.
+
+  3. **General Information Retrieval:** Useful in various search scenarios, offering a mix of simplicity and effectiveness.
 
 **Hybrid Search**
 
