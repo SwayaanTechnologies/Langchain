@@ -51,7 +51,9 @@ These models are trained on massive amounts of text data to learn patterns and e
 
 **6.** [**Advanced Retrieval Techniques**](#Advanced-Retrieval-Techniques)
 
-**7.** [**References**](#References)
+**7.** [**Transformers**](#Transformers)
+
+**8.** [**References**](#References)
 
 ---
 
@@ -287,7 +289,6 @@ print (llm_model)
 ```
 
 This section determines which language model to use based on the current date. If the current date is before June 12, 2024, it sets the `llm_model` variable to "gpt-3.5-turbo". Otherwise, it sets it to "gpt-3.5-turbo-0301". This decision might be based on model updates or improvements.
-
 
 **Defining Completion Function**
 
@@ -1505,6 +1506,8 @@ print("Transformers Embeddings:\n", embeddings)
 
 * Next, we use the sentence-transformers library, which is designed to produce better sentence embeddings.
 
+![embeddings](img/Embedding1.png)
+
 **1. Load the SentenceTransformer model:**
 
 ```python
@@ -1755,7 +1758,7 @@ There are 2 key elements of a RAG system: a retriever and a knowledge base.
 
 * The retriever can then take the top k (say k=3) most relevant items and inject them into the user prompt. This augmented prompt is then passed into the LLM for generation.
 
-![rag](img/retriverrag.webp)
+![rag](img/rag.webp.png)
 
 **Knowledge Base**
 
@@ -1840,6 +1843,7 @@ for i in range(min(top_k, len(response.source_nodes))):
 
 print(context)
 ```
+![rag](img/retriverrag.webp)
 
 **1. Importing Libraries:**
 
