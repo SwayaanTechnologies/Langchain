@@ -2826,7 +2826,7 @@ print(wrap_text(response))
 
 1. **Download and Extraction Functions:**
 
-* `download_and_extract_zip:` This function downloads a zip file from a given URL and extracts its contents to a specified target folder.
+* **download_and_extract_zip:** This function downloads a zip file from a given URL and extracts its contents to a specified target folder.
 
 2. **Setting Environment Variables:**
 
