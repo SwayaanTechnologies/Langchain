@@ -2886,6 +2886,30 @@ print(wrap_text(response))
 
 Transformers are a type of deep learning model architecture that has revolutionized the field of natural language processing (NLP). Introduced by Vaswani et al. in the 2017 paper "Attention Is All You Need," the Transformer architecture primarily relies on self-attention mechanisms to process input data in parallel, which contrasts with the sequential processing of earlier recurrent neural networks (RNNs). This enables the model to understand the context and relevance of each word in a sentence more effectively. Key components of Transformers include tokenization, positional encoding, self-attention mechanisms, multi-headed attention, encoder and decoder structures, feed-forward neural networks, normalization, and residual connections.
 
+![Transformers](img/TransformersArchitecture.png)
+
+**Background on Neural Networks**
+
+Before diving into transformers, it's essential to understand the context of neural networks. Neural networks are models designed to analyze complex data types like images, videos, audio, and text. Different types of neural networks are optimized for different kinds of data. For instance:
+
+![neural_networks](img/neuralnetwork.png)
+
+* Convolutional Neural Networks (CNNs) are typically used for image processing, mimicking how the human brain processes visual information.
+
+![cnn](img/nn.png)
+
+**The Problem with Recurrent Neural Networks (RNNs)**
+
+Before transformers, Recurrent Neural Networks (RNNs) were the go-to models for language tasks. RNNs process text sequentially, word by word, which helps maintain the order of words—a crucial factor in understanding language. However, RNNs had significant drawbacks:
+
+* **Difficulty handling long sequences:** RNNs struggled with long texts, often forgetting earlier parts of the sequence by the time they processed the end.
+
+* **Training challenges:** Their sequential nature made them hard to parallelize, resulting in slow training times and limited scalability.
+
+**The Rise of Transformers**
+
+Transformers, introduced in 2017 by researchers at Google and the University of Toronto, addressed these issues and changed the landscape of NLP. Unlike RNNs, transformers can be efficiently parallelized, enabling the training of much larger models. For example, GPT-3, a well-known transformer model, was trained on approximately 45 terabytes of text data, including nearly the entire public web.
+
 **Why Should You Use Transformers?**
 
 1. **State-of-the-Art Performance:**
@@ -2934,6 +2958,32 @@ Transformers are a type of deep learning model architecture that has revolutioni
 
     * **Model-Specific Training:** The training API is tailored for the models within the library and may not be suitable for generic machine learning tasks. For more generalized training loops, another library like Accelerate might be more appropriate.
 
+**How do transformers work?**
+
+![transformers](img/Transformers.png)
+
+1. **Positional Encodings:**
+
+* Transformers use positional encodings to store information about the order of words in a sentence. Each word is tagged with a positional number before being fed into the network, allowing the model to learn word order from the data itself.
+
+![Positional Encodings](img/Transformers2.png)
+
+2. **Attention Mechanism:**
+
+* The attention mechanism enables the model to focus on different parts of the input text when making predictions. This is crucial for tasks like translation, where the model needs to consider the entire sentence to generate the correct output.
+  
+* A visualization from the original transformer paper shows how the model attends to different words in the input sentence when predicting the output words.
+
+![Positional Encodings](img/Transformers1.png)
+
+3. **Self-Attention:**
+
+* Self-attention is a specific type of attention where the model considers the input text itself. This helps the model understand the context and disambiguate words with multiple meanings based on their surrounding words. For example, in the sentences "Server, can I have the check?" and "Looks like I just crashed the server," self-attention helps distinguish between a human server and a computer server.
+
+![Self-Attention](img/Self-attention.png)
+
+---
+
 ## References
 
 1. https://github.com/sudarshan-koirala/youtube-stuffs/blob/main/langchain/LangChain_Components.ipynb
@@ -2961,3 +3011,13 @@ Transformers are a type of deep learning model architecture that has revolutioni
 12. https://pub.towardsai.net/advanced-rag-techniques-an-illustrated-overview-04d193d8fec6
 
 13. https://www.youtube.com/playlist?list=PL8motc6AQftn-X1HkaGG9KjmKtWImCKJS
+
+**Transformers**
+
+14. https://www.youtube.com/watch?v=nTlLAS7N7qE
+
+15. https://www.youtube.com/watch?v=BjRVS2wTtcA
+
+16. https://www.youtube.com/watch?v=BjRVS2wTtcA
+
+17. https://www.youtube.com/watch?v=ZXiruGOCn9s
