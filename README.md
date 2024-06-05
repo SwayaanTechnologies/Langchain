@@ -163,11 +163,11 @@ os.environ['HUGGINGFACEHUB_API_TOKEN'] = "<your-api-key>"
 
 1. **Import Libraries and Set Environment:**
 
-  * **import os:** Operating system module for setting environment variables.
+* **import os:** Operating system module for setting environment variables.
 
-  * **from secret_key import hugging_facehub_key:** Import the API token for authentication.
+* **from secret_key import hugging_facehub_key:** Import the API token for authentication.
 
-  * Set the Hugging Face API token in the environment.
+* Set the Hugging Face API token in the environment.
 
 ```python
 #SCHEMA
