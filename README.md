@@ -154,36 +154,43 @@ These models are trained on massive amounts of text data to learn patterns and e
 **EXAMPLE**
 
 ```python
-import promptlayer
+from secret_key import hugging_facehub_key
 import os
-os.environ["PROMPTLAYER_API_KEY"] = "<your-api-key>"
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = "<your-api-key>"
 ```
 
-This section imports the promptlayer library and sets the environment variable PROMPTLAYER_API_KEY to your API key. This API key is required for using the PromptLayer service, which provides an interface for interacting with language models.
+1. **Import Libraries and Set Environment:**
+
+  * **import os:** Operating system module for setting environment variables.
+
+  * **from secret_key import hugging_facehub_key:** Import the API token for authentication.
+
+  * Set the Hugging Face API token in the environment.
 
 ```python
-#from langchain.schema import (HumanMessage,SystemMessage,AIMessage)
-#from langchain_community.chat_models.huggingface import ChatHuggingFace
-from langchain.chat_models import PromptLayerChatOpenAI
-from langchain.schema import (SystemMessage,HumanMessage,AIMessage)
+#SCHEMA
 
+from langchain.llms import HuggingFaceHub
+from langchain.schema import HumanMessage, SystemMessage
+
+# Initialize Hugging Face model from the Hub
+chat = HuggingFaceHub(
+    repo_id="google/flan-t5-large", 
+    model_kwargs={"temperature": 0.7, "max_length": 512}
+)
+
+# Create messages
 messages = [
-    SystemMessage(content="You're a helpful assistant"),
-    HumanMessage(
-        content="What happens when an unstoppable force meets an immovable object?"
-    ),
+    SystemMessage(content="You are a helpful assistant."),
+    HumanMessage(content="Translate this sentence from English to Nepali. I love programming.")
 ]
+prompt = "\n".join([msg.content for msg in messages])
 
-chat = PromptLayerChatOpenAI(pl_tags=["langchain"])
+# Generate response for the single prompt
+response = chat.predict(prompt)
+print(response)
 
-chat([
- SystemMessage(content="You are a helpful assistant that translates English to French."),
- HumanMessage(content="Translate this sentence from English to French. I love programming.")
-])
-
-chat = PromptLayerChatOpenAI(temperature=0.1)
-
-# multiple sets of messages using .generate.
+# Multiple sets of messages
 batch_messages = [
     [
         SystemMessage(content="You are a helpful assistant that translates English to French."),
@@ -195,27 +202,52 @@ batch_messages = [
     ],
 ]
 
-result = chat.generate(batch_messages)
-print(result)
+# Convert each set of messages to a single string prompt
+prompts = ["\n".join([msg.content for msg in messages]) for messages in batch_messages]
 
-chat([HumanMessage(content="Translate this sentence from English to tamil. I love programming.")])
+# Get completions by passing in the list of string prompts
+responses = [chat.predict(prompt) for prompt in prompts]
+
+# Print the responses
+for response in responses:
+    print(response)
 ```
 
-* These lines are commented out but suggest importing various components from the LangChain library, such as message schemas and chat models. However, it seems they are not used in the subsequent code.
+2. **Initialize Hugging Face Model:**
 
-* Here, a list of messages is created, consisting of a system message and a human message. The system message appears to set the context, while the human message poses a question.
+  * **from langchain.llms import HuggingFaceHub:** Import the HuggingFaceHub class.
+  * Initialize the HuggingFaceHub model with specified parameters, such as the model ID and model parameters.
 
-* An instance of PromptLayerChatOpenAI is created, specifying the tags "langchain". This class likely facilitates interactions with the PromptLayer service using OpenAI's API.
+3. **Creating Messages:**
+   
+  * **SystemMessage(content="..."):** Create system messages with specified content.
 
-* This block of code initiates a chat interaction by providing a list of messages to the chat instance. The system message sets the context, and the human message poses a translation task from English to French.
+  * **HumanMessage(content="..."):** Create user messages with specified content.
 
-* A new instance of `PromptLayerChatOpenAI` is created, this time setting the temperature parameter to 0.1. Temperature is a parameter that controls the randomness of the language model's responses during generation.
+  * Concatenate system and user messages into a single prompt.
 
-* A list of multiple sets of messages is created, each containing a system message and a human message. These sets of messages are intended to be used in a batch for generating responses.
+4.  **Generating Responses for Single Prompt:**
 
-* The `generate` method of the chat instance is called with the batch messages as input. This method likely generates responses for each set of messages in the batch and returns the results. The results are then printed.
+  * Use the `predict` method of the `chat` object to generate a response for the single prompt.
+  * Print the generated response.
 
-* Another human message is sent to the chat instance, this time requesting translation from English to Tamil.
+5. **Multiple Sets of Messages:**
+
+  * Define multiple sets of system and user messages in `batch_messages`.
+
+  * Convert each set of messages into a single prompt by concatenating them.
+
+  * Store all prompts in the `prompts` list.
+
+6. **Generate Responses for Batch Prompts:**
+
+  * Use a list comprehension to generate responses for each prompt in the `prompts` list.
+
+  * Store all generated responses in the `responses` list.
+
+7. **Print Responses:**
+
+  * Iterate over the responses list and print each generated response.
 
 ### **Models**
 
