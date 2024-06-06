@@ -261,17 +261,17 @@ for response in responses:
 
 **EXAMPLE**
 
-**Loading Environment Variable**
+1. **Loading Environment Variable**
 
 ```python
-import promptlayer
+from secret_key import hugging_facehub_key
 import os
-os.environ["PROMPTLAYER_API_KEY"] = "<your-api-key>"
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = hugging_facehub_key
 ```
 
-Here, the code imports the `promptlayer` module and sets the environment variable `PROMPTLAYER_API_KEY` to a specific API key. This API key is likely used for accessing a service that provides language model capabilities.
+* **Purpose:** This block imports your API key for Hugging Face from a separate file (`secret_key.py`) and sets it as an environment variable. This key is required to authenticate requests to the Hugging Face API.
 
-**Setting Model Variable**
+2. **Handling Model Deprecation**
 
 ```python
 # account for deprecation of LLM model
@@ -288,22 +288,21 @@ else:
 print (llm_model)
 ```
 
-This section determines which language model to use based on the current date. If the current date is before June 12, 2024, it sets the `llm_model` variable to "gpt-3.5-turbo". Otherwise, it sets it to "gpt-3.5-turbo-0301". This decision might be based on model updates or improvements.
+* **Purpose:** This block checks the current date and sets the model name based on whether the current date is before or after June 12, 2024. This is to handle the deprecation of a specific model.
 
-**Defining Completion Function**
+**Initializing the Language Model**
 
 ```python
-def get_completion(prompt, model=llm_model):
-    messages = [{"role": "user", "content": prompt}]
-    response = PromptLayerChatOpenAI.ChatCompletion.create(
-        model=model,
-        messages=messages,
-        temperature=0.1,
-    )
-    return response.choices[0].message["content"]
+from langchain import HuggingFaceHub
+# Define LLM
+repo_id = "google/flan-t5-large"  # See https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads for some other options
+
+llm = HuggingFaceHub(
+    repo_id=repo_id, model_kwargs={"temperature": 0.5, "max_length": 64}
+)
 ```
 
-This function, `get_completion`, takes a prompt and an optional model name as input. It then uses the specified model to generate a completion for the provided prompt. The completion is generated with a low temperature parameter (0.1), which affects the randomness of the generated text.
+* **Purpose:** This block initializes a language model (LLM) from the Hugging Face Hub using the `langchain` library. Here, the model being used is `google/flan-t5-large`. The `model_kwargs` parameter is used to set the temperature (which controls the randomness of the output) and the maximum length of the generated text.
 
 ---
 
@@ -311,30 +310,29 @@ This function, `get_completion`, takes a prompt and an optional model name as in
 
 A language model prompt is a user-provided set of instructions or input designed to guide the model's response. This aids the model in understanding the context and producing relevant output, whether it involves answering questions, completing sentences, or participating in a conversation
 
-
 **EXAMPLE**
 
 ````python
+# Prompts
 customer_email = """
-Arrr, I be fuming that me blender lid \
-flew off and splattered me kitchen walls \
-with smoothie! And to make matters worse,\
-the warranty don't cover the cost of \
-cleaning up me kitchen. I need yer help \
+Arrr, I be fuming that me blender lid 
+flew off and splattered me kitchen walls 
+with smoothie! And to make matters worse, 
+the warranty don't cover the cost of 
+cleaning up me kitchen. I need yer help 
 right now, matey!
 """
-style = """American English \
-in a Times New Roman and respectful tone
-"""
 
-prompt = f"""Translate the text \
-that is delimited by triple backticks \
-into a style that is {style}.
-text: ```{customer_email}```
+# Define the style
+style = "American English (Formal Business Tone)"
+# Create the full prompt
+prompt = f"""Translate the following text into a style that is {style}:
+
+```{customer_email}```
 """
 ````
 
-This section defines a customer email and a desired style. Then, it constructs a prompt string that instructs the language model to translate the text within triple backticks to the specified style.
+* **Purpose:** This block defines the text to be translated (`customer_email`) and the desired style of the translation (`American English (Formal Business Tone)`). It then constructs a prompt by embedding the email text within a request for translation. Finally, it sends this prompt to the language model and prints the response.
 
 ---
 
@@ -347,11 +345,11 @@ Output parsers are responsible for taking the output of an LLM and transforming 
 ```python
 # Output Parsers
 print(prompt)
-response = get_completion(prompt)
+response = llm(prompt)
 print(response)
 ```
 
-Here, the prompt string is printed, and the `get_completion` function is called with the prompt as input. The generated completion is then printed.
+Here, the prompt string is printed, and the `llm` function is called with the prompt as input. The generated completion is then printed.
 
 **Hugging Face Integration**
 
