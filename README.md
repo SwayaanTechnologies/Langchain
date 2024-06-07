@@ -473,6 +473,43 @@ docs = loader.load()
 
 * We load the documents using the initialized loader, which downloads the audio content from the YouTube video, transcribes it, and parses it into documents.
 
+
+**ffmpeg error clear method**
+
+1. **Open Command Prompt as Administrator**
+
+* Press `Win + X` and select `Command Prompt (Admin)` or `Windows PowerShell (Admin)`.
+
+2. **Install Chocolatey:**
+
+* Copy and paste the installation command for Chocolatey:
+
+```sh
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+* Press `Enter` and wait for the installation to complete.
+
+3. **Install FFmpeg using Chocolatey:**
+
+* In the same command prompt (or a new one with administrative privileges), type:
+
+```sh
+choco install ffmpeg
+```
+
+* Press `Enter` and wait for Chocolatey to download and install FFmpeg.
+
+4. **Verify FFmpeg Installation:**
+
+* Open a new command prompt (not necessarily with administrative privileges) and type:
+
+```sh
+ffmpeg -version
+```
+
+* You should see the `FFmpeg version` information, confirming the installation is successful.
+
 ---
 
 ##### **URL`s**
