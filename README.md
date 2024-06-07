@@ -231,6 +231,7 @@ for response in responses:
 4.  **Generating Responses for Single Prompt:**
 
   * Use the `predict` method of the `chat` object to generate a response for the single prompt.
+
   * Print the generated response.
 
 5. **Multiple Sets of Messages:**
@@ -433,50 +434,6 @@ pages = loader.load()
 
 * `pages:` A list containing the extracted pages from the loaded PDF document.
 
-**Summarizer Initialization**
-
-```python
-# Initialize summarizer
-summarizer = HuggingFaceHub(
-    repo_id="facebook/bart-large-cnn",
-    model_kwargs={"temperature":0, "max_length":180}
-)
-```
-
-* `summarizer:` An instance of `HuggingFaceHub` initialized with the BART-large model (`facebook/bart-large-cnn`) from the Hugging Face model hub.
-
-* `model_kwargs:` Additional keyword arguments passed to the model during initialization, including `temperature` and `max_length`.
-
-**Summarization Function**
-
-```python
-# Function to summarize text
-def summarize(llm, text) -> str:
-    return llm.invoke(f"Summarize this: {text}!")
-```
-
-`Summarizer:` A function that takes a language model (`llm`) and text as input and returns a summarized version of the text using the model.
-
-`llm.invoke:` Invokes the language model to generate a summary of the provided text.
-
-**Page Summarization**
-
-```python
-# Summarize page 10
-page = pages[10]
-summary = summarize(summarizer, page.page_content)
-print(summary)
-print(summarize)
-```
-
-* `page:` Retrieves the content of the 10th page from the extracted pages.
-
-* `summary:` Generates a summary of the content of the 10th page using the `summarize` function and the initialized `summarizer`.
-
-* `print(summary):` Prints the generated summary.
-
-* `print(summarizer):` (Assuming this was intended to be `print(summarizer)`) Prints the `summarizer` object, which might have been unintentional.
-
 ---
 
 ##### **youtube**
@@ -506,16 +463,6 @@ loader = GenericLoader(
     OpenAIWhisperParser()
 )
 docs = loader.load()
-
-content = docs[0].page_content[:500]
-
-# Assuming 'summarizer' is an instantiated summarization model
-# You can summarize the content using it
-summary = summarize(summarizer, docs)
-
-# Print the content and summary
-print("Content:", content)
-print("Summary:", summary)
 ```
 
 * Here, we import necessary modules from LangChain for loading documents from various sources. Specifically, we import `GenericLoader` for loading documents, `OpenAIWhisperParser` for parsing text, and `YoutubeAudioLoader` for loading audio from YouTube.
@@ -525,10 +472,6 @@ print("Summary:", summary)
 * Here, we initialize the document loader with `YoutubeAudioLoader` for loading audio content from the specified URL and `OpenAIWhisperParser` for parsing the audio content.
 
 * We load the documents using the initialized loader, which downloads the audio content from the YouTube video, transcribes it, and parses it into documents.
-
-* We extract the content from the first document and select the first 500 characters to display as an example.
-
-* Here, assuming `summarizer` is an instantiated summarization model (like the one initialized previously), we use it to summarizer the loaded documents.
 
 ---
 
@@ -543,16 +486,6 @@ loader = WebBaseLoader("https://github.com/tamaraiselva/git-demo/blob/main/metri
 # Load documents
 docs = loader.load()
 
-# Get the content of the first document
-content = docs[0].page_content[:500]
-
-# Assuming 'summarizer' is an instantiated summarization model
-# You can summarize the content using it
-summary = summarize(summarizer, docs)
-
-# Print the content and summary
-print("Content:", content)
-print("Summary:", summary)
 ```
 
 * This line imports the `WebBaseLoader` from LangChain, which is used to load documents from a web URL.
@@ -560,12 +493,6 @@ print("Summary:", summary)
 * Here, we initialize a `WebBaseLoader` object with the URL of a document hosted on the web. This loader will fetch the document from the specified URL.
 
 * This line loads the document(s) using the initialized loader.
-
-* We retrieve the content of the first document loaded. In this case, we only take the first 500 characters of the content for demonstration purposes.
-
-* Here, we summarize the content of the document(s) using a pre-instantiated summarization model named `summarizer`. However, there seems to be a slight issue here. The `summarize` function expects a single document's content, but we're passing the entire list of documents. It should likely be `summary = summarize(summarizer, content)` instead.
-
-* Finally, we print the content of the document and its summary for inspection.
 
 ---
 
