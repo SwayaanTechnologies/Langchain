@@ -1357,56 +1357,67 @@ print(triples)
 
 ```python
 # !pip install google-search-results
-from langchain import HuggingFaceHub
-from langchain.agents import initialize_agent, Tool
-from langchain.agents import AgentType
+
+from secret_key import hugging_facehub_key
+import os
+os.environ['HUGGINGFACEHUB_API_TOKEN'] = hugging_facehub_key
+os.environ['SERPAPI_API_KEY'] = "4a03df4b92e18dc16b4ac554d979aac6275516dd94270dbaf8a09e3f8ce956e4"
+
+# Import necessary modules
+from langchain_community.llms import HuggingFaceHub
+from langchain.agents import initialize_agent, Tool, AgentType
+from langchain import SerpAPIWrapper
+
+# See https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads for some other options
+llm = HuggingFaceHub(
+    repo_id="google/flan-t5-large", model_kwargs={"temperature": 0.5, "max_length": 64}
+)
+# Define the SerpAPIWrapper tool
+search_tool = Tool(
+    name="Intermediate Answer",
+    func=SerpAPIWrapper().run,
+    description="Useful for when you need to ask with search"
+)
+
+# Initialize the agent with the HuggingFaceHub model and SerpAPIWrapper tool
+self_ask_with_search_agent = initialize_agent(
+    [search_tool], 
+    llm, 
+    agent=AgentType.SELF_ASK_WITH_SEARCH,
+    return_intermediate_steps=True,
+    verbose=True
+)
+
+# Run the agent with a question
+self_ask_with_search_agent("What is the hometown of the reigning men's French Open?")
+
+self_ask_with_search_agent("What is the 10th fibonacci number?")
 ```
 
-Here, we import necessary modules from LangChain. We also install a Python package called google-search-results, which seems to be required but is commented out.
+1. **Environment Setup:**
 
-```python
-llm_hf = HuggingFaceHub(repo_id="google/flan-t5-xl", model_kwargs={"temperature":0, "max_length":64})
-llm =  PromptLayer(temperature=0)
-search = HuggingFaceHub()
-```
+* Explain the installation of necessary packages (e.g., google-search-results).
 
-These lines initialize different language models using HuggingFaceHub and PromptLayer. The `llm_hf` model is initialized with the Google Flan T5 XL model, while the `llm` model is initialized with the PromptLayer model.
+* Describe the importation of the secret key and setting up environment variables.
 
-```python
-tools = [
-    Tool(
-        name="Intermediate Answer",
-        func=search.run,
-        description="useful for when you need to ask with search"
-    )
-]
-```
+2. **Model Initialization:**
 
-A list of tools is defined, with each tool containing a name, function, and description. In this case, the tool is named "Intermediate Answer" and uses the `search.run` function.
+* Explain the process of initializing the Hugging Face model, specifying the model chosen and the parameters used.
+Tool Definition:
 
-```python
-self_ask_with_search = initialize_agent(tools, llm, agent=AgentType.SELF_ASK_WITH_SEARCH, verbose=True)
-```
+* Describe the creation of the SerpAPIWrapper tool, its purpose, and how it integrates with the agent.
 
-An agent named `self_ask_with_search` is initialized using the `initialize_agent` function. The agent uses the specified tools, language model (`llm`), and agent type (`AgentType.SELF_ASK_WITH_SEARCH`).
+3. **Agent Initialization:**
 
-```python
-self_ask_with_search.run("What is the hometown of the reigning men's French Open?")
-```
+* Detail the steps to initialize the agent with the chosen LLM and search tool.
 
-We run the agent with a specific question as input. The agent will likely use its internal logic to provide an answer based on the question and the available tools.
+* Explain the significance of the agent type `(SELF_ASK_WITH_SEARCH)` and the parameters (`return_intermediate_steps` and `verbose`).
 
-```python
-#if you want the intermediate answers, pass return_intermediate_steps=True.
-self_ask_with_search = initialize_agent(tools, llm, agent=AgentType.SELF_ASK_WITH_SEARCH, return_intermediate_steps=True, verbose=True)
-response = self_ask_with_search("What is the hometown of the reigning men's French Open?")
+4. **Running the Agent:**
 
-import json
-print(json.dumps(response["intermediate_steps"], indent=2))
-```
+* Demonstrate how to use the agent to answer questions.
 
-Here, we reinitialize the agent with an additional parameter `return_intermediate_steps=True`, which indicates that we want to capture intermediate steps during the agent's processing. Then, we run the agent again with the same question and print out the intermediate steps in a JSON format.
-
+* Provide examples of questions asked and explain the expected outputs.
 ---
 
 ## **Embeddings**
