@@ -22,7 +22,7 @@ These models are trained on massive amounts of text data to learn patterns and e
 
   - [**Vectors and Embeddings**](#Vectors-and-Embeddings) 
 
-  - [**Retrevial**](#retrevial)
+  - [**Retrieval**](#Retrieval)
 
 * [**Memory**](#Memory)
 
@@ -765,7 +765,7 @@ print(db._collection.count())
 
 ---
 
-#### **Retrevial**
+#### **Retrieval**
 
 **Vectorstore retrieval**
 
