@@ -1,3 +1,3 @@
 openai_key = "sk-proj-Wcb2X2pLzsHFNLpDC5jhT3BlbkFJcn912FfYNEcOTGtrZXyt"
 cohere_key = "qZPjmJ9VFjB73kHHOops0W6SPAPxwOqMebq5Bwyi"
-hugging_facehub_key = "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"
+hugging_facehub_key = "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"
